@@ -586,6 +586,97 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
 .help-row .hi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(90,150,255,.14);color:var(--press);flex:none}
 .help-row b{display:block;font-size:15.5px}
 .help-row span.muted{font-size:13px}
+/* ---- realistic iPhone for the web-app guide (bars-6) ---- */
+.rp{position:relative;width:186px;height:384px;border-radius:40px;padding:5px;margin:0 auto;flex:none;
+  background:linear-gradient(145deg,#9aa0a7 0%,#4a4e54 22%,#80858c 48%,#2f3236 74%,#8c9198 100%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.7),0 26px 60px rgba(0,0,0,.65),inset 0 0 1.5px rgba(255,255,255,.55)}
+.rp::before{content:"";position:absolute;left:-2.5px;top:78px;width:3px;height:22px;border-radius:2px 0 0 2px;background:#5d6168;box-shadow:0 34px 0 #5d6168,0 64px 0 #5d6168}
+.rp::after{content:"";position:absolute;right:-2.5px;top:112px;width:3px;height:44px;border-radius:0 2px 2px 0;background:#5d6168}
+.rp-screen{position:relative;width:100%;height:100%;border-radius:35px;overflow:hidden;background:#000;font-family:-apple-system,"SF Pro Text",var(--f);color:#fff}
+.rp-island{position:absolute;top:9px;left:50%;width:60px;height:18px;margin-left:-30px;border-radius:10px;background:#000;z-index:9;box-shadow:0 0 0 1px rgba(255,255,255,.03)}
+.rp-status{position:absolute;top:11px;left:20px;right:15px;display:flex;justify-content:space-between;align-items:center;font-size:9.5px;font-weight:700;z-index:8;letter-spacing:-.01em}
+.rp-status .ic{display:flex;gap:3px;align-items:center}
+.rp-status .bat{width:17px;height:8px;border-radius:2.5px;border:1px solid rgba(255,255,255,.55);padding:1px;position:relative}
+.rp-status .bat i{display:block;height:100%;width:70%;background:#fff;border-radius:1px}
+.rp-status .bat::after{content:"";position:absolute;right:-3px;top:2px;width:1.5px;height:3px;border-radius:1px;background:rgba(255,255,255,.55)}
+.rp-home{position:absolute;bottom:5px;left:50%;width:64px;height:3.5px;margin-left:-32px;border-radius:2px;background:rgba(255,255,255,.85);z-index:9}
+.rp-page{position:absolute;inset:0;padding:38px 10px 0;background:radial-gradient(70% 40% at 90% 0%,rgba(61,245,138,.18),transparent 70%),#05080a;transition:filter .3s}
+.rp-page.dim{filter:brightness(.45) blur(1px)}
+.rp-brand{display:flex;align-items:center;gap:5px;font-family:var(--fh);font-stretch:125%;font-weight:900;font-size:13px;margin-bottom:7px}
+.rp-brand svg{width:13px;height:13px}
+.rp-strip{height:15px;border-radius:8px;border:1px solid rgba(255,198,92,.4);background:rgba(255,198,92,.1);margin-bottom:6px;display:flex;align-items:center;padding:0 6px;gap:4px;font-size:6.5px;font-weight:700}
+.rp-strip::before{content:"";width:4px;height:4px;border-radius:50%;background:#ffc65c}
+.rp-tiles{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.rp-tile{border-radius:8px;background:rgba(16,26,24,.8);border:1px solid rgba(214,255,232,.12);padding:5px 6px;font-size:6px;color:rgba(255,255,255,.5)}
+.rp-tile b{display:block;font-family:var(--fh);font-stretch:118%;font-size:12px;color:#3df58a;font-weight:900;line-height:1.1}
+.rp-card{border-radius:9px;background:rgba(16,26,24,.8);border:1px solid rgba(214,255,232,.12);border-top:1.5px solid #ff5ac8;padding:6px;font-size:7px}
+.rp-card .row{display:flex;align-items:center;gap:4px}
+.rp-card .n{margin-left:auto;font-family:var(--fh);font-stretch:118%;font-weight:900;font-size:16px;color:#3df58a}
+.rp-card .m{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden}
+.rp-card .m i{display:block;height:100%;width:94%;background:#3df58a}
+.rp-toolbar{position:absolute;left:8px;right:8px;bottom:16px;display:flex;align-items:center;gap:5px;z-index:4}
+.rp-tb-btn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(70,74,80,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.25);font-size:11px;font-weight:900;letter-spacing:.5px;flex:none}
+.rp-tb-btn svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rp-url{flex:1;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(70,74,80,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.25);font-size:8.5px;font-weight:600;min-width:0}
+.rp-url span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-hl{background:rgba(10,132,255,.9)!important;box-shadow:0 0 0 3px rgba(10,132,255,.35)!important}
+.rp-tap{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;z-index:12;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.75),rgba(255,255,255,.25) 60%,transparent 70%);animation:rpTap 1.2s ease-out .7s both}
+@keyframes rpTap{0%{transform:scale(1.6);opacity:0}25%{transform:scale(.8);opacity:1}45%{transform:scale(.7);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.rp-menu{position:absolute;right:8px;bottom:50px;width:128px;border-radius:12px;background:rgba(44,46,50,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.6);z-index:6;overflow:hidden;
+  transform-origin:100% 100%;animation:rpPop .32s cubic-bezier(.2,1.2,.4,1) both}
+@keyframes rpPop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.rp-menu div{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;font-size:8.5px;border-top:.5px solid rgba(255,255,255,.08)}
+.rp-menu div:first-child{border-top:0}
+.rp-menu svg,.rp-sheet svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rp-menu div.rp-hl,.rp-sheet .act.rp-hl{background:rgba(10,132,255,.9)!important;box-shadow:none!important}
+.rp-sheet{position:absolute;left:0;right:0;bottom:0;top:96px;border-radius:16px 16px 0 0;background:rgba(30,32,36,.97);z-index:6;padding:8px 8px 0;animation:rpUp .38s cubic-bezier(.2,.9,.3,1) both}
+@keyframes rpUp{from{transform:translateY(100%)}to{transform:none}}
+.rp-sheet .grab{width:26px;height:3px;border-radius:2px;background:rgba(255,255,255,.3);margin:0 auto 7px}
+.rp-sheet .hd{display:flex;align-items:center;gap:6px;padding-bottom:7px;border-bottom:.5px solid rgba(255,255,255,.1);font-size:8px}
+.rp-sheet .hd img{width:20px;height:20px;border-radius:5px}
+.rp-sheet .hd small{display:block;color:rgba(255,255,255,.5);font-size:6.5px}
+.rp-apps{display:flex;gap:7px;padding:8px 2px}
+.rp-apps span{width:26px;height:26px;border-radius:7px;flex:none}
+.rp-sheet .act{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;margin:0 0 3px;border-radius:8px;background:rgba(255,255,255,.06);font-size:8.5px}
+.rp-add{position:absolute;inset:30px 0 0;border-radius:16px 16px 0 0;background:#1c1d20;z-index:7;padding:9px 9px 0;animation:rpUp .38s cubic-bezier(.2,.9,.3,1) both, rpAway .45s cubic-bezier(.5,0,.75,0) 1.9s forwards}
+@keyframes rpAway{to{transform:translateY(105%)}}
+.rp-add .nav{display:flex;justify-content:space-between;align-items:center;font-size:8.5px;margin-bottom:10px}
+.rp-add .nav span:first-child{color:#0a84ff}
+.rp-add .nav b{font-size:8.5px}
+.rp-add .nav .add{color:#0a84ff;font-weight:800;padding:2px 6px;border-radius:6px}
+.rp-add .nav .add.rp-hl{color:#fff}
+.rp-add .card{display:flex;gap:8px;align-items:center;padding:8px;border-radius:10px;background:#2c2d31}
+.rp-add .card img{width:34px;height:34px;border-radius:8px}
+.rp-add .card .f{flex:1;font-size:9px}
+.rp-add .card .f div{padding:3px 0;border-bottom:.5px solid rgba(255,255,255,.12)}
+.rp-add .card .f small{display:block;color:rgba(255,255,255,.45);font-size:6.5px;padding-top:3px}
+.rp-add .tog{margin-top:8px;display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-radius:10px;background:#2c2d31;font-size:8.5px}
+.rp-add .sw{width:25px;height:15px;border-radius:8px;background:#34c759;position:relative}
+.rp-add .sw::after{content:"";position:absolute;right:2px;top:2px;width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.rp-add .hint{font-size:6.5px;color:rgba(255,255,255,.45);padding:4px 8px}
+.rp-homescreen{position:absolute;inset:0;z-index:5;background:radial-gradient(80% 60% at 20% 10%,#2b4a7a,transparent 60%),radial-gradient(70% 60% at 90% 90%,#5a2b6e,transparent 60%),#10131c;padding:40px 14px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px;align-content:start}
+.rp-homescreen span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:6px;color:rgba(255,255,255,.85)}
+.rp-homescreen span i{width:30px;height:30px;border-radius:8px;display:block}
+.rp-homescreen .bars img{width:30px;height:30px;border-radius:8px;animation:rpIcon .6s cubic-bezier(.34,1.56,.64,1) 2.35s both}
+@keyframes rpIcon{from{transform:scale(0);opacity:0}to{transform:none;opacity:1}}
+.tour-stage.tall .rp{zoom:.8}
+@media (max-width:599px) and (max-height:760px){ .tour-stage.tall .rp{zoom:.66} }
+/* tutorial page transitions (bars-6): old page slides + blurs out, new one slides in */
+.tour-stage .tslide,.tour-body{animation:none}
+.tour-x{transition:transform .26s cubic-bezier(.5,0,.75,0),opacity .26s ease,filter .26s ease}
+.tour-x.leave-next{transform:translateX(-46px) scale(.97);opacity:0;filter:blur(6px)}
+.tour-x.leave-back{transform:translateX(46px) scale(.97);opacity:0;filter:blur(6px)}
+.tour-x.enter-next{animation:tEnterNext .5s cubic-bezier(.2,.9,.25,1) both}
+.tour-x.enter-back{animation:tEnterBack .5s cubic-bezier(.2,.9,.25,1) both}
+.tour-body.tour-x.enter-next,.tour-body.tour-x.enter-back{animation-delay:.06s}
+@keyframes tEnterNext{from{transform:translateX(56px) scale(.97);opacity:0;filter:blur(8px)}to{transform:none;opacity:1;filter:none}}
+@keyframes tEnterBack{from{transform:translateX(-56px) scale(.97);opacity:0;filter:blur(8px)}to{transform:none;opacity:1;filter:none}}
+.tour-stage{transition:background .5s ease}
+.tour-stage[data-tint="1"]{background:radial-gradient(70% 80% at 70% 0%,rgba(61,245,138,.18),transparent 70%),radial-gradient(60% 70% at 0% 100%,rgba(90,150,255,.12),transparent 70%),#060b0c}
+.tour-stage[data-tint="2"]{background:radial-gradient(70% 80% at 30% 0%,rgba(90,150,255,.2),transparent 70%),radial-gradient(60% 70% at 100% 100%,rgba(61,245,138,.1),transparent 70%),#060b0c}
+.tour-stage[data-tint="3"]{background:radial-gradient(70% 80% at 80% 10%,rgba(255,90,200,.16),transparent 70%),radial-gradient(60% 70% at 0% 100%,rgba(90,150,255,.12),transparent 70%),#060b0c}
+.tour-stage[data-tint="4"]{background:radial-gradient(70% 80% at 50% 0%,rgba(255,198,92,.14),transparent 70%),radial-gradient(60% 70% at 100% 100%,rgba(61,245,138,.12),transparent 70%),#060b0c}
 @media (prefers-reduced-motion:reduce){
   .tour .tour-card{opacity:1!important;transform:none!important;filter:none!important}
   .tour{opacity:1}
@@ -711,8 +802,8 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
 <div class="tour" id="tour" role="dialog" aria-modal="true" aria-label="Welcome to Bars">
   <div class="tour-card glass">
     <div class="tour-top"><span class="tour-step" id="tourStep"></span><button class="tour-skip" id="tourSkip">Skip</button></div>
-    <div class="tour-stage" id="tourStage"></div>
-    <div class="tour-body" id="tourBody"></div>
+    <div class="tour-stage tour-x" id="tourStage"></div>
+    <div class="tour-body tour-x" id="tourBody"></div>
     <div class="tour-foot"><div class="tour-dots" id="tourDots"></div><button class="btn small" id="tourBack">Back</button><button class="btn primary small" id="tourNext">Next</button></div>
   </div>
 </div>
@@ -730,7 +821,7 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-5';
+const APP_VERSION = 'bars-6';
 const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
@@ -1316,13 +1407,16 @@ function updateMapData(fit){
   markers.splice(0).forEach(m=>m.remove());
   if (L.places) for (const p of S.places){
     const r = sel==='best' ? bestAt(p,pool) : (()=>{ const ps = placeScore(p, sel, pool); return ps ? { net:sel, ps } : null; })();
-    const el = document.createElement('div'); el.className = 'pin' + (popPins && !reduceMotion ? ' pop' : ''); el.style.setProperty('--d', (markers.length*.09 + .2).toFixed(2)+'s');
-    el.innerHTML = `<span class="sc" style="background:${r?scoreHex(r.ps.score):'#666'}">${r?r.ps.score:'–'}</span>${esc(p.name)}${sel==='best'&&r?`<span class="cdot ${NETS[r.net].cls}" style="width:7px;height:7px"></span>`:''}`;
+    // MapLibre positions markers with a CSS transform on this element, so animations go on the inner .pin only.
+    const el = document.createElement('div');
+    const pin = document.createElement('div'); pin.className = 'pin' + (popPins && !reduceMotion ? ' pop' : ''); pin.style.setProperty('--d', (markers.length*.09 + .2).toFixed(2)+'s');
+    el.appendChild(pin);
+    pin.innerHTML = `<span class="sc" style="background:${r?scoreHex(r.ps.score):'#666'}">${r?r.ps.score:'–'}</span>${esc(p.name)}${sel==='best'&&r?`<span class="cdot ${NETS[r.net].cls}" style="width:7px;height:7px"></span>`:''}`;
     el.onclick = () => flyTo(p.lng, p.lat, 15.5);
     markers.push(new maplibregl.Marker({ element:el, anchor:'bottom', offset:[0,-4] }).setLngLat([p.lng,p.lat]).addTo(map));
   }
   if (L.here && hereHex){
-    const [lat,lng] = h3.cellToLatLng(hereHex); const el=document.createElement('div'); el.className='here'; el.style.position='relative';
+    const [lat,lng] = h3.cellToLatLng(hereHex); const el=document.createElement('div'); const dot=document.createElement('div'); dot.className='here'; dot.style.position='relative'; el.appendChild(dot);
     markers.push(new maplibregl.Marker({ element:el }).setLngLat([lng,lat]).addTo(map));
   }
   if (fit && !mapFitted) fitPlaces(true);
@@ -1611,7 +1705,7 @@ function drawTour(){
   stopInstallGuide();
   const stage = $('#tourStage'), body = $('#tourBody');
   stage.innerHTML = sl.stage; body.innerHTML = `<h3>${sl.title}</h3>${sl.text ? `<p>${sl.text}</p>` : ''}`;
-  body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
+  stage.dataset.tint = String(tourI % 4 + 1);
   stage.classList.toggle('tall', !!sl.install); body.style.minHeight = sl.install ? 'auto' : '';
   if (sl.install) startInstallGuide(stage.querySelector('#igTour'));
   $('#tourDots').innerHTML = tourList.map((_,i)=>`<i class="${i===tourI?'on':''}"></i>`).join('');
@@ -1623,9 +1717,20 @@ function tourGo(d){
   const n = tourI + d;
   if (n >= tourList.length){ closeTour(); if (!S.carrier) openCarrierPicker(() => { if (!S.places.length) { show('places'); setTimeout(()=>openPlaceEditor(null), 350); } }); else if (!S.places.length){ show('places'); openPlaceEditor(null); } return; }
   if (n < 0) return;
-  $('#tour').classList.toggle('back', d < 0);
-  tourI = n; drawTour();
+  if (tourBusy) return;
+  const dir = d < 0 ? 'back' : 'next';
+  const parts = [$('#tourStage'), $('#tourBody')];
+  if (reduceMotion){ tourI = n; drawTour(); return; }
+  tourBusy = true;
+  parts.forEach(el => { el.classList.remove('enter-next','enter-back'); el.classList.add('leave-'+dir); });
+  setTimeout(() => {
+    tourI = n; drawTour();
+    parts.forEach(el => { el.classList.remove('leave-next','leave-back'); void el.offsetWidth; el.classList.add('enter-'+dir); });
+    tourBusy = false;
+    clearTimeout(tourGo._t); tourGo._t = setTimeout(() => parts.forEach(el => el.classList.remove('enter-next','enter-back')), 560);
+  }, 260);
 }
+let tourBusy = false;
 $('#tourNext').onclick = () => tourGo(1);
 $('#tourBack').onclick = () => tourGo(-1);
 $('#tourSkip').onclick = closeTour;
@@ -1644,19 +1749,44 @@ const IG_STEPS = [
   ['Keep <b>Open as Web App</b> on, tap <b>Add</b>', 'Then open Bars from its new icon.']
 ];
 const IG_LOGO = `<svg viewBox="0 0 28 28"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>`;
+const RP_SVG = {
+  back:'<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+  share:'<svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>',
+  plus:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
+  copy:'<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.6.8-4 3.9.9 5.5L12 16.6 7.1 19.2l.9-5.5-4-3.9 5.6-.8z"/></svg>',
+  book:'<svg viewBox="0 0 24 24"><path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z"/></svg>',
+  find:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>',
+  glasses:'<svg viewBox="0 0 24 24"><circle cx="7" cy="14" r="3"/><circle cx="17" cy="14" r="3"/><path d="M10 14h4"/></svg>'
+};
+function rpChrome(inner){
+  return `<div class="rp"><div class="rp-screen"><div class="rp-island"></div>
+    <div class="rp-status"><span>9:41</span><span class="ic"><svg width="12" height="8" viewBox="0 0 12 8"><rect x="0" y="5" width="2" height="3" rx=".5" fill="#fff"/><rect x="3.3" y="3.5" width="2" height="4.5" rx=".5" fill="#fff"/><rect x="6.6" y="2" width="2" height="6" rx=".5" fill="#fff"/><rect x="9.9" y="0" width="2" height="8" rx=".5" fill="#fff"/></svg><svg width="11" height="8" viewBox="0 0 11 8"><path d="M5.5 7.5l1.6-1.8a2.3 2.3 0 0 0-3.2 0zM2.6 4.3a4.1 4.1 0 0 1 5.8 0l1-1.1a5.6 5.6 0 0 0-7.8 0zM.2 2a7.6 7.6 0 0 1 10.6 0" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg><span class="bat"><i></i></span></span></div>
+    ${inner}<div class="rp-home"></div></div></div>`;
+}
+const rpPage = dim => `<div class="rp-page ${dim?'dim':''}"><div class="rp-brand">${IG_LOGO}Bars</div><div class="rp-strip">T-Mobile beats AT&amp;T by 8</div>
+  <div class="rp-tiles"><div class="rp-tile">Top Network<b>T-Mobile</b></div><div class="rp-tile">Your Network<b style="color:#ffc65c">90</b></div></div>
+  <div class="rp-card"><div class="row"><b>1</b><span style="color:#ff5ac8">●</span> T-Mobile<span class="n">98</span></div><div class="m"><i></i></div></div>
+  <div class="rp-card" style="margin-top:5px;border-top-color:#5ab7ff"><div class="row"><b>2</b><span style="color:#5ab7ff">●</span> AT&amp;T<span class="n" style="color:#3df58a">92</span></div><div class="m"><i style="width:88%"></i></div></div></div>`;
+const rpToolbar = hlDots => `<div class="rp-toolbar"><span class="rp-tb-btn">${RP_SVG.back}</span><span class="rp-url"><span style="font-weight:800;font-size:8px">aA</span><span>bars-alpha.vercel.app</span></span><span class="rp-tb-btn ${hlDots?'rp-hl':''}">•••</span></div>`;
+const rpTap = (x, y) => `<span class="rp-tap" style="left:${x}px;top:${y}px"></span>`;
 function igFrame(i){
-  const page = `<div class="ig-page"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">${IG_LOGO.replace('<svg','<svg width="14" height="14"')}<b style="font-size:10px">Bars</b></div><div class="bl" style="width:70%"></div><div class="bl"></div><div class="bl" style="width:85%"></div><div class="bl" style="width:55%"></div></div>`;
-  const bar = hl => `<div class="ig-bar"><span>${ico('chev').replace('class="i','style="transform:scaleX(-1);width:12px;height:12px" class="i')}</span><span class="url">bars-alpha.vercel.app</span><span class="ig-dots ${hl?'ig-hl':''}">•••</span></div>`;
-  if (i===0) return page + bar(true);
-  if (i===1) return page + `<div class="ig-sheet"><div>Copy Link</div><div>Add to Favorites</div><div class="ig-hl">Share <span>${ico('share')}</span></div><div>Find on Page</div></div>` + bar(false);
-  if (i===2) return page + `<div class="ig-sheet full"><div>Copy</div><div>Add to Reading List</div><div>Add Bookmark</div><div class="ig-hl">Add to Home Screen <span>${ico('plus')}</span></div><div>Markup</div></div>`;
-  return `<div class="ig-add"><div class="top"><span>Cancel</span><b>Add to Home Screen</b><span class="addbtn ig-hl">Add</span></div>
-    <div class="app"><span class="ic">${IG_LOGO}</span><div><b>Bars</b><div style="color:rgba(255,255,255,.5)">bars-alpha.vercel.app</div></div></div>
-    <div class="tog"><span>Open as Web App</span><span class="sw"></span></div></div>`;
+  if (i===0) return rpChrome(rpPage(false) + rpToolbar(true) + rpTap(161, 345));
+  if (i===1) return rpChrome(rpPage(true) + rpToolbar(false) + `<div class="rp-menu">
+      <div>Copy ${RP_SVG.copy}</div><div>Add to Favorites ${RP_SVG.star}</div><div class="rp-hl">Share ${RP_SVG.share}</div><div>Find on Page ${RP_SVG.find}</div><div>Website Settings ${RP_SVG.glasses}</div></div>` + rpTap(120, 290));
+  if (i===2) return rpChrome(rpPage(true) + `<div class="rp-sheet"><div class="grab"></div>
+      <div class="hd"><img src="/apple-touch-icon.png" alt=""><div><b>Bars</b><small>bars-alpha.vercel.app</small></div></div>
+      <div class="rp-apps"><span style="background:linear-gradient(#2ea8ff,#0a6cff)"></span><span style="background:linear-gradient(#5df07a,#28c548)"></span><span style="background:linear-gradient(#5ab7ff,#1b7cf2)"></span><span style="background:linear-gradient(#ffe066,#f5c400)"></span><span style="background:linear-gradient(#ff8f6b,#ff5a3c)"></span></div>
+      <div class="act">Copy ${RP_SVG.copy}</div><div class="act">Add to Reading List ${RP_SVG.glasses}</div><div class="act">Add Bookmark ${RP_SVG.book}</div><div class="act rp-hl">Add to Home Screen ${RP_SVG.plus}</div><div class="act">Find on Page ${RP_SVG.find}</div></div>` + rpTap(90, 302));
+  return rpChrome(`<div class="rp-homescreen">${['#ff9f43','#34c759','#0a84ff','#ff375f','#5e5ce6','#ffd60a','#64d2ff'].map((c,k)=>`<span><i style="background:${c}"></i>${['Clock','Messages','Safari','Music','Podcasts','Notes','Weather'][k]}</span>`).join('')}<span class="bars"><img src="/apple-touch-icon.png" alt="">Bars</span></div>
+    <div class="rp-add"><div class="nav"><span>Cancel</span><b>Add to Home Screen</b><span class="add rp-hl">Add</span></div>
+      <div class="card"><img src="/apple-touch-icon.png" alt=""><div class="f"><div>Bars</div><small>bars-alpha.vercel.app</small></div></div>
+      <div class="tog"><span>Open as Web App</span><span class="sw"></span></div>
+      <div class="hint">An icon will be added to your Home Screen so you can quickly access this website.</div></div>` + rpTap(160, 47));
 }
 function installGuideHTML(id){
   return `<div class="ig ig-wide" id="${id}">
-    <div class="ig-phone"><div class="notch"></div><div class="ig-screen">${igFrame(0)}</div></div>
+    <div class="ig-screen">${igFrame(0)}</div>
     <ol class="ig-steps">${IG_STEPS.map(([t,sub],i)=>`<li data-ig="${i}" class="${i===0?'on':''}"><span class="n">${i+1}</span><span>${t}<br><span class="note">${sub}</span></span></li>`).join('')}</ol>
   </div>`;
 }
@@ -1670,10 +1800,10 @@ function startInstallGuide(root){
     root.querySelectorAll('[data-ig]').forEach((li,k)=>{ li.classList.toggle('on', k===i); li.classList.toggle('done', k<i); });
   };
   root.querySelectorAll('[data-ig]').forEach(li => li.onclick = () => { go(+li.dataset.ig); restart(); });
-  const restart = () => { clearInterval(igTimer); if (!reduceMotion) igTimer = setInterval(() => go(i+1), 2400); };
+  const restart = () => { clearTimeout(igTimer); clearInterval(igTimer); if (!reduceMotion) { const tick = () => { igTimer = setTimeout(() => { go(i+1); tick(); }, i===3 ? 3800 : 2600); }; tick(); } };
   go(0); restart();
 }
-function stopInstallGuide(){ clearInterval(igTimer); igTimer = null; }
+function stopInstallGuide(){ clearTimeout(igTimer); clearInterval(igTimer); igTimer = null; }
 function openInstallGuide(){
   const standalone = isStandalone();
   openSheet(`<h3>Add Bars to Your Home Screen</h3>
