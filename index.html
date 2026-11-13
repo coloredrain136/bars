@@ -9,6 +9,22 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bars">
 <meta name="description" content="Which carrier holds up best across the places you actually spend your time.">
+<!-- link preview (iMessage, WhatsApp, Slack, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bars">
+<meta property="og:title" content="Bars: Which carrier holds up where you actually spend your week?">
+<meta property="og:description" content="Add your places, get a Consistency Score for AT&amp;T, Verizon and T-Mobile, and test your speed.">
+<meta property="og:url" content="https://bars-alpha.vercel.app/">
+<meta property="og:image" content="https://bars-alpha.vercel.app/og.png">
+<meta property="og:image:secure_url" content="https://bars-alpha.vercel.app/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bars logo with AT&amp;T, Verizon and T-Mobile ranked by Consistency Score">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bars">
+<meta name="twitter:description" content="Which carrier holds up where you actually spend your week?">
+<meta name="twitter:image" content="https://bars-alpha.vercel.app/og.png">
 <title>Bars</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -823,7 +839,7 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-7';
+const APP_VERSION = 'bars-8';
 const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
