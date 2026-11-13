@@ -382,7 +382,7 @@ async function api(path, opts){
   if (!r.ok) { const e = new Error(j.error || `Error ${r.status}`); e.status = r.status; throw e; }
   return j;
 }
-const COV_TTL = 7*864e5;
+const COV_TTL = 864e5; // 24h, matches the coverage API's short-lived caching terms
 async function ensureCoverage(hex, force){
   const c = S.coverage[hex];
   if (!force && c && c.carriers && Date.now() - c.ts < COV_TTL) return c;

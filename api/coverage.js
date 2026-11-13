@@ -2,7 +2,8 @@
 // Per-carrier outdoor coverage for one H3 hex, cached in bars_coverage_cache.
 const C = require('./_lib/common');
 
-const CACHE_DAYS = 30;
+// broadbandmap.com terms: ephemeral use only, short-lived operational caching OK, no long-term storage.
+const CACHE_HOURS = 24;
 const VIEW = 'fcc'; // FCC carrier-reported layer (matches the "FCC Estimate" label). 'bbm' = adjusted with crowdsourced data.
 const TECH_RANK = { '5G': 3, '4G': 2, '3G': 1 };
 
@@ -63,12 +64,13 @@ module.exports = async (req, res) => {
       cached = data && data[0];
     } catch (e) { console.error('cache read', e.message); }
   }
-  const fresh = cached && (Date.now() - new Date(cached.fetched_at).getTime()) < CACHE_DAYS * 864e5;
+  const fresh = cached && (Date.now() - new Date(cached.fetched_at).getTime()) < CACHE_HOURS * 3600e3;
+  const usableStale = cached && (Date.now() - new Date(cached.fetched_at).getTime()) < 72 * 3600e3;
   if (fresh) return C.send(res, 200, { hex, carriers: cached.data, source: 'cache', fetched_at: cached.fetched_at }, 3600);
 
   // Uncached lookups hit the outside API: tighter per-IP and per-instance limits.
   if (!C.rateLimit(`covx:${ip}`, 30, 10 * 60e3) || !C.rateLimit('covx:global', 400, 60 * 60e3)) {
-    if (cached) return C.send(res, 200, { hex, carriers: cached.data, source: 'stale', fetched_at: cached.fetched_at });
+    if (usableStale) return C.send(res, 200, { hex, carriers: cached.data, source: 'stale', fetched_at: cached.fetched_at });
     return C.send(res, 429, { error: 'Coverage lookups are busy. Try again shortly.' });
   }
 
@@ -82,11 +84,15 @@ module.exports = async (req, res) => {
           body: JSON.stringify({ h3_hex: hex, data: carriers, fetched_at })
         });
       } catch (e) { console.error('cache write', e.message); }
+      // Keep the cache short-lived: drop anything older than 72h.
+      try {
+        await C.sb(`bars_coverage_cache?fetched_at=lt.${new Date(Date.now() - 72 * 3600e3).toISOString()}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
+      } catch (e) { console.error('cache prune', e.message); }
     }
     return C.send(res, 200, { hex, carriers, source: 'live', fetched_at }, 3600);
   } catch (e) {
     console.error('coverage fetch', e.message);
-    if (cached) return C.send(res, 200, { hex, carriers: cached.data, source: 'stale', fetched_at: cached.fetched_at });
+    if (usableStale) return C.send(res, 200, { hex, carriers: cached.data, source: 'stale', fetched_at: cached.fetched_at });
     const msg = e.status === 401 ? 'Coverage service key missing.' : e.status === 429 ? 'Coverage service is rate-limited right now. Try again later.' : 'Coverage service is unavailable right now.';
     return C.send(res, 502, { error: msg });
   }
