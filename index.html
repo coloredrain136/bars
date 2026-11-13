@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07090c">
+<meta name="theme-color" content="#05080a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,278 +13,432 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112..125,600..900&family=Figtree:wght@400..800&display=swap">
 <style>
+/* =========================================================
+   SIGNAL GLASS (bars-2)
+   Core style borrowed from Liftoff Space Glass: one dark theme, frosted glass,
+   Archivo (wide) headings + Figtree body, colors carry meaning, line icons only.
+   Meaning: green = good signal · blue = press this · white pill = selected ·
+            amber = so-so · red = dead spot / problem.
+   ========================================================= */
 :root{
-  /* color */
-  --bg:#07090c; --bg2:#0d1116;
-  --glass:rgba(255,255,255,.06); --glass-2:rgba(255,255,255,.10); --glass-3:rgba(255,255,255,.16);
-  --stroke:rgba(255,255,255,.12); --stroke-hi:rgba(255,255,255,.22);
-  --text:#f2f5f7; --text-2:rgba(242,245,247,.68); --text-3:rgba(242,245,247,.45);
-  --accent:#3df58a; --accent-2:#1fd172; --accent-ink:#04210f; --accent-glow:rgba(61,245,138,.35);
-  --warn:#ffc65c; --bad:#ff6b6b; --info:#7cc4ff;
+  --bg:#05080a; --bg2:#0a1013;
+  --glass:rgba(16,26,24,.48); --glass-2:rgba(255,255,255,.07); --glass-3:rgba(255,255,255,.12);
+  --edge:rgba(214,255,232,.13); --edge-hi:rgba(214,255,232,.24);
+  --text:#eef4f1; --text-2:rgba(238,244,241,.68); --text-3:rgba(238,244,241,.44);
+  --sig:#3df58a; --sig-2:#1fd172; --sig-glow:rgba(61,245,138,.28);   /* good signal */
+  --press:#5a96ff; --press-2:#3f7ef5; --press-glow:rgba(90,150,255,.35); /* press this */
+  --warn:#ffc65c; --bad:#ff6b6b;
+  --sel:#ffffff; --sel-ink:#06100c;                                     /* selected */
   --att:#5ab7ff; --verizon:#ff5a5f; --tmobile:#ff5ac8;
-  /* space */
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px;
-  /* radius */
   --r1:10px; --r2:14px; --r3:20px; --r4:28px; --pill:999px;
-  /* type */
-  --f:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;
-  --fd:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,monospace;
-  /* effects */
-  --blur:saturate(170%) blur(22px);
-  --shadow:0 10px 30px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.06) inset;
-  --spec:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 42%);
-  /* layout */
-  --top:max(env(safe-area-inset-top),20px);
-  --bot:env(safe-area-inset-bottom);
-  --gap-fix:0px; /* iOS home-screen dead strip fix, set in JS */
-  --tabh:64px;
+  --fh:"Archivo",-apple-system,system-ui,sans-serif;
+  --f:"Figtree",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --blur:saturate(160%) blur(22px);
+  --shadow:0 14px 40px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.05) inset;
+  --spec:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0) 40%);
+  --top:max(env(safe-area-inset-top),20px); --bot:env(safe-area-inset-bottom);
+  --gap-fix:0px; --hdr:76px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f);font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f);font-size:16px;line-height:1.42;-webkit-font-smoothing:antialiased}
 body{min-height:100vh;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
-  background:radial-gradient(40% 35% at 15% 10%,rgba(61,245,138,.14),transparent 70%),
-             radial-gradient(45% 40% at 90% 30%,rgba(90,183,255,.10),transparent 70%),
-             radial-gradient(50% 40% at 50% 100%,rgba(255,90,200,.07),transparent 70%),var(--bg)}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
-.glass{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r3);
+a{color:var(--press)}
+h1,h2,h3,h4,.hfont{font-family:var(--fh);font-stretch:118%;letter-spacing:-.01em}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---- background: signal waves ---- */
+#bgc{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.bg-glow{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(38% 32% at 92% 4%,rgba(61,245,138,.16),transparent 70%),
+             radial-gradient(40% 40% at 0% 100%,rgba(90,150,255,.08),transparent 70%)}
+
+/* ---- glass ---- */
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:var(--r3);
   -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);position:relative;overflow:hidden}
 .glass::before{content:"";position:absolute;inset:0;background:var(--spec);pointer-events:none;border-radius:inherit}
+.glass::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .25s;
+  background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.07),transparent 60%)}
+.glass.lit::after{opacity:1}
 .glass > *{position:relative}
 
-/* header */
-header{position:sticky;top:0;z-index:20;padding:calc(var(--top) + 26px) var(--s5) var(--s3);
-  display:flex;align-items:center;gap:var(--s3);
-  background:linear-gradient(180deg,rgba(7,9,12,.92) 55%,rgba(7,9,12,0));}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-weight:800;font-size:28px;letter-spacing:-.02em}
-.brand svg{width:28px;height:28px}
-header .sp{flex:1}
-.iconbtn{width:40px;height:40px;border-radius:var(--pill);display:grid;place-items:center;background:var(--glass);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
-.iconbtn svg{width:20px;height:20px;opacity:.85}
+/* ---- header ---- */
+header{position:sticky;top:0;z-index:40;padding:calc(var(--top) + 26px) var(--s5) var(--s3);
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--s3);
+  background:linear-gradient(180deg,rgba(5,8,10,.94) 55%,rgba(5,8,10,0))}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--fh);font-stretch:125%;font-weight:850;font-size:26px;letter-spacing:-.02em}
+.brand svg{width:26px;height:26px}
+.hdr-right{display:flex;justify-content:flex-end;gap:var(--s2);align-items:center}
+.iconbtn{width:40px;height:40px;border-radius:var(--pill);display:grid;place-items:center;background:var(--glass);border:1px solid var(--edge);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+.carrier-chip{display:none}
+.tabs-top{display:none;gap:4px;padding:5px;border-radius:var(--pill)}
+.tabs-top button{height:38px;padding:0 16px;border-radius:var(--pill);font-weight:650;font-size:14.5px;color:var(--text-2);display:flex;align-items:center;gap:7px;transition:background .2s,color .2s}
+.tabs-top button svg.i{width:17px;height:17px}
+.tabs-top button.on{background:var(--sel);color:var(--sel-ink)}
 
-main{padding:0 var(--s5) calc(var(--tabh) + var(--bot) + var(--gap-fix) + 40px);max-width:640px;margin:0 auto}
-.view{display:none;animation:fade .25s ease}
+/* ---- bottom tabs (phone) ---- */
+nav.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bot) + 10px - var(--gap-fix));z-index:45;
+  display:flex;gap:4px;padding:6px;border-radius:var(--pill);width:min(460px,calc(100% - 28px))}
+nav.tabs button{flex:1;height:52px;border-radius:var(--pill);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:650;color:var(--text-2);transition:background .2s,color .2s}
+nav.tabs button svg.i{width:21px;height:21px}
+nav.tabs button.on{background:var(--sel);color:var(--sel-ink)}
+
+main{padding:0 var(--s5) calc(84px + var(--bot) + var(--gap-fix) + 24px);max-width:640px;margin:0 auto}
+.view{display:none}
 .view.on{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-h2{font-family:var(--fd);font-size:22px;letter-spacing:-.01em;margin:var(--s4) 0 var(--s2)}
-.sub{color:var(--text-2);font-size:14px;margin:0 0 var(--s4)}
+.view.enter > *{animation:rise .42s cubic-bezier(.2,.8,.2,1) both}
+.view.enter > *:nth-child(2){animation-delay:.04s}.view.enter > *:nth-child(3){animation-delay:.08s}.view.enter > *:nth-child(4){animation-delay:.12s}.view.enter > *:nth-child(5){animation-delay:.16s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2{font-size:24px;font-weight:800;margin:var(--s3) 0 var(--s1)}
+.sub{color:var(--text-2);font-size:14.5px;margin:0 0 var(--s4)}
 .note{color:var(--text-3);font-size:12.5px;line-height:1.45}
-.section-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin:var(--s6) 0 var(--s2);font-weight:600}
+.label{font-size:12.5px;color:var(--text-3);margin:var(--s5) 0 var(--s2);font-weight:600}
 
-/* tab bar */
-nav.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bot) + 10px - var(--gap-fix));z-index:30;
-  display:flex;gap:4px;padding:6px;border-radius:var(--pill);width:min(420px,calc(100% - 32px))}
-nav.tabs button{flex:1;height:52px;border-radius:var(--pill);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11.5px;font-weight:600;color:var(--text-2);transition:.2s}
-nav.tabs button svg{width:22px;height:22px}
-nav.tabs button.on{background:var(--glass-3);color:var(--accent)}
+/* ---- signal strip (every tab) ---- */
+.strip{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--pill);margin:0 0 var(--s3);font-size:13.5px;font-weight:600;border:1px solid}
+.strip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor;flex:none}
+.strip .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.strip.good{color:var(--sig);border-color:rgba(61,245,138,.35);background:rgba(61,245,138,.08)}
+.strip.warn{color:var(--warn);border-color:rgba(255,198,92,.35);background:rgba(255,198,92,.08)}
+.strip.bad{color:var(--bad);border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.08)}
+.strip.setup{color:var(--press);border-color:rgba(90,150,255,.4);background:rgba(90,150,255,.10)}
+.strip button{font-weight:700;color:inherit;font-size:13px}
 
-/* cards & rows */
+/* ---- stat tiles (Results) + chips row (other tabs) ---- */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s2);margin-bottom:var(--s3)}
+.tile{padding:14px 16px}
+.tile .k{font-size:12.5px;color:var(--text-3);font-weight:600;display:flex;align-items:center;gap:6px}
+.tile .k svg.i{width:15px;height:15px}
+.tile .v{font-family:var(--fh);font-stretch:118%;font-size:26px;font-weight:850;margin-top:4px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .s{font-size:12.5px;color:var(--text-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chiprow{display:flex;gap:6px;overflow-x:auto;margin:0 0 var(--s3);padding-bottom:2px;scrollbar-width:none}
+.chiprow::-webkit-scrollbar{display:none}
+.chiprow .chip{white-space:nowrap}
+
+/* ---- common bits ---- */
 .card{padding:var(--s4);margin-bottom:var(--s3)}
 .row{display:flex;align-items:center;gap:var(--s3)}
 .grow{flex:1;min-width:0}
-.title{font-weight:650;font-size:16.5px}
+.title{font-weight:700;font-size:16.5px}
 .muted{color:var(--text-2);font-size:13.5px}
 .ellip{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--pill);font-size:12px;font-weight:600;background:var(--glass-2);border:1px solid var(--stroke);white-space:nowrap}
-.pill.green{color:var(--accent);border-color:rgba(61,245,138,.35);background:rgba(61,245,138,.10)}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--pill);font-size:12px;font-weight:650;background:var(--glass-2);border:1px solid var(--edge);white-space:nowrap}
+.pill.good{color:var(--sig);border-color:rgba(61,245,138,.35);background:rgba(61,245,138,.10)}
 .pill.warn{color:var(--warn);border-color:rgba(255,198,92,.35);background:rgba(255,198,92,.10)}
 .pill.bad{color:var(--bad);border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.10)}
-.pill.info{color:var(--info);border-color:rgba(124,196,255,.35);background:rgba(124,196,255,.10)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 var(--s5);border-radius:var(--pill);font-weight:650;background:var(--glass-2);border:1px solid var(--stroke-hi)}
-.btn.primary{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:var(--accent-ink);border:0;box-shadow:0 8px 24px var(--accent-glow)}
+.pill.mid{color:#9fd8ff;border-color:rgba(159,216,255,.3);background:rgba(159,216,255,.08)}
+.pill.press{color:var(--press);border-color:rgba(90,150,255,.4);background:rgba(90,150,255,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 var(--s5);border-radius:var(--pill);font-weight:700;background:var(--glass-2);border:1px solid var(--edge-hi)}
+.btn.primary{background:linear-gradient(180deg,var(--press),var(--press-2));color:#fff;border:0;box-shadow:0 8px 24px var(--press-glow)}
 .btn.block{width:100%}
 .btn.small{height:36px;padding:0 14px;font-size:14px}
 .btn:disabled{opacity:.45}
 .btn.danger{color:var(--bad)}
-.hours{font-family:var(--mono);font-size:13px;color:var(--text-2)}
+.hours{font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums}
 .empty{text-align:center;padding:var(--s8) var(--s4)}
-.empty .big{font-size:40px;margin-bottom:var(--s2)}
-
-/* carrier picker */
-.carrier-btn{width:100%;display:flex;align-items:center;gap:var(--s3);padding:var(--s4);text-align:left}
-.dot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 10px currentColor;background:currentColor}
+.empty .ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin:0 auto var(--s3);background:var(--glass-2);border:1px solid var(--edge);color:var(--sig)}
+.empty .ico svg.i{width:26px;height:26px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:7px 12px;border-radius:var(--pill);font-size:13px;font-weight:600;background:var(--glass-2);border:1px solid var(--edge);color:var(--text-2)}
+.chip.on{background:var(--sel);border-color:var(--sel);color:var(--sel-ink)}
+.chip b{color:var(--text)}
+.chip.on b{color:var(--sel-ink)}
+.cdot{width:10px;height:10px;border-radius:50%;flex:none;background:currentColor;box-shadow:0 0 10px currentColor;display:inline-block}
 .c-att{color:var(--att)} .c-verizon{color:var(--verizon)} .c-t-mobile{color:var(--tmobile)}
+.carrier-btn{width:100%;display:flex;align-items:center;gap:var(--s3);padding:var(--s4);text-align:left}
 
-/* sheets */
-.scrim{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.25s}
+/* ---- sheets ---- */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:calc(0px - var(--gap-fix));z-index:60;max-height:88vh;overflow:auto;
+.sheet{position:fixed;left:0;right:0;bottom:calc(0px - var(--gap-fix));z-index:70;max-height:88vh;overflow:auto;
   padding:var(--s5) var(--s5) calc(var(--bot) + var(--gap-fix) + var(--s6));border-radius:var(--r4) var(--r4) 0 0;
-  background:rgba(18,22,28,.92);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--stroke);
-  transform:translateY(105%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s;max-width:640px;margin:0 auto}
+  background:rgba(12,18,17,.94);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--edge);
+  transform:translateY(105%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s;max-width:600px;margin:0 auto}
 .sheet.on{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--glass-3);margin:-8px auto var(--s4)}
-.sheet h3{font-family:var(--fd);font-size:21px;margin:0 0 var(--s4)}
-label.f{display:block;font-size:13px;color:var(--text-2);margin:var(--s4) 0 6px;font-weight:600}
-.input{width:100%;height:48px;padding:0 var(--s4);border-radius:var(--r2);background:rgba(255,255,255,.07);border:1px solid var(--stroke);outline:none;font-size:16px}
-.input:focus{border-color:rgba(61,245,138,.6);box-shadow:0 0 0 3px rgba(61,245,138,.15)}
+.sheet h3{font-size:22px;font-weight:800;margin:0 0 var(--s4)}
+label.f{display:block;font-size:13px;color:var(--text-2);margin:var(--s4) 0 6px;font-weight:650}
+.input{width:100%;height:48px;padding:0 var(--s4);border-radius:var(--r2);background:rgba(255,255,255,.06);border:1px solid var(--edge);outline:none;font-size:16px}
+.input:focus{border-color:rgba(90,150,255,.7);box-shadow:0 0 0 3px rgba(90,150,255,.18)}
 .matches{margin-top:var(--s2);display:flex;flex-direction:column;gap:6px}
-.match{padding:12px 14px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--stroke);text-align:left;font-size:14px}
-.match.on{border-color:var(--accent);background:rgba(61,245,138,.10)}
+.match{padding:12px 14px;border-radius:var(--r2);background:var(--glass-2);border:1px solid var(--edge);text-align:left;font-size:14px;display:flex;gap:8px;align-items:center}
+.match.on{border-color:var(--sel);box-shadow:0 0 0 1px var(--sel) inset}
 .stepper{display:flex;align-items:center;gap:var(--s3)}
-.stepper button{width:44px;height:44px;border-radius:50%;background:var(--glass-2);border:1px solid var(--stroke);font-size:22px}
-.stepper .val{font-family:var(--fd);font-size:28px;font-weight:700;min-width:70px;text-align:center}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:7px 12px;border-radius:var(--pill);font-size:13px;background:var(--glass);border:1px solid var(--stroke)}
-.chip.on{background:rgba(61,245,138,.14);border-color:var(--accent);color:var(--accent)}
+.stepper button{width:44px;height:44px;border-radius:50%;background:var(--glass-2);border:1px solid var(--edge);display:grid;place-items:center}
+.stepper .val{font-family:var(--fh);font-stretch:118%;font-size:30px;font-weight:850;min-width:70px;text-align:center}
 .err{color:var(--bad);font-size:13.5px;margin-top:var(--s2)}
 .btnrow{display:flex;gap:var(--s2);margin-top:var(--s5)}
 .btnrow .btn{flex:1}
 .list-brand{display:flex;flex-direction:column;gap:6px;max-height:44vh;overflow:auto;margin:0 -4px;padding:0 4px}
-.brand-opt{display:flex;align-items:center;gap:var(--s3);padding:12px 14px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--stroke);text-align:left}
-.brand-opt.on{border-color:var(--accent);background:rgba(61,245,138,.10)}
+.brand-opt{display:flex;align-items:center;gap:var(--s3);padding:12px 14px;border-radius:var(--r2);background:var(--glass-2);border:1px solid var(--edge);text-align:left}
+.brand-opt.on{border-color:var(--sel);box-shadow:0 0 0 1px var(--sel) inset}
 .brand-opt .nets{margin-left:auto;font-size:12px;color:var(--text-3)}
 .seg{display:flex;gap:6px;margin-top:var(--s2)}
-.seg button{flex:1;height:44px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--stroke);font-weight:600;font-size:14px}
-.seg button.on{border-color:var(--accent);background:rgba(61,245,138,.12);color:var(--accent)}
+.seg button{flex:1;height:44px;border-radius:var(--r2);background:var(--glass-2);border:1px solid var(--edge);font-weight:650;font-size:14px}
+.seg button.on{background:var(--sel);color:var(--sel-ink);border-color:var(--sel)}
 
-/* results */
-.rank{padding:var(--s4) var(--s4) var(--s3)}
+/* ---- results ---- */
+.rank{padding:var(--s4) var(--s4) var(--s3);margin-bottom:var(--s3);border-top:2px solid var(--rk,var(--edge))}
 .rank .head{display:flex;align-items:center;gap:var(--s3)}
-.rank .pos{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;background:var(--glass-2)}
-.rank.first{border-color:rgba(61,245,138,.45);box-shadow:var(--shadow),0 0 40px rgba(61,245,138,.12)}
-.rank.first .pos{background:var(--accent);color:var(--accent-ink)}
+.rank .pos{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;background:var(--glass-3)}
+.rank.first .pos{background:var(--sel);color:var(--sel-ink)}
 .score{margin-left:auto;text-align:right}
-.score .n{font-family:var(--fd);font-size:40px;font-weight:800;line-height:1;letter-spacing:-.03em}
-.score .l{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em}
-.meter{height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin:var(--s3) 0 var(--s2)}
-.meter i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.score .n{font-family:var(--fh);font-stretch:118%;font-size:40px;font-weight:900;line-height:1;letter-spacing:-.02em}
+.score .l{font-size:12px;color:var(--text-3);font-weight:600}
+.meter{height:8px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin:var(--s3) 0 var(--s2)}
+.meter i{display:block;height:100%;border-radius:4px}
 .breakdown{font-size:12.5px;color:var(--text-2);display:flex;flex-wrap:wrap;gap:4px 12px}
 .bw{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin:var(--s3) 0}
-.bw > div{padding:10px 12px;border-radius:var(--r2);background:rgba(255,255,255,.04);border:1px solid var(--stroke)}
-.bw .k{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em}
-.bw .v{font-weight:650;font-size:14.5px;margin-top:2px}
-details.places summary{list-style:none;cursor:pointer;font-size:13.5px;color:var(--accent);font-weight:600;padding:6px 0}
+.bw > div{padding:10px 12px;border-radius:var(--r2);background:rgba(255,255,255,.04);border:1px solid var(--edge)}
+.bw .k{font-size:12px;color:var(--text-3);font-weight:600}
+.bw .v{font-weight:700;font-size:14.5px;margin-top:2px}
+details.places summary{list-style:none;cursor:pointer;font-size:13.5px;color:var(--press);font-weight:700;padding:6px 0;display:flex;align-items:center;gap:6px}
 details.places summary::-webkit-details-marker{display:none}
+details.places summary svg.i{width:16px;height:16px;transition:transform .2s}
+details.places[open] summary svg.i{transform:rotate(90deg)}
 .prow{display:flex;align-items:center;gap:var(--s2);padding:10px 0;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
-.prow .nm{flex:1;min-width:120px;font-size:14.5px;font-weight:600}
-.prow .nm small{display:block;font-weight:400;color:var(--text-3);font-size:12px}
-.prow .ps{font-family:var(--fd);font-weight:800;font-size:18px;width:38px;text-align:right}
+.prow .nm{flex:1;min-width:120px;font-size:14.5px;font-weight:650}
+.prow .nm small{display:block;font-weight:500;color:var(--text-3);font-size:12px}
+.prow .ps{font-family:var(--fh);font-stretch:118%;font-weight:850;font-size:18px;width:38px;text-align:right}
 .rides{margin-top:var(--s3)}
-.rides .k{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-.rides .chips .chip{font-size:12px;padding:5px 10px}
-.you{color:var(--accent);font-size:12px;font-weight:700}
+.rides .k{font-size:12px;color:var(--text-3);font-weight:600;margin-bottom:6px}
+.rides .chip{font-size:12px;padding:5px 10px}
+.you{color:var(--sig);font-size:12px;font-weight:700}
 .loading{display:flex;align-items:center;gap:10px;color:var(--text-2);font-size:14px;padding:var(--s4)}
-.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--accent);animation:sp 1s linear infinite}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--sig);animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .banner{padding:var(--s3) var(--s4);font-size:13.5px;color:var(--text-2);margin-bottom:var(--s3);display:flex;gap:10px;align-items:flex-start}
+.banner svg.i{width:18px;height:18px;margin-top:1px}
 .banner b{color:var(--text)}
+.res-grid{display:block}
+.map-slot-res{display:none}
 
-/* test */
+/* ---- map ---- */
+#mapWrap{position:relative;width:100%;height:100%;border-radius:var(--r3);overflow:hidden;border:1px solid var(--edge);background:#020405}
+#mapEl{position:absolute;inset:0}
+.map-view-slot{height:calc(100dvh - var(--top) - 330px - var(--bot) - var(--gap-fix));min-height:380px}
+.mapctl{position:absolute;left:10px;top:10px;z-index:5;padding:10px;max-width:calc(100% - 20px);border-radius:var(--r2)}
+.mapctl .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.mapctl .chips::-webkit-scrollbar{display:none}
+.mapctl .layers{margin-top:8px}
+.mapctl .chip{font-size:12.5px;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.mapctl .chip svg.i{width:14px;height:14px}
+.map-legend{position:absolute;left:10px;bottom:10px;z-index:5;padding:8px 12px;border-radius:var(--pill);font-size:12px;display:flex;align-items:center;gap:8px;color:var(--text-2)}
+.map-legend .bar{width:90px;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--bad),var(--warn) 50%,var(--sig))}
+.map-fab{position:absolute;right:10px;z-index:5;width:42px;height:42px;border-radius:50%;display:grid;place-items:center}
+.map-fab.loc{bottom:52px}.map-fab.fit{bottom:100px}
+.map-msg{position:absolute;inset:0;display:grid;place-items:center;z-index:4;color:var(--text-2);font-size:14px;pointer-events:none}
+.pin{width:max-content;display:flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;border-radius:var(--pill);font-size:12.5px;font-weight:700;white-space:nowrap;
+  background:rgba(8,14,12,.78);border:1px solid var(--edge-hi);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 6px 18px rgba(0,0,0,.5);cursor:pointer}
+.pin .sc{min-width:26px;height:22px;padding:0 6px;border-radius:11px;display:grid;place-items:center;color:#04120a;font-family:var(--fh);font-stretch:112%;font-weight:900;font-size:12.5px}
+.here{width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25),0 0 18px #fff}
+.here::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid #fff;animation:ping 2s ease-out infinite}
+@keyframes ping{from{transform:scale(.4);opacity:1}to{transform:scale(1.8);opacity:0}}
+.maplibregl-ctrl-attrib{background:rgba(5,8,10,.6)!important;color:var(--text-3)!important;font-size:10px!important}
+.maplibregl-ctrl-attrib a{color:var(--text-2)!important}
+.maplibregl-ctrl-attrib-button{filter:invert(1)}
+.maplibregl-popup-content{background:rgba(10,16,14,.94);color:var(--text);border:1px solid var(--edge);border-radius:12px;font-size:13px;padding:8px 12px}
+.maplibregl-popup-tip{border-top-color:rgba(10,16,14,.94)!important;border-bottom-color:rgba(10,16,14,.94)!important}
+
+/* ---- test ---- */
+.test-grid{display:block}
 .gauge-wrap{display:grid;place-items:center;margin:var(--s5) 0 var(--s4)}
 .gauge{width:240px;height:240px;border-radius:50%;position:relative;display:grid;place-items:center}
 .gauge svg{position:absolute;inset:0;transform:rotate(-90deg);pointer-events:none}
-.gauge .ring-bg{stroke:rgba(255,255,255,.08)}
-.gauge .ring{stroke:var(--accent);transition:stroke-dashoffset .25s;filter:drop-shadow(0 0 8px var(--accent-glow))}
-.run{width:176px;height:176px;border-radius:50%;background:radial-gradient(circle at 50% 30%,rgba(61,245,138,.35),rgba(61,245,138,.08) 60%),var(--glass);
-  border:1px solid rgba(61,245,138,.45);box-shadow:0 0 50px rgba(61,245,138,.2),inset 0 1px 0 rgba(255,255,255,.2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:var(--fd)}
-.run .big{font-size:26px;font-weight:800;letter-spacing:-.01em}
+.gauge .ring-bg{stroke:rgba(255,255,255,.07)}
+.gauge .ring{stroke:var(--sig);transition:stroke-dashoffset .25s;filter:drop-shadow(0 0 8px var(--sig-glow))}
+.run{width:176px;height:176px;border-radius:50%;background:radial-gradient(circle at 50% 28%,rgba(90,150,255,.55),rgba(90,150,255,.12) 62%),rgba(12,20,30,.6);
+  border:1px solid rgba(90,150,255,.6);box-shadow:0 0 50px var(--press-glow),inset 0 1px 0 rgba(255,255,255,.25);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+.run .big{font-family:var(--fh);font-stretch:118%;font-size:26px;font-weight:850}
 .run .small{font-size:12.5px;color:var(--text-2)}
+.run.busy{background:radial-gradient(circle at 50% 28%,rgba(61,245,138,.3),rgba(61,245,138,.06) 62%),rgba(10,20,16,.6);border-color:rgba(61,245,138,.45);box-shadow:0 0 50px var(--sig-glow)}
 .run.busy .big{font-size:40px}
-.run:disabled{opacity:.6}
 .phase{text-align:center;color:var(--text-2);font-size:14px;min-height:20px}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin:var(--s4) 0}
-.tile{padding:var(--s3);text-align:center}
-.tile .k{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em}
-.tile .v{font-family:var(--fd);font-size:26px;font-weight:800;margin-top:2px}
-.tile .u{font-size:11.5px;color:var(--text-3)}
+.rtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin:var(--s4) 0}
+.rtile{padding:var(--s3);text-align:center}
+.rtile .k{font-size:12px;color:var(--text-3);font-weight:600}
+.rtile .v{font-family:var(--fh);font-stretch:118%;font-size:26px;font-weight:850;margin-top:2px}
+.rtile .u{font-size:11.5px;color:var(--text-3)}
 .check{display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s3) var(--s4);text-align:left;width:100%}
-.box{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--stroke-hi);flex:none;display:grid;place-items:center;margin-top:1px}
-.check.on .box{background:var(--accent);border-color:var(--accent)}
-.check.on .box::after{content:"";width:6px;height:11px;border:solid var(--accent-ink);border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.box{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--edge-hi);flex:none;display:grid;place-items:center;margin-top:1px;color:var(--sel-ink)}
+.box svg.i{width:16px;height:16px;stroke-width:2.6;opacity:0}
+.check.on .box{background:var(--sel);border-color:var(--sel)}
+.check.on .box svg.i{opacity:1}
 .cmp{width:100%;border-collapse:collapse;font-size:14px}
 .cmp td{padding:9px 4px;border-top:1px solid rgba(255,255,255,.06)}
-.cmp td:last-child{text-align:right;font-weight:600}
-.toast{position:fixed;left:50%;top:calc(var(--top) + 84px);transform:translate(-50%,-20px);opacity:0;z-index:80;padding:12px 18px;border-radius:var(--pill);
-  background:rgba(30,36,44,.95);border:1px solid var(--stroke);font-size:14px;transition:.25s;max-width:calc(100% - 40px);text-align:center}
+.cmp td:last-child{text-align:right;font-weight:650}
+.toast{position:fixed;left:50%;top:calc(var(--top) + 84px);transform:translate(-50%,-20px);opacity:0;z-index:90;padding:12px 18px;border-radius:var(--pill);
+  background:rgba(18,26,24,.95);border:1px solid var(--edge);font-size:14px;font-weight:600;transition:opacity .25s,transform .25s;max-width:calc(100% - 40px);text-align:center;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-.update{position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--top) + 12px);z-index:90;display:none}
+.update{position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--top) + 12px);z-index:95;display:none}
 .update.on{display:inline-flex}
 .limits p{margin:0 0 var(--s3);font-size:14.5px;color:var(--text-2)}
 .limits p b{color:var(--text)}
-.limits h4{margin:var(--s4) 0 6px;font-size:15px}
-.ver{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;margin-top:var(--s6)}
-a{color:var(--accent)}
+.limits h4{margin:var(--s4) 0 6px;font-size:16px;font-weight:800}
+.ver{font-size:11px;color:var(--text-3);text-align:center;margin-top:var(--s6)}
+
+/* ---- wide (Mac / iPad landscape): dashboard layout ---- */
+@media (min-width:900px){
+  :root{--hdr:72px}
+  header{padding:calc(var(--top) + 6px) var(--s6) var(--s3)}
+  .tabs-top{display:flex}
+  nav.tabs{display:none}
+  main{max-width:1320px;padding:0 var(--s6) var(--s8)}
+  .carrier-chip{display:inline-flex}
+  .tiles{grid-template-columns:repeat(4,1fr)}
+  .res-grid{display:grid;grid-template-columns:minmax(380px,500px) 1fr;gap:var(--s4);align-items:start}
+  .map-slot-res{display:block;position:sticky;top:calc(var(--hdr) + var(--top) + 8px);height:calc(100vh - var(--hdr) - var(--top) - 28px);min-height:520px}
+  .map-view-slot{height:calc(100vh - var(--hdr) - var(--top) - 90px)}
+  .test-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:start}
+  .test-grid .gauge-wrap{margin-top:0}
+  #v-places .inner{max-width:640px}
+  .sheet{bottom:auto;top:50%;left:50%;right:auto;width:560px;border-radius:var(--r4);transform:translate(-50%,-46%) scale(.98);opacity:0;
+    transition:transform .25s,opacity .25s,visibility 0s .25s;max-height:84vh}
+  .sheet.on{transform:translate(-50%,-50%);opacity:1;transition:transform .25s,opacity .25s}
+  .grab{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
 </style>
 </head>
 <body>
+<canvas id="bgc" aria-hidden="true"></canvas>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24"><path d="M5 20v-4M10 20v-8M15 20v-11M20 20V5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/><circle cx="12" cy="16" r="1.2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+    <symbol id="i-loc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-hex" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.5M18 14.5c1.8.8 3 2.7 3 5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M4 18h16M5 15l-1-8 5 4 3-6 3 6 5-4-1 8z"/></symbol>
+    <symbol id="i-sim" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><rect x="9.5" y="11" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 2.9L13.4 21z"/></symbol>
+  </defs>
+</svg>
+
 <header>
   <div class="brand">
-    <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".55"/><rect x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".7"/><rect x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".85"/><rect x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>
+    <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>
     Bars
   </div>
-  <div class="sp"></div>
-  <button class="iconbtn" id="infoBtn" aria-label="About the Data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
+  <nav class="tabs-top glass" id="tabsTop"></nav>
+  <div class="hdr-right">
+    <button class="pill carrier-chip" id="hdrCarrier" style="height:40px;padding:0 14px;font-size:13px"></button>
+    <button class="iconbtn" id="infoBtn" aria-label="About the Data"><svg class="i"><use href="#i-info"/></svg></button>
+  </div>
 </header>
-<button class="pill green update" id="updateBtn">Update Ready · Tap to Reload</button>
+<button class="pill good update" id="updateBtn">Update Ready · Tap to Reload</button>
 
 <main>
-  <!-- MY PLACES -->
-  <section class="view on" id="v-places">
-    <h2>My Places</h2>
-    <p class="sub">Add the spots where you actually spend time. Hours per week decide how much each place counts.</p>
-    <div class="glass card carrier-btn" id="carrierCard" role="button" tabindex="0"></div>
-    <div class="section-label">Places</div>
-    <div id="placeList"></div>
-    <button class="btn primary block" id="addPlaceBtn" style="margin-top:var(--s2)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add Place</button>
-    <p class="note" style="margin-top:var(--s4)">Your places stay on this device only. Bars sends the address to look up coverage, but never saves it.</p>
+  <!-- RESULTS (home) -->
+  <section class="view" id="v-results">
+    <div class="strip-slot"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="res-grid">
+      <div id="results"></div>
+      <div class="map-slot-res" id="mapSlotRes"></div>
+    </div>
   </section>
 
-  <!-- RESULTS -->
-  <section class="view" id="v-results">
-    <h2>Results</h2>
-    <p class="sub">Ranked by <b>Consistency Score</b>: how well each network holds up across your week, with a penalty for dead spots.</p>
-    <div id="results"></div>
+  <!-- MAP -->
+  <section class="view" id="v-map">
+    <div class="strip-slot"></div>
+    <div class="chiprow" id="chipsMap"></div>
+    <div class="map-view-slot" id="mapSlotView"></div>
+  </section>
+
+  <!-- MY PLACES -->
+  <section class="view" id="v-places">
+    <div class="strip-slot"></div>
+    <div class="chiprow" id="chipsPlaces"></div>
+    <div class="inner">
+      <h2>My Places</h2>
+      <p class="sub">Add the spots where you actually spend time. Hours per week decide how much each place counts.</p>
+      <div class="glass card carrier-btn" id="carrierCard" role="button" tabindex="0"></div>
+      <div class="label">Places</div>
+      <div id="placeList"></div>
+      <button class="btn primary block" id="addPlaceBtn" style="margin-top:var(--s2)"><svg class="i"><use href="#i-plus"/></svg>Add Place</button>
+      <p class="note" style="margin-top:var(--s4)">Your places stay on this device only. Bars sends the address to look up coverage, but never saves it.</p>
+    </div>
   </section>
 
   <!-- TEST HERE -->
   <section class="view" id="v-test">
-    <h2>Test Here</h2>
-    <p class="sub">Measure real speed where you're standing and add it to the community pool for this area.</p>
-    <div id="testCarrier"></div>
-    <button class="glass check" id="wifiCheck"><span class="box"></span><span><b>Wi-Fi Is Off</b><br><span class="muted">Safari can't tell Wi-Fi from cellular, so turn Wi-Fi off first or the result measures your Wi-Fi.</span></span></button>
-    <button class="glass check on" id="poolCheck" style="margin-top:var(--s2)"><span class="box"></span><span><b>Add to Community Pool</b><br><span class="muted">Anonymous: only the area hex (~0.1 km²), network and speeds. No IP or exact location.</span></span></button>
-    <div class="gauge-wrap">
-      <div class="gauge">
-        <svg viewBox="0 0 240 240"><circle class="ring-bg" cx="120" cy="120" r="110" fill="none" stroke-width="8"/><circle class="ring" id="ring" cx="120" cy="120" r="110" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="691"/></svg>
-        <button class="run" id="runBtn"><span class="big">Run Test</span><span class="small">Uses ~40 MB of Data</span></button>
+    <div class="strip-slot"></div>
+    <div class="chiprow" id="chipsTest"></div>
+    <div class="test-grid">
+      <div>
+        <h2>Test Here</h2>
+        <p class="sub">Measure real speed where you're standing and add it to the community pool for this area.</p>
+        <div id="testCarrier"></div>
+        <button class="glass check" id="wifiCheck"><span class="box"><svg class="i"><use href="#i-check"/></svg></span><span><b>Wi-Fi Is Off</b><br><span class="muted">Safari can't tell Wi-Fi from cellular, so turn Wi-Fi off first or the result measures your Wi-Fi.</span></span></button>
+        <button class="glass check on" id="poolCheck" style="margin-top:var(--s2)"><span class="box"><svg class="i"><use href="#i-check"/></svg></span><span><b>Add to Community Pool</b><br><span class="muted">Anonymous: only the area hex (about a city block), network and speeds. No IP or exact location.</span></span></button>
+        <p class="note" style="margin-top:var(--s4)">Speed only: Safari can't read signal bars (dBm) or detect your carrier. Your location is snapped to an area hex on your phone before anything is sent.</p>
+      </div>
+      <div>
+        <div class="gauge-wrap">
+          <div class="gauge">
+            <svg viewBox="0 0 240 240"><circle class="ring-bg" cx="120" cy="120" r="110" fill="none" stroke-width="8"/><circle class="ring" id="ring" cx="120" cy="120" r="110" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="691"/></svg>
+            <button class="run" id="runBtn"><span class="big">Run Test</span><span class="small">Uses ~40 MB of Data</span></button>
+          </div>
+        </div>
+        <div class="phase" id="phase"></div>
+        <div id="testOut"></div>
       </div>
     </div>
-    <div class="phase" id="phase"></div>
-    <div id="testOut"></div>
-    <p class="note" style="margin-top:var(--s4)">Speed only: Safari can't read signal bars (dBm) or detect your carrier. Your location is snapped to an area hex on your phone before anything is sent.</p>
   </section>
   <div class="ver" id="ver"></div>
 </main>
 
-<nav class="tabs glass" id="tabs">
-  <button data-v="places" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>My Places</button>
-  <button data-v="results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20v-5M10 20v-9M15 20v-12M20 20V4"/></svg>Results</button>
-  <button data-v="test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 1 1 16 0"/><path d="M12 15l4-5"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/></svg>Test Here</button>
-</nav>
+<nav class="tabs glass" id="tabsBottom"></nav>
 
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="toast" id="toast"></div>
 
+<!-- the one map, moved between the Results slot (wide) and the Map tab -->
+<div id="mapWrap" style="display:none">
+  <div id="mapEl"></div>
+  <div class="map-msg" id="mapMsg"></div>
+  <div class="mapctl glass" id="mapCtl"></div>
+  <div class="map-legend glass" id="mapLegend"><span>Dead</span><span class="bar"></span><span>Strong</span></div>
+  <button class="map-fab fit glass" id="fabFit" aria-label="Show My Places"><svg class="i"><use href="#i-fit"/></svg></button>
+  <button class="map-fab loc glass" id="fabLoc" aria-label="Show Where I Am"><svg class="i"><use href="#i-loc"/></svg></button>
+</div>
+
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-1';
+const APP_VERSION = 'bars-2';
+const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
 const NETS = {
-  'att':      { name:'AT&T',     cls:'c-att' },
-  'verizon':  { name:'Verizon',  cls:'c-verizon' },
-  't-mobile': { name:'T-Mobile', cls:'c-t-mobile' }
+  'att':      { name:'AT&T',     cls:'c-att',      color:'#5ab7ff' },
+  'verizon':  { name:'Verizon',  cls:'c-verizon',  color:'#ff5a5f' },
+  't-mobile': { name:'T-Mobile', cls:'c-t-mobile', color:'#ff5ac8' }
 };
 const NET_IDS = Object.keys(NETS);
-
 // Brand → network(s). Re-verified Nov 2026. Multi-network brands ask which network you're on.
 const BRANDS = [
   { id:'att', name:'AT&T', nets:['att'], major:true },
@@ -320,65 +474,61 @@ const brandById = id => BRANDS.find(b => b.id === id);
 const KEY = 'bars.v1';
 let S = load();
 function load(){
-  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.places)) return { coverage:{}, carrier:null, ...s }; } catch {}
-  return { places:[], carrier:null, coverage:{} };
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.places)) return { coverage:{}, carrier:null, mapCarrier:'best', mapLayers:{places:true,coverage:true,tests:true,here:true}, ...s }; } catch {}
+  return { places:[], carrier:null, coverage:{}, mapCarrier:'best', mapLayers:{places:true,coverage:true,tests:true,here:true} };
 }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }
 const uid = () => Math.random().toString(36).slice(2, 10);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $ = s => document.querySelector(s);
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wide = () => matchMedia('(min-width:900px)').matches;
 
 /* ======================= SCORING ======================= */
-// broadbandmap.com gives tech (5G NR / 4G LTE / 3G) + predicted outdoor RSRP (dBm), not speed tiers.
-// Tech sets the ceiling, signal strength scales it: strong 5G = 100, fair 5G ≈ 75, strong 4G = 70, fair 4G ≈ 53.
+// Coverage API gives tech (5G NR / 4G LTE / 3G) + predicted outdoor RSRP (dBm).
+// Tech sets the ceiling, signal scales it: strong 5G ≈ 100, fair 5G ≈ 75, strong 4G ≈ 70, fair 4G ≈ 53.
 const TECH_BASE = { '5G':100, '4G':70, '3G':30 };
 const SIG_PTS = [[-125,.30],[-115,.50],[-105,.75],[-95,.92],[-85,1]];
-function sigFactor(dbm){
-  if (dbm == null) return .85;
-  if (dbm <= SIG_PTS[0][0]) return SIG_PTS[0][1];
-  for (let i=1;i<SIG_PTS.length;i++){ const [x1,y1]=SIG_PTS[i-1],[x2,y2]=SIG_PTS[i]; if (dbm<=x2) return y1+(y2-y1)*(dbm-x1)/(x2-x1); }
-  return 1;
-}
-function fccScore(cov){ return cov ? Math.round(TECH_BASE[cov.tech] * sigFactor(cov.dbm)) : 0; }
-// Measured speed → 0–100
-const DOWN_PTS = [[0,0],[1,10],[5,35],[10,50],[25,70],[50,85],[100,95],[200,100]];
 function interp(pts,x){ if (x<=pts[0][0]) return pts[0][1]; for (let i=1;i<pts.length;i++){const[x1,y1]=pts[i-1],[x2,y2]=pts[i]; if(x<=x2) return y1+(y2-y1)*(x-x1)/(x2-x1);} return pts[pts.length-1][1]; }
+const sigFactor = dbm => dbm == null ? .85 : interp(SIG_PTS, dbm);
+const fccScore = cov => cov ? Math.round(TECH_BASE[cov.tech] * sigFactor(cov.dbm)) : 0;
+const DOWN_PTS = [[0,0],[1,10],[5,35],[10,50],[25,70],[50,85],[100,95],[200,100]];
 function communityScore(st){ let s = interp(DOWN_PTS, st.down); if (st.latency > 100) s -= Math.min(15,(st.latency-100)/20); return Math.max(0, Math.round(s)); }
 const MIN_TESTS = 5;
-function communityWeight(n){ return n < MIN_TESTS ? 0 : Math.min(.75, .35 + .04*(n - MIN_TESTS)); }
-
+const communityWeight = n => n < MIN_TESTS ? 0 : Math.min(.75, .35 + .04*(n - MIN_TESTS));
 function placeScore(place, net, pool){
   const cov = S.coverage[place.hex];
   if (!cov || !cov.carriers) return null;
-  const c = cov.carriers[net];
-  const fcc = fccScore(c);
+  const c = cov.carriers[net]; const fcc = fccScore(c);
   const st = pool && pool[place.hex] && pool[place.hex][net];
   const w = st ? communityWeight(st.n) : 0;
-  const score = w ? Math.round((1-w)*fcc + w*communityScore(st)) : fcc;
-  return { score, fcc, cov:c, st, community: w > 0 };
+  return { score: w ? Math.round((1-w)*fcc + w*communityScore(st)) : fcc, fcc, cov:c, st, community: w > 0 };
 }
-// Consistency = hours-weighted average − dead-spot penalty.
-// Penalty grows with the gap to your worst place and with how many hours you spend there;
-// a true dead zone (<25) adds a heavier hit scaled by its share of your week.
+// Consistency = hours-weighted average − dead-spot penalty (bigger when your worst place is far below
+// the rest and when you spend a lot of hours there; a true dead zone (<25) adds a heavier hit).
 function consistency(rows){
-  const valid = rows.filter(r => r.ps);
-  if (!valid.length) return null;
-  let totalH = valid.reduce((a,r)=>a+r.place.hours,0);
+  const valid = rows.filter(r => r.ps); if (!valid.length) return null;
+  const totalH = valid.reduce((a,r)=>a+r.place.hours,0);
   const wt = r => totalH > 0 ? r.place.hours/totalH : 1/valid.length;
   const avg = valid.reduce((a,r)=>a + r.ps.score*wt(r), 0);
   const worst = valid.reduce((a,r)=> r.ps.score < a.ps.score ? r : a);
   const best = valid.reduce((a,r)=> r.ps.score > a.ps.score ? r : a);
   const share = wt(worst);
-  const gap = Math.max(0, avg - worst.ps.score) * (.15 + .5*share);
-  const dead = worst.ps.score < 25 ? 30*share : 0;
-  const penalty = gap + dead;
+  const penalty = Math.max(0, avg - worst.ps.score) * (.15 + .5*share) + (worst.ps.score < 25 ? 30*share : 0);
   return { score: Math.max(0, Math.min(100, Math.round(avg - penalty))), avg: Math.round(avg), penalty: Math.round(penalty), worst, best };
 }
+const scoreColor = s => s>=75 ? 'var(--sig)' : s>=50 ? 'var(--warn)' : 'var(--bad)';
+function scoreHex(s){ // for the map (canvas needs real colors)
+  const stops=[[0,[255,107,107]],[50,[255,198,92]],[80,[61,245,138]]];
+  let a=stops[0],b=stops[stops.length-1];
+  for (let i=1;i<stops.length;i++) if (s<=stops[i][0]){ a=stops[i-1]; b=stops[i]; break; }
+  const t = b[0]===a[0] ? 1 : Math.max(0,Math.min(1,(s-a[0])/(b[0]-a[0])));
+  return '#'+a[1].map((v,k)=>Math.round(v+(b[1][k]-v)*t).toString(16).padStart(2,'0')).join('');
+}
 
-/* ======================= API ======================= */
+/* ======================= API + DATA ======================= */
 async function api(path, opts){
-  const r = await fetch(path, opts);
-  let j = {}; try { j = await r.json(); } catch {}
+  const r = await fetch(path, opts); let j = {}; try { j = await r.json(); } catch {}
   if (!r.ok) { const e = new Error(j.error || `Error ${r.status}`); e.status = r.status; throw e; }
   return j;
 }
@@ -394,6 +544,31 @@ async function getPool(hexes){
   if (!hexes.length) return {};
   try { return (await api(`/api/pool?hexes=${[...new Set(hexes)].join(',')}`)).stats || {}; } catch { return {}; }
 }
+// drop device-cached coverage older than 72h (API terms: short-lived only)
+for (const [h,c] of Object.entries(S.coverage)) if (!c.ts || Date.now()-c.ts > 3*864e5) delete S.coverage[h];
+save();
+
+let DATA = { pool:{}, failed:new Set(), failMsg:'', ranked:[], loadedAt:0, loading:null };
+async function loadData(force){
+  if (DATA.loading) return DATA.loading;
+  DATA.loading = (async () => {
+    const hexes = [...new Set(S.places.map(p=>p.hex))];
+    const failed = new Set(); let failMsg = '';
+    const q = hexes.filter(h => force || !(S.coverage[h] && S.coverage[h].carriers && Date.now()-S.coverage[h].ts < COV_TTL));
+    await Promise.all([0,1].map(async () => { while (q.length){ const h=q.shift(); try { await ensureCoverage(h, force); } catch(e){ failed.add(h); failMsg = e.message; } } }));
+    const pool = await getPool(hexes);
+    DATA = { ...DATA, pool, failed, failMsg, ranked: rank(pool), loadedAt: Date.now() };
+  })();
+  try { await DATA.loading; } finally { DATA.loading = null; }
+  return DATA;
+}
+function rank(pool){
+  return NET_IDS.map(net => {
+    const rows = S.places.map(place => ({ place, ps: placeScore(place, net, pool) }));
+    return { net, rows, c: consistency(rows) };
+  }).filter(r=>r.c).sort((a,b)=>b.c.score - a.c.score || b.c.avg - a.c.avg);
+}
+const needsCoverage = () => S.places.some(p => !(S.coverage[p.hex] && S.coverage[p.hex].carriers));
 
 /* ======================= UI HELPERS ======================= */
 function toast(msg, ms=2600){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),ms); }
@@ -404,13 +579,13 @@ function openSheet(html, onMount){
 }
 function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); }
 $('#scrim').onclick = closeSheet;
+addEventListener('keydown', e => { if (e.key==='Escape') closeSheet(); });
 function techPill(c){
   if (!c) return '<span class="pill bad">No Coverage</span>';
-  const cls = c.tech==='5G' ? 'green' : c.tech==='4G' ? 'info' : 'warn';
+  const cls = c.tech==='5G' ? 'good' : c.tech==='4G' ? 'mid' : 'warn';
   return `<span class="pill ${cls}">${c.tech}${c.level ? ' · '+esc(c.level) : ''}</span>`;
 }
-function scoreColor(s){ return s>=75 ? 'var(--accent)' : s>=50 ? 'var(--warn)' : 'var(--bad)'; }
-function myNet(){ return S.carrier && S.carrier.network; }
+const myNet = () => S.carrier && S.carrier.network;
 function carrierLabel(){
   if (!S.carrier) return null;
   const b = brandById(S.carrier.brand); const n = NETS[S.carrier.network];
@@ -418,37 +593,91 @@ function carrierLabel(){
 }
 
 /* ======================= TABS ======================= */
-let view = 'places';
+const TABS = [
+  { v:'results', label:'Results', icon:'bars' },
+  { v:'map', label:'Map', icon:'globe' },
+  { v:'places', label:'My Places', icon:'pin' },
+  { v:'test', label:'Test Here', icon:'gauge' }
+];
+for (const id of ['#tabsTop','#tabsBottom']) $(id).innerHTML = TABS.map(t=>`<button data-v="${t.v}">${ico(t.icon)}<span>${t.label}</span></button>`).join('');
+let view = null;
 function show(v){
-  view = v;
-  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on', el.id==='v-'+v));
-  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
-  window.scrollTo(0,0);
+  const changed = view !== v; view = v;
+  document.querySelectorAll('.view').forEach(el=>{
+    const on = el.id==='v-'+v; el.classList.toggle('on', on);
+    if (on && changed && !reduceMotion){ el.classList.add('enter'); clearTimeout(el._e); el._e=setTimeout(()=>el.classList.remove('enter'),700); }
+  });
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  if (changed) window.scrollTo(0,0);
+  renderStrip();
   if (v==='results') renderResults();
-  if (v==='test') renderTestCarrier();
+  if (v==='places') { renderPlaces(); renderChips('#chipsPlaces'); }
+  if (v==='test') { renderTestCarrier(); renderChips('#chipsTest'); }
+  if (v==='map') { renderChips('#chipsMap'); }
+  placeMap();
 }
-document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>show(b.dataset.v));
+addEventListener('resize', () => { placeMap(); });
+
+/* ---- signal strip: on every tab. green = your network is the best fit, amber = another beats it, red = dead spot ---- */
+function renderStrip(){
+  let cls='setup', text='', action='';
+  const r = DATA.ranked; const mine = myNet();
+  if (!S.carrier || !S.places.length){
+    text = !S.carrier && !S.places.length ? 'Pick your carrier and add a place to get your ranking' : !S.carrier ? 'Pick your carrier to see how it stacks up' : 'Add a place to get your ranking';
+    action = !S.carrier ? `<button data-act="carrier">Set Carrier</button>` : `<button data-act="addplace">Add Place</button>`;
+  } else if (!r.length){
+    text = 'Checking coverage at your places…'; cls='setup';
+  } else {
+    const me = r.find(x=>x.net===mine); const top = r[0];
+    const dead = me && me.rows.find(x=>x.ps && x.ps.score < 25);
+    if (!me) { cls='warn'; text=`No coverage data for ${NETS[mine].name} at your places yet`; }
+    else if (dead) { cls='bad'; text=`${carrierLabel()} has a dead spot at ${dead.place.name} · Consistency ${me.c.score}`; }
+    else if (top.net===mine || top.c.score - me.c.score < 5) { cls='good'; text=`${carrierLabel()} is your best fit · Consistency ${me.c.score}`; }
+    else { cls='warn'; text=`${NETS[top.net].name} beats ${carrierLabel()} by ${top.c.score - me.c.score} · You're #${r.indexOf(me)+1} of ${r.length}`; }
+  }
+  const html = `<div class="strip ${cls}"><span class="dot"></span><span class="t">${esc(text)}</span>${action}</div>`;
+  document.querySelectorAll('.strip-slot').forEach(s=>{ s.innerHTML = html; s.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{ b.dataset.act==='carrier' ? openCarrierPicker() : openPlaceEditor(null); }); });
+  renderHeaderCarrier();
+}
+function renderHeaderCarrier(){
+  const b = $('#hdrCarrier'); const l = carrierLabel();
+  b.innerHTML = l ? `<span class="cdot ${NETS[S.carrier.network].cls}" style="width:8px;height:8px"></span>${esc(l)}` : `${ico('sim')}Set Carrier`;
+  b.className = 'pill carrier-chip' + (l ? '' : ' press'); b.onclick = () => openCarrierPicker();
+}
+/* ---- slim chip row for non-Results tabs ---- */
+function renderChips(sel){
+  const el = $(sel); if (!el) return;
+  const r = DATA.ranked; const hrs = S.places.reduce((a,p)=>a+p.hours,0);
+  const tests = Object.values(DATA.pool).reduce((a,h)=>a+Object.values(h).reduce((x,s)=>x+s.n,0),0);
+  const chips = [];
+  if (r.length) chips.push(`<span class="chip">Top <b>${NETS[r[0].net].name} ${r[0].c.score}</b></span>`);
+  const me = r.find(x=>x.net===myNet());
+  if (me) chips.push(`<span class="chip">Yours <b>${me.c.score}</b> · #${r.indexOf(me)+1}</span>`);
+  chips.push(`<span class="chip"><b>${S.places.length}</b> Place${S.places.length===1?'':'s'} · <b>${hrs}</b> hrs/wk</span>`);
+  chips.push(`<span class="chip"><b>${tests}</b> Community Test${tests===1?'':'s'}</span>`);
+  el.innerHTML = chips.join('');
+}
 
 /* ======================= MY PLACES ======================= */
 function renderCarrierCard(){
   const el = $('#carrierCard'); const lbl = carrierLabel();
   el.innerHTML = lbl
-    ? `<span class="dot ${NETS[S.carrier.network].cls}"></span><div class="grow"><div class="muted">Your Carrier</div><div class="title">${esc(lbl)}</div></div><span class="pill">Change</span>`
-    : `<span class="dot" style="color:var(--text-3)"></span><div class="grow"><div class="muted">Your Carrier</div><div class="title">Pick Your Carrier</div></div><span class="pill green">Set</span>`;
+    ? `<span class="cdot ${NETS[S.carrier.network].cls}"></span><div class="grow"><div class="muted">Your Carrier</div><div class="title">${esc(lbl)}</div></div><span class="pill">Change</span>`
+    : `<span class="cdot" style="color:var(--text-3)"></span><div class="grow"><div class="muted">Your Carrier</div><div class="title">Pick Your Carrier</div></div><span class="pill press">Set</span>`;
 }
 $('#carrierCard').onclick = () => openCarrierPicker();
 function renderPlaces(){
   renderCarrierCard();
   const el = $('#placeList');
   if (!S.places.length){
-    el.innerHTML = `<div class="glass card empty"><div class="big">📍</div><div class="title">No Places Yet</div><p class="muted">Add home, work, the gym, the courts. Wherever you spend real hours.</p></div>`;
+    el.innerHTML = `<div class="glass card empty"><div class="ico">${ico('pin')}</div><div class="title">No Places Yet</div><p class="muted">Add home, work, the gym, the courts. Wherever you spend real hours.</p></div>`;
     return;
   }
   el.innerHTML = S.places.map(p => `
     <div class="glass card row" data-id="${p.id}" role="button" tabindex="0">
       <div class="grow"><div class="title ellip">${esc(p.name)}</div><div class="muted ellip">${esc(p.address)}</div></div>
-      <div class="hours">${p.hours} hr/wk</div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity=".4"><path d="M9 6l6 6-6 6"/></svg>
+      <div class="hours">${p.hours} hr/wk</div><span style="opacity:.4">${ico('chev')}</span>
     </div>`).join('');
   el.querySelectorAll('[data-id]').forEach(r => r.onclick = () => openPlaceEditor(S.places.find(p=>p.id===r.dataset.id)));
 }
@@ -466,25 +695,25 @@ function openPlaceEditor(place){
     <label class="f">Address</label>
     <div class="row"><input class="input grow" id="pAddr" placeholder="123 Main St, Fenton, MI" value="${esc(place ? p.address : '')}" autocomplete="street-address" enterkeyhint="search">
       <button class="btn small" id="pFind" style="height:48px">Find</button></div>
-    <button class="btn small" id="pHere" style="margin-top:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3L3 10.5l7.5 2.9L13.4 21z"/></svg>Use My Location</button>
+    <button class="btn small" id="pHere" style="margin-top:8px">${ico('send')}Use My Location</button>
     <div class="matches" id="pMatches"></div>
     <div class="err" id="pErr"></div>
     <label class="f">Hours per Week</label>
-    <div class="stepper"><button id="hMinus" aria-label="Fewer hours">−</button><div class="val" id="hVal">${p.hours}</div><button id="hPlus" aria-label="More hours">+</button><span class="muted">hrs</span></div>
-    <div class="chips" style="margin-top:10px">${[5,10,20,40,56,84].map(h=>`<button class="chip" data-h="${h}">${h}${h===56?' (Sleep)':h===84?' (Home)':''}</button>`).join('')}</div>
+    <div class="stepper"><button id="hMinus" aria-label="Fewer hours">${ico('minus')}</button><div class="val" id="hVal">${p.hours}</div><button id="hPlus" aria-label="More hours">${ico('plus')}</button><span class="muted">hrs</span></div>
+    <div class="chips" style="margin-top:10px">${[5,10,20,40,56,84].map(h=>`<button class="chip ${p.hours===h?'on':''}" data-h="${h}">${h}${h===56?' (Sleep)':h===84?' (Home)':''}</button>`).join('')}</div>
     <div class="btnrow">
       ${place ? '<button class="btn danger" id="pDel">Delete</button>' : '<button class="btn" id="pCancel">Cancel</button>'}
       <button class="btn primary" id="pSave">Save</button>
     </div>`, sh => {
     const err = m => sh.querySelector('#pErr').textContent = m || '';
-    const setH = h => { p.hours = Math.max(0, Math.min(168, h)); sh.querySelector('#hVal').textContent = p.hours; };
+    const setH = h => { p.hours = Math.max(0, Math.min(168, h)); sh.querySelector('#hVal').textContent = p.hours; sh.querySelectorAll('[data-h]').forEach(b=>b.classList.toggle('on', +b.dataset.h===p.hours)); };
     sh.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{ sh.querySelector('#pName').value=b.dataset.n; });
     sh.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>setH(+b.dataset.h));
     sh.querySelector('#hMinus').onclick=()=>setH(p.hours - (p.hours>10?5:1));
     sh.querySelector('#hPlus').onclick=()=>setH(p.hours + (p.hours>=10?5:1));
     const matchesEl = sh.querySelector('#pMatches');
     const showMatches = list => {
-      matchesEl.innerHTML = list.map((m,i)=>`<button class="match ${i===0?'on':''}" data-i="${i}">${esc(m.address)}</button>`).join('');
+      matchesEl.innerHTML = list.map((m,i)=>`<button class="match ${i===0?'on':''}" data-i="${i}">${ico('pin')}<span>${esc(m.address)}</span></button>`).join('');
       picked = list[0];
       matchesEl.querySelectorAll('.match').forEach(b=>b.onclick=()=>{ matchesEl.querySelectorAll('.match').forEach(x=>x.classList.remove('on')); b.classList.add('on'); picked=list[+b.dataset.i]; });
     };
@@ -503,22 +732,27 @@ function openPlaceEditor(place){
         const lat=+pos.coords.latitude.toFixed(5), lng=+pos.coords.longitude.toFixed(5);
         picked = { address:'Pinned Location', lat, lng, hex:h3.latLngToCell(lat,lng,9) };
         sh.querySelector('#pAddr').value = 'Pinned Location';
-        matchesEl.innerHTML = `<div class="match on">📍 Pinned where you are now (saved on this device only)</div>`;
+        matchesEl.innerHTML = `<div class="match on">${ico('pin')}<span>Pinned where you are now (saved on this device only)</span></div>`;
       } catch(e){ matchesEl.innerHTML=''; err(e.message); }
     };
     const cancel = sh.querySelector('#pCancel'); if (cancel) cancel.onclick = closeSheet;
     const del = sh.querySelector('#pDel');
-    if (del) del.onclick = () => { if (!confirmTap(del)) return; S.places = S.places.filter(x=>x.id!==p.id); save(); closeSheet(); renderPlaces(); toast('Place Deleted'); };
+    if (del) del.onclick = () => { if (!confirmTap(del)) return; S.places = S.places.filter(x=>x.id!==p.id); save(); closeSheet(); afterPlacesChange(); toast('Place Deleted'); };
     sh.querySelector('#pSave').onclick = async () => {
       p.name = sh.querySelector('#pName').value.trim();
       if (!p.name) return err('Give it a name.');
       if (!picked){ await find(); if (!picked) return; return err('Check the match above, then tap Save.'); }
       Object.assign(p, { address:picked.address, lat:picked.lat, lng:picked.lng, hex:picked.hex });
       const i = S.places.findIndex(x=>x.id===p.id); if (i>=0) S.places[i]=p; else S.places.push(p);
-      save(); closeSheet(); renderPlaces(); toast(place ? 'Place Updated' : 'Place Added');
-      ensureCoverage(p.hex).catch(()=>{});
+      save(); closeSheet(); toast(place ? 'Place Updated' : 'Place Added'); afterPlacesChange(true);
     };
   });
+}
+async function afterPlacesChange(fitMap){
+  renderPlaces(); renderStrip(); renderChips('#chipsPlaces');
+  await loadData(); renderStrip(); renderChips('#chipsPlaces');
+  if (view==='results') renderResults(true);
+  updateMapData(fitMap);
 }
 function confirmTap(btn){ if (btn.dataset.armed) return true; btn.dataset.armed='1'; btn.textContent='Tap Again to Delete'; setTimeout(()=>{ delete btn.dataset.armed; btn.textContent='Delete'; },3000); return false; }
 function locate(){
@@ -552,7 +786,7 @@ function openCarrierPicker(after){
       q = (q||'').toLowerCase();
       list.innerHTML = BRANDS.filter(b=>!q || b.name.toLowerCase().includes(q)).map(b=>`
         <button class="brand-opt ${sel && sel.brand===b.id?'on':''}" data-b="${b.id}">
-          <span class="dot ${b.nets.length===1?NETS[b.nets[0]].cls:''}" style="${b.nets.length>1?'color:var(--text-2)':''}"></span>
+          <span class="cdot ${b.nets.length===1?NETS[b.nets[0]].cls:''}" style="${b.nets.length>1?'color:var(--text-2)':''}"></span>
           <span>${esc(b.name)}</span><span class="nets">${b.major?'Network':b.nets.map(n=>NETS[n].name).join(' / ')}</span></button>`).join('');
       list.querySelectorAll('[data-b]').forEach(x=>x.onclick=()=>{
         const b = brandById(x.dataset.b);
@@ -563,57 +797,64 @@ function openCarrierPicker(after){
     renderList();
     sh.querySelector('#cSearch').oninput = e => renderList(e.target.value);
     sh.querySelector('#cCancel').onclick = closeSheet;
-    sh.querySelector('#cSave').onclick = () => { S.carrier = sel; save(); closeSheet(); renderPlaces(); renderTestCarrier(); toast('Carrier Saved'); after && after(); };
+    sh.querySelector('#cSave').onclick = () => {
+      S.carrier = sel; save(); closeSheet(); toast('Carrier Saved'); after && after();
+      renderStrip(); renderPlaces(); renderTestCarrier(); if (view==='results') renderResults(true); updateMapData();
+    };
     draw(sh);
   });
 }
 
 /* ======================= RESULTS ======================= */
 let resultsToken = 0;
-async function renderResults(){
+function renderTiles(){
+  const r = DATA.ranked; const mine = myNet(); const me = r.find(x=>x.net===mine);
+  const hrs = S.places.reduce((a,p)=>a+p.hours,0);
+  const tests = Object.values(DATA.pool).reduce((a,h)=>a+Object.values(h).reduce((x,s)=>x+s.n,0),0);
+  const tile = (icon,k,v,s,color) => `<div class="glass tile"><div class="k">${ico(icon)}${k}</div><div class="v" ${color?`style="color:${color}"`:''}>${v}</div><div class="s">${s}</div></div>`;
+  $('#tiles').innerHTML = [
+    tile('crown','Top Network', r.length ? NETS[r[0].net].name : '–', r.length ? `Consistency ${r[0].c.score}` : 'Add places to rank', r.length ? scoreColor(r[0].c.score) : ''),
+    tile('sim','Your Network', me ? me.c.score : '–', me ? `${esc(carrierLabel())} · #${r.indexOf(me)+1} of ${r.length}` : (S.carrier ? 'No data yet' : 'Pick your carrier'), me ? scoreColor(me.c.score) : ''),
+    tile('pin','Places', S.places.length, `${hrs} hrs/wk tracked`),
+    tile('users','Community Tests', tests, tests ? 'At your places, last 6 months' : 'None at your places yet')
+  ].join('');
+}
+async function renderResults(skipLoad){
   const el = $('#results'); const token = ++resultsToken;
+  renderTiles();
   if (!S.places.length){
-    el.innerHTML = `<div class="glass card empty"><div class="big">📶</div><div class="title">Add Places First</div><p class="muted">Bars ranks carriers across the places you spend your week.</p><button class="btn primary" onclick="show('places')">Go to My Places</button></div>`;
+    el.innerHTML = `<div class="glass card empty"><div class="ico">${ico('bars')}</div><div class="title">Add Places First</div><p class="muted">Bars ranks carriers across the places you spend your week.</p><button class="btn primary" id="goPlaces">${ico('plus')}Add a Place</button></div>`;
+    $('#goPlaces').onclick = () => openPlaceEditor(null);
     return;
   }
-  const hexes = [...new Set(S.places.map(p=>p.hex))];
-  const missing = hexes.filter(h => !(S.coverage[h] && S.coverage[h].carriers && Date.now()-S.coverage[h].ts < COV_TTL));
-  if (missing.length) el.innerHTML = `<div class="glass loading"><div class="spin"></div>Checking Coverage at ${missing.length} Place${missing.length>1?'s':''}…</div>`;
-  const failed = new Set();
-  // 2 at a time, gentle on the coverage API
-  const q = [...missing];
-  await Promise.all([0,1].map(async () => { while (q.length){ const h=q.shift(); try { await ensureCoverage(h); } catch(e){ failed.add(h); failed.msg = e.message; } } }));
-  const pool = await getPool(hexes);
-  if (token !== resultsToken) return;
-
-  const ranked = NET_IDS.map(net => {
-    const rows = S.places.map(place => ({ place, ps: placeScore(place, net, pool) }));
-    return { net, rows, c: consistency(rows) };
-  }).filter(r=>r.c).sort((a,b)=>b.c.score - a.c.score || b.c.avg - a.c.avg);
-
-  const mine = myNet();
+  if (!skipLoad){
+    if (needsCoverage() || !DATA.loadedAt) el.innerHTML = `<div class="glass loading"><div class="spin"></div>Checking Coverage at Your Places…</div>`;
+    await loadData();
+    if (token !== resultsToken) return;
+    renderTiles(); renderStrip(); updateMapData();
+  }
+  const { ranked, failed, failMsg } = DATA; const mine = myNet();
   let html = '';
-  if (failed.size) html += `<div class="glass banner"><span>⚠️</span><div><b>Coverage missing for ${failed.size} place${failed.size>1?'s':''}.</b> ${esc(failed.msg||'')} Those places are left out of the scores below. <button class="pill" id="retryCov" style="margin-top:6px">Try Again</button></div></div>`;
+  if (failed.size) html += `<div class="glass banner" style="color:var(--warn)">${ico('alert')}<div><b>Coverage missing for ${failed.size} place${failed.size>1?'s':''}.</b> <span class="muted">${esc(failMsg||'')} Those places are left out of the scores.</span><br><button class="pill press" id="retryCov" style="margin-top:6px">Try Again</button></div></div>`;
   if (!ranked.length){ el.innerHTML = html || '<div class="glass card">No coverage data yet.</div>'; bindRetry(); return; }
-
   const totalH = S.places.reduce((a,p)=>a+p.hours,0);
-  html += `<div class="glass banner"><span>ℹ️</span><div>Scores use <b>FCC outdoor estimates</b> unless a place has ${MIN_TESTS}+ community tests. Indoor signal can be much worse. <a href="#" id="limitsLink">How This Works</a></div></div>`;
+  html += `<div class="glass banner">${ico('info')}<div>Scores use <b>FCC outdoor estimates</b> unless a place has ${MIN_TESTS}+ community tests. Indoor signal can be much worse. <a href="#" id="limitsLink">How This Works</a></div></div>`;
   html += ranked.map((r,i) => {
     const n = NETS[r.net]; const c = r.c;
     const rides = BRANDS.filter(b=>!b.major && b.nets.includes(r.net));
-    return `<div class="glass rank ${i===0?'first':''}">
+    return `<div class="glass rank ${i===0?'first':''}" style="--rk:${n.color}">
       <div class="head"><div class="pos">${i+1}</div>
-        <div><div class="title"><span class="dot ${n.cls}" style="display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:1px"></span>${n.name}</div>
+        <div><div class="title"><span class="cdot ${n.cls}" style="width:9px;height:9px;margin-right:7px"></span>${n.name}</div>
         ${mine===r.net?`<div class="you">Your Network${S.carrier && !brandById(S.carrier.brand).major ? ' via '+esc(brandById(S.carrier.brand).name):''}</div>`:''}</div>
         <div class="score"><div class="n" style="color:${scoreColor(c.score)}">${c.score}</div><div class="l">Consistency</div></div></div>
-      <div class="meter"><i style="width:${c.score}%"></i></div>
+      <div class="meter"><i style="width:${c.score}%;background:${scoreColor(c.score)}"></i></div>
       <div class="breakdown"><span>Weighted Avg <b>${c.avg}</b></span><span>Dead-Spot Penalty <b>−${c.penalty}</b></span><span>${totalH} hrs/wk</span></div>
       <div class="bw"><div><div class="k">Best Spot</div><div class="v ellip">${esc(c.best.place.name)} · ${c.best.ps.score}</div></div>
         <div><div class="k">Worst Spot</div><div class="v ellip" style="color:${scoreColor(c.worst.ps.score)}">${esc(c.worst.place.name)} · ${c.worst.ps.score}</div></div></div>
-      <details class="places" ${i===0?'open':''}><summary>Per-Place Breakdown</summary>
+      <details class="places" ${i===0?'open':''}><summary>${ico('chev')}Per-Place Breakdown</summary>
         ${r.rows.map(({place,ps}) => `<div class="prow">
           <div class="nm ellip">${esc(place.name)}<small>${place.hours} hr/wk</small></div>
-          ${ps ? techPill(ps.cov) + (ps.community ? `<span class="pill green">Community Tested (${ps.st.n} Tests)</span>` : `<span class="pill">FCC Estimate${ps.st&&ps.st.n?` · ${ps.st.n} Test${ps.st.n>1?'s':''}`:''}</span>`) : '<span class="pill warn">Coverage Unavailable</span>'}
+          ${ps ? techPill(ps.cov) + (ps.community ? `<span class="pill good">Community Tested (${ps.st.n} Tests)</span>` : `<span class="pill">FCC Estimate${ps.st&&ps.st.n?` · ${ps.st.n} Test${ps.st.n>1?'s':''}`:''}</span>`) : '<span class="pill warn">Coverage Unavailable</span>'}
           <div class="ps" style="color:${ps?scoreColor(ps.score):'var(--text-3)'}">${ps?ps.score:'–'}</div></div>`).join('')}
       </details>
       ${rides.length?`<div class="rides"><div class="k">Rides This Network</div><div class="chips">${rides.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:''}
@@ -623,16 +864,161 @@ async function renderResults(){
   el.innerHTML = html;
   bindRetry();
   const ll = $('#limitsLink'); if (ll) ll.onclick = e => { e.preventDefault(); openLimits(); };
-  function bindRetry(){ const b=$('#retryCov'); if (b) b.onclick=()=>{ failed.forEach(h=>delete S.coverage[h]); renderResults(); }; }
+  function bindRetry(){ const b=$('#retryCov'); if (b) b.onclick=()=>{ DATA.failed.forEach(h=>delete S.coverage[h]); renderResults(); }; }
 }
+
+/* ======================= MAP (MapLibre globe + satellite + terrain) ======================= */
+let map = null, mapLoading = null, mapFitted = false, hereHex = null, testedHexes = null;
+const markers = [];
+function mapSlot(){ if (view==='map') return $('#mapSlotView'); if (view==='results' && wide()) return $('#mapSlotRes'); return null; }
+function placeMap(){
+  const slot = mapSlot(); const wrap = $('#mapWrap');
+  if (!slot){ wrap.style.display='none'; return; }
+  if (wrap.parentElement !== slot) slot.appendChild(wrap);
+  wrap.style.display='block';
+  initMap().then(() => { map && map.resize(); });
+}
+function loadMapLib(){
+  if (window.maplibregl) return Promise.resolve();
+  return new Promise((res, rej) => {
+    const css = document.createElement('link'); css.rel='stylesheet'; css.href='/vendor/maplibre-gl-5.24.1.css'; document.head.appendChild(css);
+    const s = document.createElement('script'); s.src='/vendor/maplibre-gl-5.24.1.js'; s.onload=res; s.onerror=()=>rej(new Error('Map failed to load')); document.head.appendChild(s);
+  });
+}
+const MAP_STYLE = {
+  version: 8,
+  projection: { type: 'globe' },
+  sources: {
+    sat: { type:'raster', tileSize:256, maxzoom:19,
+      tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+      attribution:'Imagery © Esri, Maxar, Earthstar Geographics' },
+    ref: { type:'raster', tileSize:256, maxzoom:19,
+      tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'] },
+    dem: { type:'raster-dem', tileSize:256, maxzoom:14, encoding:'terrarium',
+      tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
+      attribution:'Terrain: Mapzen / AWS Open Data' }
+  },
+  sky: { 'sky-color':'#061016', 'horizon-color':'#0f2a2a', 'sky-horizon-blend':.6,
+         'atmosphere-blend':['interpolate',['linear'],['zoom'],0,1,9,1,12,0] },
+  terrain: { source:'dem', exaggeration:1.25 },
+  layers: [
+    { id:'bg', type:'background', paint:{ 'background-color':'#020405' } },
+    { id:'sat', type:'raster', source:'sat', paint:{ 'raster-saturation':-.15, 'raster-brightness-max':.85 } },
+    { id:'ref', type:'raster', source:'ref', paint:{ 'raster-opacity':.75 } }
+  ]
+};
+function initMap(){
+  if (map) return Promise.resolve();
+  if (mapLoading) return mapLoading;
+  $('#mapMsg').innerHTML = '<div class="loading"><div class="spin"></div>Loading Globe…</div>';
+  renderMapControls();
+  mapLoading = loadMapLib().then(() => new Promise(resolve => {
+    map = new maplibregl.Map({
+      container:'mapEl', style:MAP_STYLE, center:[-90,38], zoom:1.6, pitch:0,
+      attributionControl:{ compact:true }, maxPitch:75, renderWorldCopies:false
+    });
+    map.on('load', () => {
+      const empty = { type:'FeatureCollection', features:[] };
+      for (const id of ['tests','cov','here']) map.addSource(id, { type:'geojson', data:empty });
+      map.addLayer({ id:'tests-fill', type:'fill-extrusion', source:'tests', paint:{ 'fill-extrusion-color':['get','color'], 'fill-extrusion-height':['*',['get','score'],.6], 'fill-extrusion-base':0, 'fill-extrusion-opacity':.6 } });
+      map.addLayer({ id:'cov-fill', type:'fill', source:'cov', paint:{ 'fill-color':['get','color'], 'fill-opacity':.42 } });
+      map.addLayer({ id:'cov-line', type:'line', source:'cov', paint:{ 'line-color':['get','color'], 'line-width':2.2 } });
+      map.addLayer({ id:'here-line', type:'line', source:'here', paint:{ 'line-color':'#ffffff', 'line-width':2.5, 'line-dasharray':[2,1.5] } });
+      map.on('click','tests-fill', e => { const f=e.features[0]; if (!f) return; const p=f.properties;
+        new maplibregl.Popup({ closeButton:false, className:'bars-pop' }).setLngLat(e.lngLat).setHTML(`<b>${esc(p.label)}</b><br>${esc(p.detail)}`).addTo(map); });
+      $('#mapMsg').innerHTML = '';
+      updateMapData(true); resolve();
+    });
+    map.on('error', e => { if (e && e.error && /Failed to fetch|NetworkError/i.test(String(e.error.message||''))) return; console.warn('map', e && e.error); });
+  })).catch(e => { $('#mapMsg').textContent = e.message; mapLoading = null; });
+  return mapLoading;
+}
+function hexPoly(hex, props){
+  const ring = h3.cellToBoundary(hex, true); // [lng,lat] closed ring
+  return { type:'Feature', properties:props, geometry:{ type:'Polygon', coordinates:[ring] } };
+}
+function bestAt(place, pool){
+  let best=null;
+  for (const n of NET_IDS){ const ps = placeScore(place, n, pool); if (ps && (!best || ps.score > best.ps.score)) best = { net:n, ps }; }
+  return best;
+}
+async function fetchTested(){
+  try { testedHexes = (await api('/api/tested')).hexes || []; } catch { testedHexes = testedHexes || []; }
+}
+function updateMapData(fit){
+  if (!map || !map.getSource('cov')) return;
+  const L = S.mapLayers; const sel = S.mapCarrier; const pool = DATA.pool;
+  // coverage hexes at your places
+  const cov = [];
+  if (L.coverage) for (const p of S.places){
+    const r = sel==='best' ? bestAt(p,pool) : (()=>{ const ps = placeScore(p, sel, pool); return ps ? { net:sel, ps } : null; })();
+    if (!r) continue;
+    cov.push(hexPoly(p.hex, { color: scoreHex(r.ps.score) }));
+  }
+  map.getSource('cov').setData({ type:'FeatureCollection', features:cov });
+  // community tested hexes (3D columns: height = score)
+  const tf = [];
+  if (L.tests && testedHexes){
+    const byHex = {};
+    for (const t of testedHexes){ if (sel!=='best' && t.carrier!==sel) continue; const s = communityScore({down:t.down, latency:t.latency||40}); if (!byHex[t.hex] || s > byHex[t.hex].s) byHex[t.hex] = { s, t }; }
+    for (const [hex,{s,t}] of Object.entries(byHex)) tf.push(hexPoly(hex, { color:scoreHex(s), score:s, label:`${NETS[t.carrier].name} · ${t.n} Test${t.n>1?'s':''}`, detail:`Median ${t.down} Mbps down` }));
+  }
+  map.getSource('tests').setData({ type:'FeatureCollection', features:tf });
+  // you are here (hex only)
+  map.getSource('here').setData({ type:'FeatureCollection', features: L.here && hereHex ? [hexPoly(hereHex,{})] : [] });
+  // place pins
+  markers.splice(0).forEach(m=>m.remove());
+  if (L.places) for (const p of S.places){
+    const r = sel==='best' ? bestAt(p,pool) : (()=>{ const ps = placeScore(p, sel, pool); return ps ? { net:sel, ps } : null; })();
+    const el = document.createElement('div'); el.className='pin';
+    el.innerHTML = `<span class="sc" style="background:${r?scoreHex(r.ps.score):'#666'}">${r?r.ps.score:'–'}</span>${esc(p.name)}${sel==='best'&&r?`<span class="cdot ${NETS[r.net].cls}" style="width:7px;height:7px"></span>`:''}`;
+    el.onclick = () => flyTo(p.lng, p.lat, 15.5);
+    markers.push(new maplibregl.Marker({ element:el, anchor:'bottom', offset:[0,-4] }).setLngLat([p.lng,p.lat]).addTo(map));
+  }
+  if (L.here && hereHex){
+    const [lat,lng] = h3.cellToLatLng(hereHex); const el=document.createElement('div'); el.className='here'; el.style.position='relative';
+    markers.push(new maplibregl.Marker({ element:el }).setLngLat([lng,lat]).addTo(map));
+  }
+  if (fit && !mapFitted) fitPlaces(true);
+}
+function fitPlaces(first){
+  if (!map) return;
+  const pts = S.places.map(p=>[p.lng,p.lat]);
+  if (hereHex && !pts.length){ const [lat,lng]=h3.cellToLatLng(hereHex); pts.push([lng,lat]); }
+  if (!pts.length) return;
+  mapFitted = true;
+  const b = pts.reduce((bb,[x,y])=>[[Math.min(bb[0][0],x),Math.min(bb[0][1],y)],[Math.max(bb[1][0],x),Math.max(bb[1][1],y)]],[[180,90],[-180,-90]]);
+  const pad = { top:130, bottom:120, left:60, right:80 };
+  const opts = { padding:pad, pitch:45, bearing:-18, maxZoom:15 };
+  if (b[0][0]===b[1][0] && b[0][1]===b[1][1]) { flyTo(b[0][0], b[0][1], 15); return; }
+  reduceMotion ? map.fitBounds(b, { ...opts, animate:false }) : map.fitBounds(b, { ...opts, duration: first ? 3200 : 1600, essential:true });
+}
+function flyTo(lng, lat, zoom){ const o = { center:[lng,lat], zoom, pitch:58, bearing:-18 }; reduceMotion ? map.jumpTo(o) : map.flyTo({ ...o, duration:1400 }); }
+function renderMapControls(){
+  const sel = S.mapCarrier, L = S.mapLayers;
+  $('#mapCtl').innerHTML = `
+    <div class="chips">${[['best','Best'],...NET_IDS.map(n=>[n,NETS[n].name])].map(([id,l])=>`<button class="chip ${sel===id?'on':''}" data-mc="${id}">${id!=='best'?`<span class="cdot ${NETS[id].cls}" style="width:7px;height:7px"></span>`:''}${l}</button>`).join('')}</div>
+    <div class="chips layers">${[['places','pin','My Places'],['coverage','hex','Coverage'],['tests','users','Community'],['here','loc','You']].map(([id,ic,l])=>`<button class="chip ${L[id]?'on':''}" data-ml="${id}">${ico(ic)}${l}</button>`).join('')}</div>`;
+  $('#mapCtl').querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{ S.mapCarrier=b.dataset.mc; save(); renderMapControls(); updateMapData(); });
+  $('#mapCtl').querySelectorAll('[data-ml]').forEach(b=>b.onclick=()=>{ S.mapLayers[b.dataset.ml]=!S.mapLayers[b.dataset.ml]; save(); renderMapControls(); updateMapData(); });
+}
+$('#fabFit').onclick = () => fitPlaces(false);
+$('#fabLoc').onclick = async () => {
+  try {
+    const pos = await locate(); // stays on this device; only the hex is used
+    hereHex = h3.latLngToCell(pos.coords.latitude, pos.coords.longitude, 9);
+    S.mapLayers.here = true; save(); renderMapControls(); updateMapData();
+    const [lat,lng] = h3.cellToLatLng(hereHex); flyTo(lng, lat, 15.5);
+  } catch(e){ toast(e.message); }
+};
 
 /* ======================= TEST HERE ======================= */
 function renderTestCarrier(){
   const lbl = carrierLabel();
   $('#testCarrier').innerHTML = `<div class="glass card carrier-btn" id="tcBtn" role="button" style="margin-bottom:var(--s2)">
-    <span class="dot ${lbl?NETS[S.carrier.network].cls:''}" style="${lbl?'':'color:var(--text-3)'}"></span>
+    <span class="cdot ${lbl?NETS[S.carrier.network].cls:''}" style="${lbl?'':'color:var(--text-3)'}"></span>
     <div class="grow"><div class="muted">Testing On</div><div class="title">${lbl?esc(lbl):'Pick Your Carrier'}</div></div>
-    <span class="pill ${lbl?'':'green'}">${lbl?'Change':'Set'}</span></div>`;
+    <span class="pill ${lbl?'':'press'}">${lbl?'Change':'Set'}</span></div>`;
   $('#tcBtn').onclick = () => openCarrierPicker();
 }
 const toggle = el => el.onclick = () => el.classList.toggle('on');
@@ -640,13 +1026,11 @@ toggle($('#wifiCheck')); toggle($('#poolCheck'));
 
 const CF = 'https://speed.cloudflare.com';
 const RING = 691;
-function setRing(frac){ $('#ring').style.strokeDashoffset = RING * (1 - Math.max(0, Math.min(1, frac))); }
-const logScale = mbps => Math.min(1, Math.log10(1 + mbps) / Math.log10(1001)); // 0–1000 Mbps
-function phase(t){ $('#phase').textContent = t || ''; }
-function runLabel(big, small){ $('#runBtn').innerHTML = `<span class="big">${big}</span>${small?`<span class="small">${small}</span>`:''}`; }
-const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const setRing = frac => { $('#ring').style.strokeDashoffset = RING * (1 - Math.max(0, Math.min(1, frac))); };
+const logScale = mbps => Math.min(1, Math.log10(1 + mbps) / Math.log10(1001));
+const phase = t => { $('#phase').textContent = t || ''; };
+const runLabel = (big, small) => { $('#runBtn').innerHTML = `<span class="big">${big}</span>${small?`<span class="small">${small}</span>`:''}`; };
 const median = a => { const s=[...a].sort((x,y)=>x-y); const m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
-
 function makeTarget(useFallback){
   return useFallback
     ? { name:'Bars Server', max:4e6, down:n=>`/api/speed?bytes=${n}&r=${Math.random()}`, up:'/api/speed' }
@@ -657,25 +1041,17 @@ async function timedFetch(url, opts, onBytes){
   const r = await fetch(url, { cache:'no-store', ...opts });
   if (!r.ok) throw new Error('speed endpoint '+r.status);
   let bytes = 0;
-  if (r.body && r.body.getReader){
-    const rd = r.body.getReader();
-    for(;;){ const {done,value} = await rd.read(); if (done) break; bytes += value.length; onBytes && onBytes(bytes, performance.now()-t0); }
-  } else { bytes = (await r.arrayBuffer()).byteLength; }
+  if (r.body && r.body.getReader){ const rd = r.body.getReader(); for(;;){ const {done,value} = await rd.read(); if (done) break; bytes += value.length; onBytes && onBytes(bytes, performance.now()-t0); } }
+  else bytes = (await r.arrayBuffer()).byteLength;
   return { ms: performance.now()-t0, bytes };
 }
-async function measureLatency(T){
-  const ts=[];
-  for (let i=0;i<8;i++){ const {ms} = await timedFetch(T.down(0)); if (i>1) ts.push(ms); }
-  return median(ts);
-}
+async function measureLatency(T){ const ts=[]; for (let i=0;i<8;i++){ const {ms} = await timedFetch(T.down(0)); if (i>1) ts.push(ms); } return median(ts); }
 async function measureDown(T){
-  const sizes = [1e5, 1e6, 5e6, 1e7, 25e6].filter(s=>s<=T.max);
-  const samples=[]; let i=0; const start=performance.now();
+  const sizes = [1e5, 1e6, 5e6, 1e7, 25e6].filter(s=>s<=T.max); const samples=[]; let i=0; const start=performance.now();
   while (performance.now()-start < 8000){
     const size = sizes[Math.min(i, sizes.length-1)];
     const {ms,bytes} = await timedFetch(T.down(size), {}, (b,t)=>{ if (t>150){ const m=b*8/t/1000; runLabel(m.toFixed(m<10?1:0),'Mbps Down'); setRing(logScale(m)); } });
-    const mbps = bytes*8/ms/1000;
-    if (size>=1e6) samples.push(mbps);
+    if (size>=1e6) samples.push(bytes*8/ms/1000);
     if (ms < 1500 && i < sizes.length-1) i++;
     if (samples.length >= 6) break;
   }
@@ -684,15 +1060,12 @@ async function measureDown(T){
   return top.reduce((a,b)=>a+b,0)/top.length;
 }
 async function measureUp(T){
-  const sizes = [1e5, 1e6, 3e6, 8e6].filter(s=>s<=T.max);
-  const samples=[]; let i=0; const start=performance.now();
-  const blobs = {};
+  const sizes = [1e5, 1e6, 3e6, 8e6].filter(s=>s<=T.max); const samples=[]; let i=0; const start=performance.now(); const blobs = {};
   while (performance.now()-start < 7000){
     const size = sizes[Math.min(i, sizes.length-1)];
     blobs[size] ||= new Uint8Array(size).map((_,k)=>k*31 & 255);
     const t0 = performance.now();
-    const r = await fetch(T.up, { method:'POST', body:blobs[size], cache:'no-store' });
-    await r.arrayBuffer().catch(()=>{});
+    const r = await fetch(T.up, { method:'POST', body:blobs[size], cache:'no-store' }); await r.arrayBuffer().catch(()=>{});
     const ms = performance.now()-t0; const mbps = size*8/ms/1000;
     runLabel(mbps.toFixed(mbps<10?1:0),'Mbps Up'); setRing(logScale(mbps));
     if (size>=1e6) samples.push(mbps);
@@ -703,25 +1076,23 @@ async function measureUp(T){
   const top = samples.sort((a,b)=>b-a).slice(0, Math.max(1, Math.ceil(samples.length/2)));
   return top.reduce((a,b)=>a+b,0)/top.length;
 }
-
 let testing = false;
 $('#runBtn').onclick = async () => {
   if (testing) return;
   if (!S.carrier || !S.carrier.network){ openCarrierPicker(()=>{}); return toast('Pick your carrier first'); }
-  if (!$('#wifiCheck').classList.contains('on')){ toast('Turn off Wi-Fi, then check “Wi-Fi Is Off”'); $('#wifiCheck').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300}); return; }
+  if (!$('#wifiCheck').classList.contains('on')){ toast('Turn off Wi-Fi, then check “Wi-Fi Is Off”'); if (!reduceMotion) $('#wifiCheck').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300}); return; }
   testing = true; $('#runBtn').classList.add('busy'); $('#testOut').innerHTML=''; setRing(0);
   const pool = $('#poolCheck').classList.contains('on');
   let hex = null;
   try {
     phase('Finding Your Area…'); runLabel('…');
     // Location is snapped to the hex right here; the coordinates are never stored or sent.
-    try { const pos = await locate(); hex = h3.latLngToCell(pos.coords.latitude, pos.coords.longitude, 9); }
-    catch(e){ if (pool) throw e; } // without pooling, a test can still run (no area comparison)
+    try { const pos = await locate(); hex = h3.latLngToCell(pos.coords.latitude, pos.coords.longitude, 9); hereHex = hex; }
+    catch(e){ if (pool) throw e; }
     let T = makeTarget(false);
     phase('Measuring Latency…');
     let latency;
-    try { latency = await measureLatency(T); }
-    catch { T = makeTarget(true); latency = await measureLatency(T); }
+    try { latency = await measureLatency(T); } catch { T = makeTarget(true); latency = await measureLatency(T); }
     runLabel(Math.round(latency),'ms Latency');
     phase('Measuring Download…'); const down = await measureDown(T);
     phase('Measuring Upload…'); const up = await measureUp(T);
@@ -731,22 +1102,23 @@ $('#runBtn').onclick = async () => {
     let pooledMsg = 'Not added to the pool.';
     if (pool && hex){
       phase('Adding to Community Pool…');
-      try { await api('/api/test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ hex, carrier:result.net, down, up, latency, version:APP_VERSION }) }); pooledMsg = 'Added to the community pool. Thanks!'; }
+      try { await api('/api/test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ hex, carrier:result.net, down, up, latency, version:APP_VERSION }) }); pooledMsg = 'Added to the community pool. Thanks!'; testedHexes = null; }
       catch(e){ pooledMsg = e.status===409 ? 'Bars updated. Reload, then test again to pool it.' : e.message; if (e.status===409) $('#updateBtn').classList.add('on'); }
     }
     phase('');
     await renderTestResult(result, pooledMsg);
+    if (map) { await fetchTested(); updateMapData(); }
   } catch(e){
     phase(''); runLabel('Run Test','Uses ~40 MB of Data'); setRing(0);
-    $('#testOut').innerHTML = `<div class="glass banner"><span>⚠️</span><div>${esc(e.message || 'Test failed.')}</div></div>`;
+    $('#testOut').innerHTML = `<div class="glass banner" style="color:var(--bad)">${ico('alert')}<div style="color:var(--text)">${esc(e.message || 'Test failed.')}</div></div>`;
   } finally { testing = false; $('#runBtn').classList.remove('busy'); }
 };
 async function renderTestResult(r, pooledMsg){
-  const fmt = (v,d) => v.toFixed(v<10?1:0);
+  const fmt = v => v.toFixed(v<10?1:0);
   let cmp = '';
   if (r.hex){
-    let cov=null, st=null;
-    try { cov = (await ensureCoverage(r.hex)).carriers[r.net]; } catch {}
+    let cov, st=null;
+    try { cov = (await ensureCoverage(r.hex)).carriers[r.net]; } catch { cov = undefined; }
     try { st = ((await getPool([r.hex]))[r.hex] || {})[r.net]; } catch {}
     cmp = `<div class="glass card"><div class="title" style="margin-bottom:6px">This Area on ${NETS[r.net].name}</div>
       <table class="cmp">
@@ -754,15 +1126,17 @@ async function renderTestResult(r, pooledMsg){
         <tr><td>FCC Estimate</td><td>${cov ? `${cov.tech} · ${esc(cov.level||'')}${cov.dbm!=null?` (${Math.round(cov.dbm)} dBm)`:''}` : (cov===null?'No Coverage Listed':'Unavailable')}</td></tr>
         <tr><td>Community Median</td><td>${st ? `${fmt(st.down)} ↓ · ${fmt(st.up)} ↑ · ${Math.round(st.latency)} ms <span class="muted">(${st.n} test${st.n>1?'s':''})</span>` : 'No Tests Yet'}</td></tr>
       </table>
-      ${st && st.n < MIN_TESTS ? `<p class="note" style="margin:8px 0 0">Community data starts counting in Results at ${MIN_TESTS} tests in the last 6 months.</p>` : ''}</div>`;
+      ${st && st.n < MIN_TESTS ? `<p class="note" style="margin:8px 0 0">Community data starts counting in Results at ${MIN_TESTS} tests in the last 6 months.</p>` : ''}
+      <button class="btn small" id="seeOnMap" style="margin-top:10px">${ico('globe')}See on Map</button></div>`;
   }
   $('#testOut').innerHTML = `
-    <div class="tiles"><div class="glass tile"><div class="k">Download</div><div class="v">${fmt(r.down)}</div><div class="u">Mbps</div></div>
-      <div class="glass tile"><div class="k">Upload</div><div class="v">${fmt(r.up)}</div><div class="u">Mbps</div></div>
-      <div class="glass tile"><div class="k">Latency</div><div class="v">${Math.round(r.latency)}</div><div class="u">ms</div></div></div>
+    <div class="rtiles"><div class="glass rtile"><div class="k">Download</div><div class="v">${fmt(r.down)}</div><div class="u">Mbps</div></div>
+      <div class="glass rtile"><div class="k">Upload</div><div class="v">${fmt(r.up)}</div><div class="u">Mbps</div></div>
+      <div class="glass rtile"><div class="k">Latency</div><div class="v">${Math.round(r.latency)}</div><div class="u">ms</div></div></div>
     ${cmp}
     <p class="note">${esc(pooledMsg)} Measured against ${esc(r.target)}.</p>`;
   runLabel('Run Again','Uses ~40 MB of Data');
+  const som = $('#seeOnMap'); if (som) som.onclick = async () => { S.mapLayers.here = true; S.mapLayers.tests = true; save(); show('map'); await initMap(); renderMapControls(); updateMapData(); const [lat,lng]=h3.cellToLatLng(r.hex); flyTo(lng,lat,15.5); };
 }
 
 /* ======================= LIMITS ======================= */
@@ -775,11 +1149,45 @@ function openLimits(){
     <p><b>MVNOs ride the big three's towers</b> but can be slowed first when a tower is busy.</p>
     <h4>How the Consistency Score Works</h4>
     <p>Each place gets 0–100 per network: strong 5G ≈ 100, weaker 5G ≈ 75, strong 4G ≈ 70, weak 4G ≈ 50 or less, none = 0. Places are averaged by your hours per week, then a <b>dead-spot penalty</b> comes off. It's bigger when your worst place is far below the rest, and much bigger when you spend a lot of hours there. Consistency means no dead spots, not a high average.</p>
+    <h4>The Map</h4>
+    <p>Flat hexes are coverage estimates at your places. 3D columns are community-tested areas, taller and greener for faster medians. Your own location only ever shows as its hex, and it never leaves your device from the map.</p>
     <h4>Privacy</h4>
     <p>Places and your carrier are stored only on this device. Speed tests send the area hex (about a city block), network and speeds. No account, no IP, no exact location.</p>
-  </div><button class="btn block" onclick="closeSheet()" style="margin-top:var(--s3)">Got It</button>`);
+  </div><button class="btn block" id="gotIt" style="margin-top:var(--s3)">Got It</button>`, sh => { sh.querySelector('#gotIt').onclick = closeSheet; });
 }
 $('#infoBtn').onclick = openLimits;
+
+/* ======================= SIGNAL BACKGROUND + POINTER LIGHT ======================= */
+(function signalBg(){
+  const c = $('#bgc'), g = c.getContext('2d'); let w, h, dpr, rings = [], last = 0, nextRing = 0;
+  const size = () => { dpr = Math.min(2, devicePixelRatio||1); w = innerWidth; h = innerHeight; c.width = w*dpr; c.height = h*dpr; c.style.width=w+'px'; c.style.height=h+'px'; g.setTransform(dpr,0,0,dpr,0,0); };
+  size(); addEventListener('resize', size);
+  const src = () => ({ x: w*.88, y: h*.08 });
+  const drawStatic = () => { g.clearRect(0,0,w,h); const s=src(); for (let i=1;i<=5;i++){ g.beginPath(); g.arc(s.x,s.y,i*150,0,Math.PI*2); g.strokeStyle=`rgba(61,245,138,${.07-i*.011})`; g.lineWidth=1; g.stroke(); } };
+  if (reduceMotion){ drawStatic(); addEventListener('resize', drawStatic); return; }
+  function frame(t){
+    if (document.hidden){ requestAnimationFrame(frame); return; }
+    if (t - last < 33){ requestAnimationFrame(frame); return; } last = t;
+    if (t > nextRing){ rings.push({ r:0, born:t }); nextRing = t + 2600; }
+    g.clearRect(0,0,w,h); const s = src(); const maxR = Math.hypot(w,h)*1.05;
+    rings = rings.filter(r => (t - r.born) < 14000);
+    for (const r of rings){
+      const k = (t - r.born)/14000; const rad = k*maxR; const a = .11*(1-k);
+      g.beginPath(); g.arc(s.x, s.y, rad, 0, Math.PI*2); g.strokeStyle = `rgba(61,245,138,${a})`; g.lineWidth = 1.2; g.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+if (matchMedia('(hover:hover) and (pointer:fine)').matches && !reduceMotion){
+  let lit = null;
+  addEventListener('pointermove', e => {
+    const el = e.target.closest && e.target.closest('.glass');
+    if (lit && lit !== el) lit.classList.remove('lit');
+    lit = el; if (!el) return;
+    const r = el.getBoundingClientRect(); el.style.setProperty('--mx', (e.clientX-r.left)+'px'); el.style.setProperty('--my', (e.clientY-r.top)+'px'); el.classList.add('lit');
+  }, { passive:true });
+}
 
 /* ======================= VERSION / iOS ======================= */
 $('#ver').textContent = APP_VERSION;
@@ -791,15 +1199,18 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) chec
 function fixGap(){
   if (!(navigator.standalone || matchMedia('(display-mode: standalone)').matches)) return;
   const probe = document.createElement('div'); probe.style.cssText='position:fixed;inset:0;pointer-events:none;visibility:hidden';
-  document.body.appendChild(probe); const h = probe.getBoundingClientRect().height; probe.remove();
-  const gap = Math.max(0, Math.min(80, screen.height - h));
+  document.body.appendChild(probe); const hh = probe.getBoundingClientRect().height; probe.remove();
+  const gap = Math.max(0, Math.min(80, screen.height - hh));
   document.documentElement.style.setProperty('--gap-fix', gap > 4 && gap < 80 ? gap+'px' : '0px');
 }
 addEventListener('resize', fixGap);
 
 /* ======================= INIT ======================= */
-renderPlaces(); fixGap(); checkVersion();
-if (!S.places.length && !S.carrier) setTimeout(()=>toast('Start by picking your carrier and adding a place'), 600);
+fixGap(); checkVersion();
+show(S.places.length ? 'results' : 'places');
+if (S.places.length) loadData().then(()=>{ renderStrip(); renderChips('#chipsPlaces'); renderChips('#chipsTest'); renderChips('#chipsMap'); });
+if (S.lastTest && S.lastTest.hex && Date.now() - S.lastTest.at < 864e5) hereHex = S.lastTest.hex;
+fetchTested().then(() => updateMapData());
 </script>
 </body>
 </html>
