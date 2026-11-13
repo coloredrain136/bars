@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bars">
+<meta name="description" content="Which carrier holds up best across the places you actually spend your time.">
+<title>Bars</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/icon-192.png">
+<style>
+:root{
+  /* color */
+  --bg:#07090c; --bg2:#0d1116;
+  --glass:rgba(255,255,255,.06); --glass-2:rgba(255,255,255,.10); --glass-3:rgba(255,255,255,.16);
+  --stroke:rgba(255,255,255,.12); --stroke-hi:rgba(255,255,255,.22);
+  --text:#f2f5f7; --text-2:rgba(242,245,247,.68); --text-3:rgba(242,245,247,.45);
+  --accent:#3df58a; --accent-2:#1fd172; --accent-ink:#04210f; --accent-glow:rgba(61,245,138,.35);
+  --warn:#ffc65c; --bad:#ff6b6b; --info:#7cc4ff;
+  --att:#5ab7ff; --verizon:#ff5a5f; --tmobile:#ff5ac8;
+  /* space */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px;
+  /* radius */
+  --r1:10px; --r2:14px; --r3:20px; --r4:28px; --pill:999px;
+  /* type */
+  --f:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;
+  --fd:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  /* effects */
+  --blur:saturate(170%) blur(22px);
+  --shadow:0 10px 30px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.06) inset;
+  --spec:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 42%);
+  /* layout */
+  --top:max(env(safe-area-inset-top),20px);
+  --bot:env(safe-area-inset-bottom);
+  --gap-fix:0px; /* iOS home-screen dead strip fix, set in JS */
+  --tabh:64px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f);font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
+  background:radial-gradient(40% 35% at 15% 10%,rgba(61,245,138,.14),transparent 70%),
+             radial-gradient(45% 40% at 90% 30%,rgba(90,183,255,.10),transparent 70%),
+             radial-gradient(50% 40% at 50% 100%,rgba(255,90,200,.07),transparent 70%),var(--bg)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.glass{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r3);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.glass::before{content:"";position:absolute;inset:0;background:var(--spec);pointer-events:none;border-radius:inherit}
+.glass > *{position:relative}
+
+/* header */
+header{position:sticky;top:0;z-index:20;padding:calc(var(--top) + 26px) var(--s5) var(--s3);
+  display:flex;align-items:center;gap:var(--s3);
+  background:linear-gradient(180deg,rgba(7,9,12,.92) 55%,rgba(7,9,12,0));}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-weight:800;font-size:28px;letter-spacing:-.02em}
+.brand svg{width:28px;height:28px}
+header .sp{flex:1}
+.iconbtn{width:40px;height:40px;border-radius:var(--pill);display:grid;place-items:center;background:var(--glass);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+.iconbtn svg{width:20px;height:20px;opacity:.85}
+
+main{padding:0 var(--s5) calc(var(--tabh) + var(--bot) + var(--gap-fix) + 40px);max-width:640px;margin:0 auto}
+.view{display:none;animation:fade .25s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-family:var(--fd);font-size:22px;letter-spacing:-.01em;margin:var(--s4) 0 var(--s2)}
+.sub{color:var(--text-2);font-size:14px;margin:0 0 var(--s4)}
+.note{color:var(--text-3);font-size:12.5px;line-height:1.45}
+.section-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin:var(--s6) 0 var(--s2);font-weight:600}
+
+/* tab bar */
+nav.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bot) + 10px - var(--gap-fix));z-index:30;
+  display:flex;gap:4px;padding:6px;border-radius:var(--pill);width:min(420px,calc(100% - 32px))}
+nav.tabs button{flex:1;height:52px;border-radius:var(--pill);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11.5px;font-weight:600;color:var(--text-2);transition:.2s}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button.on{background:var(--glass-3);color:var(--accent)}
+
+/* cards & rows */
+.card{padding:var(--s4);margin-bottom:var(--s3)}
+.row{display:flex;align-items:center;gap:var(--s3)}
+.grow{flex:1;min-width:0}
+.title{font-weight:650;font-size:16.5px}
+.muted{color:var(--text-2);font-size:13.5px}
+.ellip{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--pill);font-size:12px;font-weight:600;background:var(--glass-2);border:1px solid var(--stroke);white-space:nowrap}
+.pill.green{color:var(--accent);border-color:rgba(61,245,138,.35);background:rgba(61,245,138,.10)}
+.pill.warn{color:var(--warn);border-color:rgba(255,198,92,.35);background:rgba(255,198,92,.10)}
+.pill.bad{color:var(--bad);border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.10)}
+.pill.info{color:var(--info);border-color:rgba(124,196,255,.35);background:rgba(124,196,255,.10)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 var(--s5);border-radius:var(--pill);font-weight:650;background:var(--glass-2);border:1px solid var(--stroke-hi)}
+.btn.primary{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:var(--accent-ink);border:0;box-shadow:0 8px 24px var(--accent-glow)}
+.btn.block{width:100%}
+.btn.small{height:36px;padding:0 14px;font-size:14px}
+.btn:disabled{opacity:.45}
+.btn.danger{color:var(--bad)}
+.hours{font-family:var(--mono);font-size:13px;color:var(--text-2)}
+.empty{text-align:center;padding:var(--s8) var(--s4)}
+.empty .big{font-size:40px;margin-bottom:var(--s2)}
+
+/* carrier picker */
+.carrier-btn{width:100%;display:flex;align-items:center;gap:var(--s3);padding:var(--s4);text-align:left}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 10px currentColor;background:currentColor}
+.c-att{color:var(--att)} .c-verizon{color:var(--verizon)} .c-t-mobile{color:var(--tmobile)}
+
+/* sheets */
+.scrim{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:calc(0px - var(--gap-fix));z-index:60;max-height:88vh;overflow:auto;
+  padding:var(--s5) var(--s5) calc(var(--bot) + var(--gap-fix) + var(--s6));border-radius:var(--r4) var(--r4) 0 0;
+  background:rgba(18,22,28,.92);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--stroke);
+  transform:translateY(105%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s;max-width:640px;margin:0 auto}
+.sheet.on{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--glass-3);margin:-8px auto var(--s4)}
+.sheet h3{font-family:var(--fd);font-size:21px;margin:0 0 var(--s4)}
+label.f{display:block;font-size:13px;color:var(--text-2);margin:var(--s4) 0 6px;font-weight:600}
+.input{width:100%;height:48px;padding:0 var(--s4);border-radius:var(--r2);background:rgba(255,255,255,.07);border:1px solid var(--stroke);outline:none;font-size:16px}
+.input:focus{border-color:rgba(61,245,138,.6);box-shadow:0 0 0 3px rgba(61,245,138,.15)}
+.matches{margin-top:var(--s2);display:flex;flex-direction:column;gap:6px}
+.match{padding:12px 14px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--stroke);text-align:left;font-size:14px}
+.match.on{border-color:var(--accent);background:rgba(61,245,138,.10)}
+.stepper{display:flex;align-items:center;gap:var(--s3)}
+.stepper button{width:44px;height:44px;border-radius:50%;background:var(--glass-2);border:1px solid var(--stroke);font-size:22px}
+.stepper .val{font-family:var(--fd);font-size:28px;font-weight:700;min-width:70px;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:7px 12px;border-radius:var(--pill);font-size:13px;background:var(--glass);border:1px solid var(--stroke)}
+.chip.on{background:rgba(61,245,138,.14);border-color:var(--accent);color:var(--accent)}
+.err{color:var(--bad);font-size:13.5px;margin-top:var(--s2)}
+.btnrow{display:flex;gap:var(--s2);margin-top:var(--s5)}
+.btnrow .btn{flex:1}
+.list-brand{display:flex;flex-direction:column;gap:6px;max-height:44vh;overflow:auto;margin:0 -4px;padding:0 4px}
+.brand-opt{display:flex;align-items:center;gap:var(--s3);padding:12px 14px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--stroke);text-align:left}
+.brand-opt.on{border-color:var(--accent);background:rgba(61,245,138,.10)}
+.brand-opt .nets{margin-left:auto;font-size:12px;color:var(--text-3)}
+.seg{display:flex;gap:6px;margin-top:var(--s2)}
+.seg button{flex:1;height:44px;border-radius:var(--r2);background:var(--glass);border:1px solid var(--stroke);font-weight:600;font-size:14px}
+.seg button.on{border-color:var(--accent);background:rgba(61,245,138,.12);color:var(--accent)}
+
+/* results */
+.rank{padding:var(--s4) var(--s4) var(--s3)}
+.rank .head{display:flex;align-items:center;gap:var(--s3)}
+.rank .pos{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;background:var(--glass-2)}
+.rank.first{border-color:rgba(61,245,138,.45);box-shadow:var(--shadow),0 0 40px rgba(61,245,138,.12)}
+.rank.first .pos{background:var(--accent);color:var(--accent-ink)}
+.score{margin-left:auto;text-align:right}
+.score .n{font-family:var(--fd);font-size:40px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.score .l{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em}
+.meter{height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin:var(--s3) 0 var(--s2)}
+.meter i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.breakdown{font-size:12.5px;color:var(--text-2);display:flex;flex-wrap:wrap;gap:4px 12px}
+.bw{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin:var(--s3) 0}
+.bw > div{padding:10px 12px;border-radius:var(--r2);background:rgba(255,255,255,.04);border:1px solid var(--stroke)}
+.bw .k{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em}
+.bw .v{font-weight:650;font-size:14.5px;margin-top:2px}
+details.places summary{list-style:none;cursor:pointer;font-size:13.5px;color:var(--accent);font-weight:600;padding:6px 0}
+details.places summary::-webkit-details-marker{display:none}
+.prow{display:flex;align-items:center;gap:var(--s2);padding:10px 0;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+.prow .nm{flex:1;min-width:120px;font-size:14.5px;font-weight:600}
+.prow .nm small{display:block;font-weight:400;color:var(--text-3);font-size:12px}
+.prow .ps{font-family:var(--fd);font-weight:800;font-size:18px;width:38px;text-align:right}
+.rides{margin-top:var(--s3)}
+.rides .k{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.rides .chips .chip{font-size:12px;padding:5px 10px}
+.you{color:var(--accent);font-size:12px;font-weight:700}
+.loading{display:flex;align-items:center;gap:10px;color:var(--text-2);font-size:14px;padding:var(--s4)}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--accent);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.banner{padding:var(--s3) var(--s4);font-size:13.5px;color:var(--text-2);margin-bottom:var(--s3);display:flex;gap:10px;align-items:flex-start}
+.banner b{color:var(--text)}
+
+/* test */
+.gauge-wrap{display:grid;place-items:center;margin:var(--s5) 0 var(--s4)}
+.gauge{width:240px;height:240px;border-radius:50%;position:relative;display:grid;place-items:center}
+.gauge svg{position:absolute;inset:0;transform:rotate(-90deg);pointer-events:none}
+.gauge .ring-bg{stroke:rgba(255,255,255,.08)}
+.gauge .ring{stroke:var(--accent);transition:stroke-dashoffset .25s;filter:drop-shadow(0 0 8px var(--accent-glow))}
+.run{width:176px;height:176px;border-radius:50%;background:radial-gradient(circle at 50% 30%,rgba(61,245,138,.35),rgba(61,245,138,.08) 60%),var(--glass);
+  border:1px solid rgba(61,245,138,.45);box-shadow:0 0 50px rgba(61,245,138,.2),inset 0 1px 0 rgba(255,255,255,.2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:var(--fd)}
+.run .big{font-size:26px;font-weight:800;letter-spacing:-.01em}
+.run .small{font-size:12.5px;color:var(--text-2)}
+.run.busy .big{font-size:40px}
+.run:disabled{opacity:.6}
+.phase{text-align:center;color:var(--text-2);font-size:14px;min-height:20px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin:var(--s4) 0}
+.tile{padding:var(--s3);text-align:center}
+.tile .k{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em}
+.tile .v{font-family:var(--fd);font-size:26px;font-weight:800;margin-top:2px}
+.tile .u{font-size:11.5px;color:var(--text-3)}
+.check{display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s3) var(--s4);text-align:left;width:100%}
+.box{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--stroke-hi);flex:none;display:grid;place-items:center;margin-top:1px}
+.check.on .box{background:var(--accent);border-color:var(--accent)}
+.check.on .box::after{content:"";width:6px;height:11px;border:solid var(--accent-ink);border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.cmp{width:100%;border-collapse:collapse;font-size:14px}
+.cmp td{padding:9px 4px;border-top:1px solid rgba(255,255,255,.06)}
+.cmp td:last-child{text-align:right;font-weight:600}
+.toast{position:fixed;left:50%;top:calc(var(--top) + 84px);transform:translate(-50%,-20px);opacity:0;z-index:80;padding:12px 18px;border-radius:var(--pill);
+  background:rgba(30,36,44,.95);border:1px solid var(--stroke);font-size:14px;transition:.25s;max-width:calc(100% - 40px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.update{position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--top) + 12px);z-index:90;display:none}
+.update.on{display:inline-flex}
+.limits p{margin:0 0 var(--s3);font-size:14.5px;color:var(--text-2)}
+.limits p b{color:var(--text)}
+.limits h4{margin:var(--s4) 0 6px;font-size:15px}
+.ver{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:center;margin-top:var(--s6)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".55"/><rect x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".7"/><rect x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".85"/><rect x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>
+    Bars
+  </div>
+  <div class="sp"></div>
+  <button class="iconbtn" id="infoBtn" aria-label="About the Data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
+</header>
+<button class="pill green update" id="updateBtn">Update Ready · Tap to Reload</button>
+
+<main>
+  <!-- MY PLACES -->
+  <section class="view on" id="v-places">
+    <h2>My Places</h2>
+    <p class="sub">Add the spots where you actually spend time. Hours per week decide how much each place counts.</p>
+    <div class="glass card carrier-btn" id="carrierCard" role="button" tabindex="0"></div>
+    <div class="section-label">Places</div>
+    <div id="placeList"></div>
+    <button class="btn primary block" id="addPlaceBtn" style="margin-top:var(--s2)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add Place</button>
+    <p class="note" style="margin-top:var(--s4)">Your places stay on this device only. Bars sends the address to look up coverage, but never saves it.</p>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="view" id="v-results">
+    <h2>Results</h2>
+    <p class="sub">Ranked by <b>Consistency Score</b>: how well each network holds up across your week, with a penalty for dead spots.</p>
+    <div id="results"></div>
+  </section>
+
+  <!-- TEST HERE -->
+  <section class="view" id="v-test">
+    <h2>Test Here</h2>
+    <p class="sub">Measure real speed where you're standing and add it to the community pool for this area.</p>
+    <div id="testCarrier"></div>
+    <button class="glass check" id="wifiCheck"><span class="box"></span><span><b>Wi-Fi Is Off</b><br><span class="muted">Safari can't tell Wi-Fi from cellular, so turn Wi-Fi off first or the result measures your Wi-Fi.</span></span></button>
+    <button class="glass check on" id="poolCheck" style="margin-top:var(--s2)"><span class="box"></span><span><b>Add to Community Pool</b><br><span class="muted">Anonymous: only the area hex (~0.1 km²), network and speeds. No IP or exact location.</span></span></button>
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg viewBox="0 0 240 240"><circle class="ring-bg" cx="120" cy="120" r="110" fill="none" stroke-width="8"/><circle class="ring" id="ring" cx="120" cy="120" r="110" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="691"/></svg>
+        <button class="run" id="runBtn"><span class="big">Run Test</span><span class="small">Uses ~40 MB of Data</span></button>
+      </div>
+    </div>
+    <div class="phase" id="phase"></div>
+    <div id="testOut"></div>
+    <p class="note" style="margin-top:var(--s4)">Speed only: Safari can't read signal bars (dBm) or detect your carrier. Your location is snapped to an area hex on your phone before anything is sent.</p>
+  </section>
+  <div class="ver" id="ver"></div>
+</main>
+
+<nav class="tabs glass" id="tabs">
+  <button data-v="places" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>My Places</button>
+  <button data-v="results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20v-5M10 20v-9M15 20v-12M20 20V4"/></svg>Results</button>
+  <button data-v="test"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 1 1 16 0"/><path d="M12 15l4-5"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/></svg>Test Here</button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast"></div>
+
+<script src="/vendor/h3-js.umd.js"></script>
+<script>
+'use strict';
+const APP_VERSION = 'bars-1';
+
+/* ======================= DATA ======================= */
+const NETS = {
+  'att':      { name:'AT&T',     cls:'c-att' },
+  'verizon':  { name:'Verizon',  cls:'c-verizon' },
+  't-mobile': { name:'T-Mobile', cls:'c-t-mobile' }
+};
+const NET_IDS = Object.keys(NETS);
+
+// Brand → network(s). Re-verified Nov 2026. Multi-network brands ask which network you're on.
+const BRANDS = [
+  { id:'att', name:'AT&T', nets:['att'], major:true },
+  { id:'verizon', name:'Verizon', nets:['verizon'], major:true },
+  { id:'t-mobile', name:'T-Mobile', nets:['t-mobile'], major:true },
+  { id:'visible', name:'Visible', nets:['verizon'] },
+  { id:'total', name:'Total Wireless', nets:['verizon'] },
+  { id:'xfinity', name:'Xfinity Mobile', nets:['verizon'] },
+  { id:'spectrum', name:'Spectrum Mobile', nets:['verizon'] },
+  { id:'cox', name:'Cox Mobile', nets:['verizon'] },
+  { id:'walmart', name:'Walmart Family Mobile', nets:['verizon'] },
+  { id:'tracfone', name:'Tracfone', nets:['verizon'] },
+  { id:'pageplus', name:'Page Plus', nets:['verizon'] },
+  { id:'mint', name:'Mint Mobile', nets:['t-mobile'] },
+  { id:'metro', name:'Metro by T-Mobile', nets:['t-mobile'] },
+  { id:'fi', name:'Google Fi', nets:['t-mobile'] },
+  { id:'tello', name:'Tello', nets:['t-mobile'] },
+  { id:'ultra', name:'Ultra Mobile', nets:['t-mobile'] },
+  { id:'optimum', name:'Optimum Mobile', nets:['t-mobile'] },
+  { id:'simple', name:'Simple Mobile', nets:['t-mobile'] },
+  { id:'textnow', name:'TextNow', nets:['t-mobile'] },
+  { id:'cricket', name:'Cricket Wireless', nets:['att'] },
+  { id:'h2o', name:'H2O Wireless', nets:['att'] },
+  { id:'boost', name:'Boost Mobile', nets:['att'], note:'Boost has its own 5G network too; Bars can only score its AT&T roaming.' },
+  { id:'usmobile', name:'US Mobile', nets:['verizon','att','t-mobile'] },
+  { id:'straighttalk', name:'Straight Talk', nets:['verizon','att','t-mobile'] },
+  { id:'consumer', name:'Consumer Cellular', nets:['att','t-mobile'] },
+  { id:'redpocket', name:'Red Pocket', nets:['att','verizon','t-mobile'] }
+];
+const brandById = id => BRANDS.find(b => b.id === id);
+
+/* ======================= STATE ======================= */
+const KEY = 'bars.v1';
+let S = load();
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.places)) return { coverage:{}, carrier:null, ...s }; } catch {}
+  return { places:[], carrier:null, coverage:{} };
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }
+const uid = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = s => document.querySelector(s);
+
+/* ======================= SCORING ======================= */
+// broadbandmap.com gives tech (5G NR / 4G LTE / 3G) + predicted outdoor RSRP (dBm), not speed tiers.
+// Tech sets the ceiling, signal strength scales it: strong 5G = 100, fair 5G ≈ 75, strong 4G = 70, fair 4G ≈ 53.
+const TECH_BASE = { '5G':100, '4G':70, '3G':30 };
+const SIG_PTS = [[-125,.30],[-115,.50],[-105,.75],[-95,.92],[-85,1]];
+function sigFactor(dbm){
+  if (dbm == null) return .85;
+  if (dbm <= SIG_PTS[0][0]) return SIG_PTS[0][1];
+  for (let i=1;i<SIG_PTS.length;i++){ const [x1,y1]=SIG_PTS[i-1],[x2,y2]=SIG_PTS[i]; if (dbm<=x2) return y1+(y2-y1)*(dbm-x1)/(x2-x1); }
+  return 1;
+}
+function fccScore(cov){ return cov ? Math.round(TECH_BASE[cov.tech] * sigFactor(cov.dbm)) : 0; }
+// Measured speed → 0–100
+const DOWN_PTS = [[0,0],[1,10],[5,35],[10,50],[25,70],[50,85],[100,95],[200,100]];
+function interp(pts,x){ if (x<=pts[0][0]) return pts[0][1]; for (let i=1;i<pts.length;i++){const[x1,y1]=pts[i-1],[x2,y2]=pts[i]; if(x<=x2) return y1+(y2-y1)*(x-x1)/(x2-x1);} return pts[pts.length-1][1]; }
+function communityScore(st){ let s = interp(DOWN_PTS, st.down); if (st.latency > 100) s -= Math.min(15,(st.latency-100)/20); return Math.max(0, Math.round(s)); }
+const MIN_TESTS = 5;
+function communityWeight(n){ return n < MIN_TESTS ? 0 : Math.min(.75, .35 + .04*(n - MIN_TESTS)); }
+
+function placeScore(place, net, pool){
+  const cov = S.coverage[place.hex];
+  if (!cov || !cov.carriers) return null;
+  const c = cov.carriers[net];
+  const fcc = fccScore(c);
+  const st = pool && pool[place.hex] && pool[place.hex][net];
+  const w = st ? communityWeight(st.n) : 0;
+  const score = w ? Math.round((1-w)*fcc + w*communityScore(st)) : fcc;
+  return { score, fcc, cov:c, st, community: w > 0 };
+}
+// Consistency = hours-weighted average − dead-spot penalty.
+// Penalty grows with the gap to your worst place and with how many hours you spend there;
+// a true dead zone (<25) adds a heavier hit scaled by its share of your week.
+function consistency(rows){
+  const valid = rows.filter(r => r.ps);
+  if (!valid.length) return null;
+  let totalH = valid.reduce((a,r)=>a+r.place.hours,0);
+  const wt = r => totalH > 0 ? r.place.hours/totalH : 1/valid.length;
+  const avg = valid.reduce((a,r)=>a + r.ps.score*wt(r), 0);
+  const worst = valid.reduce((a,r)=> r.ps.score < a.ps.score ? r : a);
+  const best = valid.reduce((a,r)=> r.ps.score > a.ps.score ? r : a);
+  const share = wt(worst);
+  const gap = Math.max(0, avg - worst.ps.score) * (.15 + .5*share);
+  const dead = worst.ps.score < 25 ? 30*share : 0;
+  const penalty = gap + dead;
+  return { score: Math.max(0, Math.min(100, Math.round(avg - penalty))), avg: Math.round(avg), penalty: Math.round(penalty), worst, best };
+}
+
+/* ======================= API ======================= */
+async function api(path, opts){
+  const r = await fetch(path, opts);
+  let j = {}; try { j = await r.json(); } catch {}
+  if (!r.ok) { const e = new Error(j.error || `Error ${r.status}`); e.status = r.status; throw e; }
+  return j;
+}
+const COV_TTL = 7*864e5;
+async function ensureCoverage(hex, force){
+  const c = S.coverage[hex];
+  if (!force && c && c.carriers && Date.now() - c.ts < COV_TTL) return c;
+  const j = await api(`/api/coverage?hex=${hex}`);
+  S.coverage[hex] = { carriers:j.carriers, fetched_at:j.fetched_at, ts:Date.now() }; save();
+  return S.coverage[hex];
+}
+async function getPool(hexes){
+  if (!hexes.length) return {};
+  try { return (await api(`/api/pool?hexes=${[...new Set(hexes)].join(',')}`)).stats || {}; } catch { return {}; }
+}
+
+/* ======================= UI HELPERS ======================= */
+function toast(msg, ms=2600){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),ms); }
+function openSheet(html, onMount){
+  const sh=$('#sheet'); sh.innerHTML='<div class="grab"></div>'+html; sh.scrollTop=0;
+  $('#scrim').classList.add('on'); requestAnimationFrame(()=>sh.classList.add('on'));
+  onMount && onMount(sh);
+}
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); }
+$('#scrim').onclick = closeSheet;
+function techPill(c){
+  if (!c) return '<span class="pill bad">No Coverage</span>';
+  const cls = c.tech==='5G' ? 'green' : c.tech==='4G' ? 'info' : 'warn';
+  return `<span class="pill ${cls}">${c.tech}${c.level ? ' · '+esc(c.level) : ''}</span>`;
+}
+function scoreColor(s){ return s>=75 ? 'var(--accent)' : s>=50 ? 'var(--warn)' : 'var(--bad)'; }
+function myNet(){ return S.carrier && S.carrier.network; }
+function carrierLabel(){
+  if (!S.carrier) return null;
+  const b = brandById(S.carrier.brand); const n = NETS[S.carrier.network];
+  return b && b.major ? n.name : `${b ? b.name : '?'} (${n.name})`;
+}
+
+/* ======================= TABS ======================= */
+let view = 'places';
+function show(v){
+  view = v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on', el.id==='v-'+v));
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  window.scrollTo(0,0);
+  if (v==='results') renderResults();
+  if (v==='test') renderTestCarrier();
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+
+/* ======================= MY PLACES ======================= */
+function renderCarrierCard(){
+  const el = $('#carrierCard'); const lbl = carrierLabel();
+  el.innerHTML = lbl
+    ? `<span class="dot ${NETS[S.carrier.network].cls}"></span><div class="grow"><div class="muted">Your Carrier</div><div class="title">${esc(lbl)}</div></div><span class="pill">Change</span>`
+    : `<span class="dot" style="color:var(--text-3)"></span><div class="grow"><div class="muted">Your Carrier</div><div class="title">Pick Your Carrier</div></div><span class="pill green">Set</span>`;
+}
+$('#carrierCard').onclick = () => openCarrierPicker();
+function renderPlaces(){
+  renderCarrierCard();
+  const el = $('#placeList');
+  if (!S.places.length){
+    el.innerHTML = `<div class="glass card empty"><div class="big">📍</div><div class="title">No Places Yet</div><p class="muted">Add home, work, the gym, the courts. Wherever you spend real hours.</p></div>`;
+    return;
+  }
+  el.innerHTML = S.places.map(p => `
+    <div class="glass card row" data-id="${p.id}" role="button" tabindex="0">
+      <div class="grow"><div class="title ellip">${esc(p.name)}</div><div class="muted ellip">${esc(p.address)}</div></div>
+      <div class="hours">${p.hours} hr/wk</div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity=".4"><path d="M9 6l6 6-6 6"/></svg>
+    </div>`).join('');
+  el.querySelectorAll('[data-id]').forEach(r => r.onclick = () => openPlaceEditor(S.places.find(p=>p.id===r.dataset.id)));
+}
+$('#addPlaceBtn').onclick = () => openPlaceEditor(null);
+
+const PRESETS = ['Home','Work','Gym','Courts','School','Partner’s Place'];
+function openPlaceEditor(place){
+  const p = place ? {...place} : { id:uid(), name:'', address:'', lat:null, lng:null, hex:null, hours:10 };
+  let picked = place ? { address:p.address, lat:p.lat, lng:p.lng, hex:p.hex } : null;
+  openSheet(`
+    <h3>${place ? 'Edit Place' : 'Add Place'}</h3>
+    <label class="f">Name</label>
+    <input class="input" id="pName" placeholder="Home" value="${esc(p.name)}" maxlength="40" autocomplete="off">
+    <div class="chips" style="margin-top:8px">${PRESETS.map(n=>`<button class="chip" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+    <label class="f">Address</label>
+    <div class="row"><input class="input grow" id="pAddr" placeholder="123 Main St, Fenton, MI" value="${esc(place ? p.address : '')}" autocomplete="street-address" enterkeyhint="search">
+      <button class="btn small" id="pFind" style="height:48px">Find</button></div>
+    <button class="btn small" id="pHere" style="margin-top:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3L3 10.5l7.5 2.9L13.4 21z"/></svg>Use My Location</button>
+    <div class="matches" id="pMatches"></div>
+    <div class="err" id="pErr"></div>
+    <label class="f">Hours per Week</label>
+    <div class="stepper"><button id="hMinus" aria-label="Fewer hours">−</button><div class="val" id="hVal">${p.hours}</div><button id="hPlus" aria-label="More hours">+</button><span class="muted">hrs</span></div>
+    <div class="chips" style="margin-top:10px">${[5,10,20,40,56,84].map(h=>`<button class="chip" data-h="${h}">${h}${h===56?' (Sleep)':h===84?' (Home)':''}</button>`).join('')}</div>
+    <div class="btnrow">
+      ${place ? '<button class="btn danger" id="pDel">Delete</button>' : '<button class="btn" id="pCancel">Cancel</button>'}
+      <button class="btn primary" id="pSave">Save</button>
+    </div>`, sh => {
+    const err = m => sh.querySelector('#pErr').textContent = m || '';
+    const setH = h => { p.hours = Math.max(0, Math.min(168, h)); sh.querySelector('#hVal').textContent = p.hours; };
+    sh.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{ sh.querySelector('#pName').value=b.dataset.n; });
+    sh.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>setH(+b.dataset.h));
+    sh.querySelector('#hMinus').onclick=()=>setH(p.hours - (p.hours>10?5:1));
+    sh.querySelector('#hPlus').onclick=()=>setH(p.hours + (p.hours>=10?5:1));
+    const matchesEl = sh.querySelector('#pMatches');
+    const showMatches = list => {
+      matchesEl.innerHTML = list.map((m,i)=>`<button class="match ${i===0?'on':''}" data-i="${i}">${esc(m.address)}</button>`).join('');
+      picked = list[0];
+      matchesEl.querySelectorAll('.match').forEach(b=>b.onclick=()=>{ matchesEl.querySelectorAll('.match').forEach(x=>x.classList.remove('on')); b.classList.add('on'); picked=list[+b.dataset.i]; });
+    };
+    const find = async () => {
+      const q = sh.querySelector('#pAddr').value.trim(); err(); matchesEl.innerHTML = '<div class="loading"><div class="spin"></div>Looking Up Address…</div>';
+      try { const j = await api(`/api/geocode?q=${encodeURIComponent(q)}`); showMatches(j.matches); }
+      catch(e){ matchesEl.innerHTML=''; picked=null; err(e.message); }
+    };
+    sh.querySelector('#pFind').onclick = find;
+    sh.querySelector('#pAddr').onkeydown = e => { if (e.key==='Enter'){ e.preventDefault(); find(); } };
+    sh.querySelector('#pAddr').oninput = () => { picked = null; matchesEl.innerHTML=''; };
+    sh.querySelector('#pHere').onclick = async () => {
+      err(); matchesEl.innerHTML = '<div class="loading"><div class="spin"></div>Getting Your Location…</div>';
+      try {
+        const pos = await locate();
+        const lat=+pos.coords.latitude.toFixed(5), lng=+pos.coords.longitude.toFixed(5);
+        picked = { address:'Pinned Location', lat, lng, hex:h3.latLngToCell(lat,lng,9) };
+        sh.querySelector('#pAddr').value = 'Pinned Location';
+        matchesEl.innerHTML = `<div class="match on">📍 Pinned where you are now (saved on this device only)</div>`;
+      } catch(e){ matchesEl.innerHTML=''; err(e.message); }
+    };
+    const cancel = sh.querySelector('#pCancel'); if (cancel) cancel.onclick = closeSheet;
+    const del = sh.querySelector('#pDel');
+    if (del) del.onclick = () => { if (!confirmTap(del)) return; S.places = S.places.filter(x=>x.id!==p.id); save(); closeSheet(); renderPlaces(); toast('Place Deleted'); };
+    sh.querySelector('#pSave').onclick = async () => {
+      p.name = sh.querySelector('#pName').value.trim();
+      if (!p.name) return err('Give it a name.');
+      if (!picked){ await find(); if (!picked) return; return err('Check the match above, then tap Save.'); }
+      Object.assign(p, { address:picked.address, lat:picked.lat, lng:picked.lng, hex:picked.hex });
+      const i = S.places.findIndex(x=>x.id===p.id); if (i>=0) S.places[i]=p; else S.places.push(p);
+      save(); closeSheet(); renderPlaces(); toast(place ? 'Place Updated' : 'Place Added');
+      ensureCoverage(p.hex).catch(()=>{});
+    };
+  });
+}
+function confirmTap(btn){ if (btn.dataset.armed) return true; btn.dataset.armed='1'; btn.textContent='Tap Again to Delete'; setTimeout(()=>{ delete btn.dataset.armed; btn.textContent='Delete'; },3000); return false; }
+function locate(){
+  return new Promise((res, rej) => {
+    if (!navigator.geolocation) return rej(new Error('Location is not available in this browser.'));
+    navigator.geolocation.getCurrentPosition(res, e => rej(new Error(e.code===1 ? 'Location permission was denied. Allow it in Settings → Safari → Location.' : 'Couldn’t get your location. Try again outside or near a window.')), { enableHighAccuracy:true, timeout:15000, maximumAge:30000 });
+  });
+}
+
+/* carrier picker */
+function openCarrierPicker(after){
+  let sel = S.carrier ? { ...S.carrier } : null;
+  const draw = sh => {
+    const b = sel && brandById(sel.brand);
+    sh.querySelector('#netPick').innerHTML = b && b.nets.length > 1 ? `
+      <label class="f">Which Network Is Your ${esc(b.name)} Line On?</label>
+      <div class="seg">${b.nets.map(n=>`<button data-net="${n}" class="${sel.network===n?'on':''}">${NETS[n].name}</button>`).join('')}</div>
+      <p class="note" style="margin-top:6px">Check your ${esc(b.name)} account or app if you're not sure.</p>` : (b && b.note ? `<p class="note" style="margin-top:10px">${esc(b.note)}</p>` : '');
+    sh.querySelectorAll('[data-net]').forEach(x=>x.onclick=()=>{ sel.network=x.dataset.net; draw(sh); });
+    sh.querySelector('#cSave').disabled = !(sel && sel.network);
+  };
+  openSheet(`
+    <h3>Your Carrier</h3>
+    <p class="sub" style="margin-top:-8px">Used to tag your speed tests. Safari can't detect it, so pick it here.</p>
+    <input class="input" id="cSearch" placeholder="Search Carriers" autocomplete="off">
+    <div class="list-brand" id="cList" style="margin-top:10px"></div>
+    <div id="netPick"></div>
+    <div class="btnrow"><button class="btn" id="cCancel">Cancel</button><button class="btn primary" id="cSave">Save</button></div>`, sh => {
+    const list = sh.querySelector('#cList');
+    const renderList = q => {
+      q = (q||'').toLowerCase();
+      list.innerHTML = BRANDS.filter(b=>!q || b.name.toLowerCase().includes(q)).map(b=>`
+        <button class="brand-opt ${sel && sel.brand===b.id?'on':''}" data-b="${b.id}">
+          <span class="dot ${b.nets.length===1?NETS[b.nets[0]].cls:''}" style="${b.nets.length>1?'color:var(--text-2)':''}"></span>
+          <span>${esc(b.name)}</span><span class="nets">${b.major?'Network':b.nets.map(n=>NETS[n].name).join(' / ')}</span></button>`).join('');
+      list.querySelectorAll('[data-b]').forEach(x=>x.onclick=()=>{
+        const b = brandById(x.dataset.b);
+        sel = { brand:b.id, network: b.nets.length===1 ? b.nets[0] : (sel && sel.brand===b.id ? sel.network : null) };
+        list.querySelectorAll('.brand-opt').forEach(y=>y.classList.toggle('on', y===x)); draw(sh);
+      });
+    };
+    renderList();
+    sh.querySelector('#cSearch').oninput = e => renderList(e.target.value);
+    sh.querySelector('#cCancel').onclick = closeSheet;
+    sh.querySelector('#cSave').onclick = () => { S.carrier = sel; save(); closeSheet(); renderPlaces(); renderTestCarrier(); toast('Carrier Saved'); after && after(); };
+    draw(sh);
+  });
+}
+
+/* ======================= RESULTS ======================= */
+let resultsToken = 0;
+async function renderResults(){
+  const el = $('#results'); const token = ++resultsToken;
+  if (!S.places.length){
+    el.innerHTML = `<div class="glass card empty"><div class="big">📶</div><div class="title">Add Places First</div><p class="muted">Bars ranks carriers across the places you spend your week.</p><button class="btn primary" onclick="show('places')">Go to My Places</button></div>`;
+    return;
+  }
+  const hexes = [...new Set(S.places.map(p=>p.hex))];
+  const missing = hexes.filter(h => !(S.coverage[h] && S.coverage[h].carriers && Date.now()-S.coverage[h].ts < COV_TTL));
+  if (missing.length) el.innerHTML = `<div class="glass loading"><div class="spin"></div>Checking Coverage at ${missing.length} Place${missing.length>1?'s':''}…</div>`;
+  const failed = new Set();
+  // 2 at a time, gentle on the coverage API
+  const q = [...missing];
+  await Promise.all([0,1].map(async () => { while (q.length){ const h=q.shift(); try { await ensureCoverage(h); } catch(e){ failed.add(h); failed.msg = e.message; } } }));
+  const pool = await getPool(hexes);
+  if (token !== resultsToken) return;
+
+  const ranked = NET_IDS.map(net => {
+    const rows = S.places.map(place => ({ place, ps: placeScore(place, net, pool) }));
+    return { net, rows, c: consistency(rows) };
+  }).filter(r=>r.c).sort((a,b)=>b.c.score - a.c.score || b.c.avg - a.c.avg);
+
+  const mine = myNet();
+  let html = '';
+  if (failed.size) html += `<div class="glass banner"><span>⚠️</span><div><b>Coverage missing for ${failed.size} place${failed.size>1?'s':''}.</b> ${esc(failed.msg||'')} Those places are left out of the scores below. <button class="pill" id="retryCov" style="margin-top:6px">Try Again</button></div></div>`;
+  if (!ranked.length){ el.innerHTML = html || '<div class="glass card">No coverage data yet.</div>'; bindRetry(); return; }
+
+  const totalH = S.places.reduce((a,p)=>a+p.hours,0);
+  html += `<div class="glass banner"><span>ℹ️</span><div>Scores use <b>FCC outdoor estimates</b> unless a place has ${MIN_TESTS}+ community tests. Indoor signal can be much worse. <a href="#" id="limitsLink">How This Works</a></div></div>`;
+  html += ranked.map((r,i) => {
+    const n = NETS[r.net]; const c = r.c;
+    const rides = BRANDS.filter(b=>!b.major && b.nets.includes(r.net));
+    return `<div class="glass rank ${i===0?'first':''}">
+      <div class="head"><div class="pos">${i+1}</div>
+        <div><div class="title"><span class="dot ${n.cls}" style="display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:1px"></span>${n.name}</div>
+        ${mine===r.net?`<div class="you">Your Network${S.carrier && !brandById(S.carrier.brand).major ? ' via '+esc(brandById(S.carrier.brand).name):''}</div>`:''}</div>
+        <div class="score"><div class="n" style="color:${scoreColor(c.score)}">${c.score}</div><div class="l">Consistency</div></div></div>
+      <div class="meter"><i style="width:${c.score}%"></i></div>
+      <div class="breakdown"><span>Weighted Avg <b>${c.avg}</b></span><span>Dead-Spot Penalty <b>−${c.penalty}</b></span><span>${totalH} hrs/wk</span></div>
+      <div class="bw"><div><div class="k">Best Spot</div><div class="v ellip">${esc(c.best.place.name)} · ${c.best.ps.score}</div></div>
+        <div><div class="k">Worst Spot</div><div class="v ellip" style="color:${scoreColor(c.worst.ps.score)}">${esc(c.worst.place.name)} · ${c.worst.ps.score}</div></div></div>
+      <details class="places" ${i===0?'open':''}><summary>Per-Place Breakdown</summary>
+        ${r.rows.map(({place,ps}) => `<div class="prow">
+          <div class="nm ellip">${esc(place.name)}<small>${place.hours} hr/wk</small></div>
+          ${ps ? techPill(ps.cov) + (ps.community ? `<span class="pill green">Community Tested (${ps.st.n} Tests)</span>` : `<span class="pill">FCC Estimate${ps.st&&ps.st.n?` · ${ps.st.n} Test${ps.st.n>1?'s':''}`:''}</span>`) : '<span class="pill warn">Coverage Unavailable</span>'}
+          <div class="ps" style="color:${ps?scoreColor(ps.score):'var(--text-3)'}">${ps?ps.score:'–'}</div></div>`).join('')}
+      </details>
+      ${rides.length?`<div class="rides"><div class="k">Rides This Network</div><div class="chips">${rides.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:''}
+    </div>`;
+  }).join('');
+  html += `<p class="note">Multi-network carriers (US Mobile, Straight Talk, Consumer Cellular, Red Pocket) can run on more than one of these, so they show under each. MVNO data can be slowed behind the network's own customers when towers are busy.</p>`;
+  el.innerHTML = html;
+  bindRetry();
+  const ll = $('#limitsLink'); if (ll) ll.onclick = e => { e.preventDefault(); openLimits(); };
+  function bindRetry(){ const b=$('#retryCov'); if (b) b.onclick=()=>{ failed.forEach(h=>delete S.coverage[h]); renderResults(); }; }
+}
+
+/* ======================= TEST HERE ======================= */
+function renderTestCarrier(){
+  const lbl = carrierLabel();
+  $('#testCarrier').innerHTML = `<div class="glass card carrier-btn" id="tcBtn" role="button" style="margin-bottom:var(--s2)">
+    <span class="dot ${lbl?NETS[S.carrier.network].cls:''}" style="${lbl?'':'color:var(--text-3)'}"></span>
+    <div class="grow"><div class="muted">Testing On</div><div class="title">${lbl?esc(lbl):'Pick Your Carrier'}</div></div>
+    <span class="pill ${lbl?'':'green'}">${lbl?'Change':'Set'}</span></div>`;
+  $('#tcBtn').onclick = () => openCarrierPicker();
+}
+const toggle = el => el.onclick = () => el.classList.toggle('on');
+toggle($('#wifiCheck')); toggle($('#poolCheck'));
+
+const CF = 'https://speed.cloudflare.com';
+const RING = 691;
+function setRing(frac){ $('#ring').style.strokeDashoffset = RING * (1 - Math.max(0, Math.min(1, frac))); }
+const logScale = mbps => Math.min(1, Math.log10(1 + mbps) / Math.log10(1001)); // 0–1000 Mbps
+function phase(t){ $('#phase').textContent = t || ''; }
+function runLabel(big, small){ $('#runBtn').innerHTML = `<span class="big">${big}</span>${small?`<span class="small">${small}</span>`:''}`; }
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const median = a => { const s=[...a].sort((x,y)=>x-y); const m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+
+function makeTarget(useFallback){
+  return useFallback
+    ? { name:'Bars Server', max:4e6, down:n=>`/api/speed?bytes=${n}&r=${Math.random()}`, up:'/api/speed' }
+    : { name:'Cloudflare', max:25e6, down:n=>`${CF}/__down?bytes=${n}&r=${Math.random()}`, up:`${CF}/__up` };
+}
+async function timedFetch(url, opts, onBytes){
+  const t0 = performance.now();
+  const r = await fetch(url, { cache:'no-store', ...opts });
+  if (!r.ok) throw new Error('speed endpoint '+r.status);
+  let bytes = 0;
+  if (r.body && r.body.getReader){
+    const rd = r.body.getReader();
+    for(;;){ const {done,value} = await rd.read(); if (done) break; bytes += value.length; onBytes && onBytes(bytes, performance.now()-t0); }
+  } else { bytes = (await r.arrayBuffer()).byteLength; }
+  return { ms: performance.now()-t0, bytes };
+}
+async function measureLatency(T){
+  const ts=[];
+  for (let i=0;i<8;i++){ const {ms} = await timedFetch(T.down(0)); if (i>1) ts.push(ms); }
+  return median(ts);
+}
+async function measureDown(T){
+  const sizes = [1e5, 1e6, 5e6, 1e7, 25e6].filter(s=>s<=T.max);
+  const samples=[]; let i=0; const start=performance.now();
+  while (performance.now()-start < 8000){
+    const size = sizes[Math.min(i, sizes.length-1)];
+    const {ms,bytes} = await timedFetch(T.down(size), {}, (b,t)=>{ if (t>150){ const m=b*8/t/1000; runLabel(m.toFixed(m<10?1:0),'Mbps Down'); setRing(logScale(m)); } });
+    const mbps = bytes*8/ms/1000;
+    if (size>=1e6) samples.push(mbps);
+    if (ms < 1500 && i < sizes.length-1) i++;
+    if (samples.length >= 6) break;
+  }
+  if (!samples.length) throw new Error('Download test too slow to measure.');
+  const top = samples.sort((a,b)=>b-a).slice(0, Math.max(1, Math.ceil(samples.length/2)));
+  return top.reduce((a,b)=>a+b,0)/top.length;
+}
+async function measureUp(T){
+  const sizes = [1e5, 1e6, 3e6, 8e6].filter(s=>s<=T.max);
+  const samples=[]; let i=0; const start=performance.now();
+  const blobs = {};
+  while (performance.now()-start < 7000){
+    const size = sizes[Math.min(i, sizes.length-1)];
+    blobs[size] ||= new Uint8Array(size).map((_,k)=>k*31 & 255);
+    const t0 = performance.now();
+    const r = await fetch(T.up, { method:'POST', body:blobs[size], cache:'no-store' });
+    await r.arrayBuffer().catch(()=>{});
+    const ms = performance.now()-t0; const mbps = size*8/ms/1000;
+    runLabel(mbps.toFixed(mbps<10?1:0),'Mbps Up'); setRing(logScale(mbps));
+    if (size>=1e6) samples.push(mbps);
+    if (ms < 1500 && i < sizes.length-1) i++;
+    if (samples.length >= 4) break;
+  }
+  if (!samples.length) throw new Error('Upload test too slow to measure.');
+  const top = samples.sort((a,b)=>b-a).slice(0, Math.max(1, Math.ceil(samples.length/2)));
+  return top.reduce((a,b)=>a+b,0)/top.length;
+}
+
+let testing = false;
+$('#runBtn').onclick = async () => {
+  if (testing) return;
+  if (!S.carrier || !S.carrier.network){ openCarrierPicker(()=>{}); return toast('Pick your carrier first'); }
+  if (!$('#wifiCheck').classList.contains('on')){ toast('Turn off Wi-Fi, then check “Wi-Fi Is Off”'); $('#wifiCheck').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300}); return; }
+  testing = true; $('#runBtn').classList.add('busy'); $('#testOut').innerHTML=''; setRing(0);
+  const pool = $('#poolCheck').classList.contains('on');
+  let hex = null;
+  try {
+    phase('Finding Your Area…'); runLabel('…');
+    // Location is snapped to the hex right here; the coordinates are never stored or sent.
+    try { const pos = await locate(); hex = h3.latLngToCell(pos.coords.latitude, pos.coords.longitude, 9); }
+    catch(e){ if (pool) throw e; } // without pooling, a test can still run (no area comparison)
+    let T = makeTarget(false);
+    phase('Measuring Latency…');
+    let latency;
+    try { latency = await measureLatency(T); }
+    catch { T = makeTarget(true); latency = await measureLatency(T); }
+    runLabel(Math.round(latency),'ms Latency');
+    phase('Measuring Download…'); const down = await measureDown(T);
+    phase('Measuring Upload…'); const up = await measureUp(T);
+    setRing(logScale(down)); runLabel(down.toFixed(down<10?1:0),'Mbps Down');
+    const result = { down, up, latency, hex, net:S.carrier.network, at:Date.now(), target:T.name };
+    S.lastTest = result; save();
+    let pooledMsg = 'Not added to the pool.';
+    if (pool && hex){
+      phase('Adding to Community Pool…');
+      try { await api('/api/test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ hex, carrier:result.net, down, up, latency, version:APP_VERSION }) }); pooledMsg = 'Added to the community pool. Thanks!'; }
+      catch(e){ pooledMsg = e.status===409 ? 'Bars updated. Reload, then test again to pool it.' : e.message; if (e.status===409) $('#updateBtn').classList.add('on'); }
+    }
+    phase('');
+    await renderTestResult(result, pooledMsg);
+  } catch(e){
+    phase(''); runLabel('Run Test','Uses ~40 MB of Data'); setRing(0);
+    $('#testOut').innerHTML = `<div class="glass banner"><span>⚠️</span><div>${esc(e.message || 'Test failed.')}</div></div>`;
+  } finally { testing = false; $('#runBtn').classList.remove('busy'); }
+};
+async function renderTestResult(r, pooledMsg){
+  const fmt = (v,d) => v.toFixed(v<10?1:0);
+  let cmp = '';
+  if (r.hex){
+    let cov=null, st=null;
+    try { cov = (await ensureCoverage(r.hex)).carriers[r.net]; } catch {}
+    try { st = ((await getPool([r.hex]))[r.hex] || {})[r.net]; } catch {}
+    cmp = `<div class="glass card"><div class="title" style="margin-bottom:6px">This Area on ${NETS[r.net].name}</div>
+      <table class="cmp">
+        <tr><td>Your Test</td><td>${fmt(r.down)} ↓ · ${fmt(r.up)} ↑ · ${Math.round(r.latency)} ms</td></tr>
+        <tr><td>FCC Estimate</td><td>${cov ? `${cov.tech} · ${esc(cov.level||'')}${cov.dbm!=null?` (${Math.round(cov.dbm)} dBm)`:''}` : (cov===null?'No Coverage Listed':'Unavailable')}</td></tr>
+        <tr><td>Community Median</td><td>${st ? `${fmt(st.down)} ↓ · ${fmt(st.up)} ↑ · ${Math.round(st.latency)} ms <span class="muted">(${st.n} test${st.n>1?'s':''})</span>` : 'No Tests Yet'}</td></tr>
+      </table>
+      ${st && st.n < MIN_TESTS ? `<p class="note" style="margin:8px 0 0">Community data starts counting in Results at ${MIN_TESTS} tests in the last 6 months.</p>` : ''}</div>`;
+  }
+  $('#testOut').innerHTML = `
+    <div class="tiles"><div class="glass tile"><div class="k">Download</div><div class="v">${fmt(r.down)}</div><div class="u">Mbps</div></div>
+      <div class="glass tile"><div class="k">Upload</div><div class="v">${fmt(r.up)}</div><div class="u">Mbps</div></div>
+      <div class="glass tile"><div class="k">Latency</div><div class="v">${Math.round(r.latency)}</div><div class="u">ms</div></div></div>
+    ${cmp}
+    <p class="note">${esc(pooledMsg)} Measured against ${esc(r.target)}.</p>`;
+  runLabel('Run Again','Uses ~40 MB of Data');
+}
+
+/* ======================= LIMITS ======================= */
+function openLimits(){
+  openSheet(`<h3>About the Data</h3><div class="limits">
+    <p><b>Coverage is an estimate, not a measurement.</b> It comes from the FCC's Broadband Data Collection, where carriers report their own modeled coverage. Bars looks it up through broadbandmap.com.</p>
+    <p><b>It's outdoor only.</b> Inside buildings, basements and metal-roof stores, signal can be much worse than the map says.</p>
+    <p><b>Safari can't read your signal bars or detect your carrier.</b> You pick your carrier, and Test Here measures speed and latency, not dBm.</p>
+    <p><b>Community data starts empty.</b> A place switches from "FCC Estimate" to "Community Tested" once its area has ${MIN_TESTS}+ tests on that network in the last 6 months, and those tests count more as they pile up.</p>
+    <p><b>MVNOs ride the big three's towers</b> but can be slowed first when a tower is busy.</p>
+    <h4>How the Consistency Score Works</h4>
+    <p>Each place gets 0–100 per network: strong 5G ≈ 100, weaker 5G ≈ 75, strong 4G ≈ 70, weak 4G ≈ 50 or less, none = 0. Places are averaged by your hours per week, then a <b>dead-spot penalty</b> comes off. It's bigger when your worst place is far below the rest, and much bigger when you spend a lot of hours there. Consistency means no dead spots, not a high average.</p>
+    <h4>Privacy</h4>
+    <p>Places and your carrier are stored only on this device. Speed tests send the area hex (about a city block), network and speeds. No account, no IP, no exact location.</p>
+  </div><button class="btn block" onclick="closeSheet()" style="margin-top:var(--s3)">Got It</button>`);
+}
+$('#infoBtn').onclick = openLimits;
+
+/* ======================= VERSION / iOS ======================= */
+$('#ver').textContent = APP_VERSION;
+async function checkVersion(){
+  try { const j = await (await fetch('/version.json?'+Date.now(), {cache:'no-store'})).json(); if (j.version && j.version !== APP_VERSION) $('#updateBtn').classList.add('on'); } catch {}
+}
+$('#updateBtn').onclick = () => location.reload();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
+function fixGap(){
+  if (!(navigator.standalone || matchMedia('(display-mode: standalone)').matches)) return;
+  const probe = document.createElement('div'); probe.style.cssText='position:fixed;inset:0;pointer-events:none;visibility:hidden';
+  document.body.appendChild(probe); const h = probe.getBoundingClientRect().height; probe.remove();
+  const gap = Math.max(0, Math.min(80, screen.height - h));
+  document.documentElement.style.setProperty('--gap-fix', gap > 4 && gap < 80 ? gap+'px' : '0px');
+}
+addEventListener('resize', fixGap);
+
+/* ======================= INIT ======================= */
+renderPlaces(); fixGap(); checkVersion();
+if (!S.places.length && !S.carrier) setTimeout(()=>toast('Start by picking your carrier and adding a place'), 600);
+</script>
+</body>
+</html>

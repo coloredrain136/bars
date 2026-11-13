@@ -1,0 +1,8 @@
+{
+  "name": "bars",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bars: which carrier holds up across the places you spend your time",
+  "engines": { "node": ">=20" },
+  "dependencies": { "h3-js": "4.5.0" }
+}
