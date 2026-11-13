@@ -54,18 +54,24 @@ function inUS(lat, lng) {
 }
 
 // ---------- Supabase REST (secret key, server only) ----------
+// Tolerate stray whitespace/quotes from pasting the key into Vercel.
+const cleanEnv = v => String(v || '').trim().replace(/^['"]|['"]$/g, '').trim();
 function sbHeaders(extra = {}) {
-  const key = process.env.SUPABASE_SECRET_KEY;
+  const key = cleanEnv(process.env.SUPABASE_SECRET_KEY);
   const h = { apikey: key, 'Content-Type': 'application/json', ...extra };
   if (key && key.startsWith('eyJ')) h.Authorization = `Bearer ${key}`; // legacy service_role JWT
   return h;
 }
 async function sb(path, opts = {}) {
-  const url = `${process.env.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/${path}`;
+  const url = `${cleanEnv(process.env.SUPABASE_URL).replace(/\/$/, '')}/rest/v1/${path}`;
   const r = await fetch(url, { ...opts, headers: sbHeaders(opts.headers) });
   const text = await r.text();
   let data = null; try { data = text ? JSON.parse(text) : null; } catch { data = text; }
-  if (!r.ok) { const e = new Error(`supabase ${r.status}: ${text.slice(0, 200)}`); e.status = r.status; throw e; }
+  if (!r.ok) {
+    const k = cleanEnv(process.env.SUPABASE_SECRET_KEY);
+    const kind = k.startsWith('sb_secret_') ? 'sb_secret' : k.startsWith('sb_publishable_') ? 'sb_publishable (wrong key type)' : k.startsWith('eyJ') ? 'legacy JWT' : 'unknown format';
+    const e = new Error(`supabase ${r.status} [key: ${kind}, len ${k.length}]: ${text.slice(0, 200)}`); e.status = r.status; throw e;
+  }
   return { data, headers: r.headers };
 }
 function supabaseReady() { return !!(process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY); }
