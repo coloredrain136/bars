@@ -440,12 +440,89 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
 .t-mac .grid{display:grid;grid-template-columns:1fr 1.4fr;gap:6px;padding:8px}
 .t-mac .blk{border-radius:6px;background:rgba(255,255,255,.06);border:1px solid var(--edge)}
 .t-mac .blk.map{background:radial-gradient(circle at 40% 40%,#1f4636,#0a1a14);height:112px}
+/* ---- entrance animation (bars-4, from the Liftoff dashboard) ----
+   Plays on first load + tab switches only, never on live data updates. Off with Reduce Motion. */
+@keyframes hdrIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+body.boot header .brand,body.boot header .tabs-top,body.boot header .hdr-right > *{animation:hdrIn .9s cubic-bezier(.2,.8,.2,1) both}
+body.boot header .tabs-top{animation-delay:.08s}
+body.boot header .hdr-right > *:nth-child(1){animation-delay:.16s}
+body.boot header .hdr-right > *:nth-child(2){animation-delay:.24s}
+@keyframes bgIn{from{transform:scale(1.14);filter:blur(10px) brightness(.35)}to{transform:none;filter:none}}
+body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) both;transform-origin:85% 10%}
+@keyframes playIn{from{opacity:0;transform:translateY(22px) scale(.97);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.pi{animation:playIn .75s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes growSpring{0%{transform:scaleX(0)}70%{transform:scaleX(1.04)}100%{transform:scaleX(1)}}
+@keyframes rowIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes popIn{0%{opacity:0;transform:scale(.6)}70%{opacity:1;transform:scale(1.06)}100%{transform:scale(1)}}
+.pi .meter i{transform-origin:left;animation:growX 1s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d,0s) + .3s)}
+.pi .wk-bar i{transform-origin:left;animation:growSpring .9s cubic-bezier(.34,1.4,.64,1) both;animation-delay:calc(var(--d,0s) + .35s + var(--r,0) * 90ms)}
+.pi .wk-row,.pi .prow,.pi .chips .chip,.pi .rides .chip{animation:rowIn .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d,0s) + .5s + var(--r,0) * 55ms)}
+.pi .wk-row .pc,.pi .score .n,.pi .tile .v{animation:rowIn .5s ease both;animation-delay:calc(var(--d,0s) + .25s)}
+.pi .pill{animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--d,0s) + .55s + var(--r,0) * 55ms)}
+.pin.pop{animation:popIn .55s cubic-bezier(.34,1.56,.64,1) both;animation-delay:var(--d,0s)}
+/* things that keep moving */
+.brand .lb{transform-origin:bottom;animation:lbar 3.2s ease-in-out infinite}
+.brand .lb:nth-child(2){animation-delay:.12s}.brand .lb:nth-child(3){animation-delay:.24s}.brand .lb:nth-child(4){animation-delay:.36s}
+@keyframes lbar{0%,70%,100%{transform:scaleY(1)}80%{transform:scaleY(.6)}90%{transform:scaleY(1.05)}}
+.sheen::after{opacity:1!important;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.13) 50%,transparent 65%)!important;background-size:250% 100%!important;animation:sheen 5s ease-in-out infinite}
+@keyframes sheen{0%,62%{background-position:130% 0}100%{background-position:-130% 0}}
+.strip.bad,.strip.warn{position:relative;overflow:hidden}
+.strip.bad::after,.strip.warn::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.10) 50%,transparent 65%);background-size:250% 100%;animation:sheen 5s ease-in-out infinite}
+
+/* ---- iPhone Duo: closed (5.4" outer, ~466x678pt) and other short phones ---- */
+@media (max-width:599px) and (max-height:760px){
+  :root{--top:max(env(safe-area-inset-top),12px)}
+  header{padding-bottom:var(--s2)}
+  .brand{font-size:23px}.brand svg{width:23px;height:23px}
+  .strip{padding:8px 12px;margin-bottom:var(--s2);font-size:13px}
+  .tiles{gap:6px;margin-bottom:var(--s2)}
+  .tile{padding:10px 12px}.tile .v{font-size:22px}.tile .s{font-size:12px}
+  .chiprow{margin-bottom:var(--s2)}
+  h2{font-size:22px;margin-top:var(--s2)}
+  .rank .score .n{font-size:34px}
+  nav.tabs button{height:46px}
+  main{padding-bottom:calc(74px + var(--bot) + var(--gap-fix) + 16px)}
+  .map-view-slot{height:calc(100dvh - var(--top) - 290px - var(--bot) - var(--gap-fix));min-height:300px}
+  .gauge{width:210px;height:210px}.run{width:156px;height:156px}
+  .tour-stage{height:210px}
+  .tour-body{min-height:120px;padding-top:12px}
+  .tour-body h3{font-size:21px}.tour-body p{font-size:14px}
+  .tour-stage .tslide > *{transform:scale(.82)}
+}
+/* ---- iPhone Duo: open (7.6" inner, ~669pt wide portrait) + iPad portrait ---- */
+@media (min-width:600px) and (max-width:899px){
+  main{max-width:860px;padding-left:var(--s6);padding-right:var(--s6)}
+  .tiles{grid-template-columns:repeat(4,1fr)}
+  .res-grid{display:flex;flex-direction:column}
+  .map-slot-res{display:block;order:-1;height:min(46vh,440px);margin-bottom:var(--s3)}
+  #results{display:grid;grid-template-columns:1fr;gap:0}
+  .pl-grid{display:flex;flex-direction:column}
+  .pl-side{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-bottom:var(--s3);align-items:start}
+  .tile .v{font-size:21px}
+  .pl-side .card{margin:0}
+  #weekCard{display:block}
+  #placeList{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+  #placeList .card{margin:0}
+  #placeList .empty{grid-column:1/-1}
+  .test-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:var(--s4);align-items:start}
+  .test-run .gauge-wrap{margin-top:0}
+  .tour-card{width:min(560px,100%)}
+  .tour-stage{height:320px}
+  nav.tabs{width:min(520px,calc(100% - 28px))}
+}
+/* inner display in landscape (~951x669pt) uses the dashboard but is short */
+@media (min-width:900px) and (max-height:720px){
+  .map-slot-res{min-height:420px}
+  .test-run{min-height:440px}
+  .tiles .tile{padding:10px 14px}.tile .v{font-size:22px}
+}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
 </head>
-<body>
+<body class="boot">
 <canvas id="bgc" aria-hidden="true"></canvas>
 <div class="bg-glow" aria-hidden="true"></div>
 
@@ -477,7 +554,7 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
 
 <header>
   <div class="brand">
-    <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>
+    <svg viewBox="0 0 28 28" aria-hidden="true"><rect class="lb" x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect class="lb" x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect class="lb" x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect class="lb" x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>
     Bars
   </div>
   <nav class="tabs-top glass" id="tabsTop"></nav>
@@ -582,7 +659,7 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-3';
+const APP_VERSION = 'bars-4';
 const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
@@ -745,6 +822,37 @@ function carrierLabel(){
   return b && b.major ? n.name : `${b ? b.name : '?'} (${n.name})`;
 }
 
+/* ======================= ENTRANCE (playIn) ======================= */
+// Cascades the page in: each top-level block starts 22px low, shrunk and blurred, 70ms after the one before.
+// Details (meters, week bar, rows, pills, numbers) fill in after. Only on first load + tab switch.
+let enterUntil = 0, playCount = 0;
+const entering = () => Date.now() < enterUntil;
+function playIn(root){
+  if (reduceMotion || !root) return;
+  const sel = '.strip, .chiprow, .tile, h2, .sub, .rank, .banner, .card, .panel, .pl-head, .test-head, .map-slot-res, .map-view-slot, .rtile, #results > .note';
+  const all = [...root.querySelectorAll(sel)].filter(el => el.offsetParent !== null || el.classList.contains('map-slot-res'));
+  const tops = all.filter(el => !all.some(o => o !== el && o.contains(el)));
+  const base = playCount++ === 0 ? .25 : 0; // first load waits for the header to drop in
+  tops.forEach((el, i) => {
+    el.style.setProperty('--d', (base + i * .07).toFixed(2) + 's');
+    el.querySelectorAll('.prow, .wk-row, .wk-bar i, .rides .chip, .pill').forEach((c, j) => c.style.setProperty('--r', j));
+    el.classList.remove('pi'); void el.offsetWidth; el.classList.add('pi');
+    countUp(el, base + i * .07 + .25);
+    clearTimeout(el._pi); el._pi = setTimeout(() => el.classList.remove('pi'), 1400 + (base + i * .07) * 1000 + 600);
+  });
+}
+function countUp(root, delay){
+  root.querySelectorAll('[data-count]').forEach(el => {
+    const to = +el.dataset.count; if (!Number.isFinite(to)) return;
+    const t0 = performance.now() + delay * 1000, dur = 900;
+    el.textContent = '0';
+    const step = now => { const k = Math.min(1, Math.max(0, (now - t0) / dur)); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+setTimeout(() => document.body.classList.remove('boot'), 2600);
+if (reduceMotion) document.body.classList.remove('boot');
+
 /* ======================= TABS ======================= */
 const TABS = [
   { v:'results', label:'Results', icon:'bars' },
@@ -758,7 +866,6 @@ function show(v){
   const changed = view !== v; view = v;
   document.querySelectorAll('.view').forEach(el=>{
     const on = el.id==='v-'+v; el.classList.toggle('on', on);
-    if (on && changed && !reduceMotion){ el.classList.add('enter'); clearTimeout(el._e); el._e=setTimeout(()=>el.classList.remove('enter'),700); }
   });
   document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
   if (changed) window.scrollTo(0,0);
@@ -768,6 +875,7 @@ function show(v){
   if (v==='test') { renderTestCarrier(); renderChips('#chipsTest'); }
   if (v==='map') { renderChips('#chipsMap'); }
   placeMap();
+  if (changed) { enterUntil = Date.now() + 1400; playIn($('#v-'+v)); }
 }
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>show(b.dataset.v));
 addEventListener('resize', () => { placeMap(); });
@@ -975,10 +1083,11 @@ function renderTiles(){
   const r = DATA.ranked; const mine = myNet(); const me = r.find(x=>x.net===mine);
   const hrs = S.places.reduce((a,p)=>a+p.hours,0);
   const tests = Object.values(DATA.pool).reduce((a,h)=>a+Object.values(h).reduce((x,s)=>x+s.n,0),0);
-  const tile = (icon,k,v,s,color) => `<div class="glass tile"><div class="k">${ico(icon)}${k}</div><div class="v" ${color?`style="color:${color}"`:''}>${v}</div><div class="s">${s}</div></div>`;
+  const tile = (icon,k,v,s,color,extra='') => `<div class="glass tile ${extra}"><div class="k">${ico(icon)}${k}</div><div class="v" ${typeof v==='number'?`data-count="${v}"`:''} ${color?`style="color:${color}"`:''}>${v}</div><div class="s">${s}</div></div>`;
+  const behind = me && r.length && (r[0].c.score - me.c.score >= 5 || me.rows.some(x=>x.ps && x.ps.score < 25));
   $('#tiles').innerHTML = [
     tile('crown','Top Network', r.length ? NETS[r[0].net].name : '–', r.length ? `Consistency ${r[0].c.score}` : 'Add places to rank', r.length ? scoreColor(r[0].c.score) : ''),
-    tile('sim','Your Network', me ? me.c.score : '–', me ? `${esc(carrierLabel())} · #${r.indexOf(me)+1} of ${r.length}` : (S.carrier ? 'No data yet' : 'Pick your carrier'), me ? scoreColor(me.c.score) : ''),
+    tile('sim','Your Network', me ? me.c.score : '–', me ? `${esc(carrierLabel())} · #${r.indexOf(me)+1} of ${r.length}` : (S.carrier ? 'No data yet' : 'Pick your carrier'), me ? scoreColor(me.c.score) : '', behind ? 'sheen' : ''),
     tile('pin','Places', S.places.length, `${hrs} hrs/wk tracked`),
     tile('users','Community Tests', tests, tests ? 'At your places, last 6 months' : 'None at your places yet')
   ].join('');
@@ -1010,7 +1119,7 @@ async function renderResults(skipLoad){
       <div class="head"><div class="pos">${i+1}</div>
         <div><div class="title"><span class="cdot ${n.cls}" style="width:9px;height:9px;margin-right:7px"></span>${n.name}</div>
         ${mine===r.net?`<div class="you">Your Network${S.carrier && !brandById(S.carrier.brand).major ? ' via '+esc(brandById(S.carrier.brand).name):''}</div>`:''}</div>
-        <div class="score"><div class="n" style="color:${scoreColor(c.score)}">${c.score}</div><div class="l">Consistency</div></div></div>
+        <div class="score"><div class="n" data-count="${c.score}" style="color:${scoreColor(c.score)}">${c.score}</div><div class="l">Consistency</div></div></div>
       <div class="meter"><i style="width:${c.score}%;background:${scoreColor(c.score)}"></i></div>
       <div class="breakdown"><span>Weighted Avg <b>${c.avg}</b></span><span>Dead-Spot Penalty <b>−${c.penalty}</b></span><span>${totalH} hrs/wk</span></div>
       <div class="bw"><div><div class="k">Best Spot</div><div class="v ellip">${esc(c.best.place.name)} · ${c.best.ps.score}</div></div>
@@ -1027,6 +1136,7 @@ async function renderResults(skipLoad){
   html += `<p class="note">Multi-network carriers (US Mobile, Straight Talk, Consumer Cellular, Red Pocket) can run on more than one of these, so they show under each. MVNO data can be slowed behind the network's own customers when towers are busy.</p>`;
   el.innerHTML = html;
   bindRetry();
+  if (!skipLoad && entering()) playIn($('#v-results'));
   const ll = $('#limitsLink'); if (ll) ll.onclick = e => { e.preventDefault(); openLimits(); };
   function bindRetry(){ const b=$('#retryCov'); if (b) b.onclick=()=>{ DATA.failed.forEach(h=>delete S.coverage[h]); renderResults(); }; }
 }
@@ -1034,7 +1144,7 @@ async function renderResults(skipLoad){
 /* ======================= MAP (MapLibre globe + satellite + terrain) ======================= */
 let map = null, mapLoading = null, mapFitted = false, hereHex = null, testedHexes = null;
 const markers = [];
-function mapSlot(){ if (view==='map') return $('#mapSlotView'); if (view==='results' && wide()) return $('#mapSlotRes'); return null; }
+function mapSlot(){ if (view==='map') return $('#mapSlotView'); if (view==='results' && matchMedia('(min-width:600px)').matches) return $('#mapSlotRes'); return null; }
 function placeMap(){
   const slot = mapSlot(); const wrap = $('#mapWrap');
   if (!slot){ wrap.style.display='none'; return; }
@@ -1111,6 +1221,7 @@ async function fetchTested(){
 }
 function updateMapData(fit){
   if (!map || !map.getSource('cov')) return;
+  const popPins = fit || entering();
   const L = S.mapLayers; const sel = S.mapCarrier; const pool = DATA.pool;
   // coverage hexes at your places
   const cov = [];
@@ -1134,7 +1245,7 @@ function updateMapData(fit){
   markers.splice(0).forEach(m=>m.remove());
   if (L.places) for (const p of S.places){
     const r = sel==='best' ? bestAt(p,pool) : (()=>{ const ps = placeScore(p, sel, pool); return ps ? { net:sel, ps } : null; })();
-    const el = document.createElement('div'); el.className='pin';
+    const el = document.createElement('div'); el.className = 'pin' + (popPins && !reduceMotion ? ' pop' : ''); el.style.setProperty('--d', (markers.length*.09 + .2).toFixed(2)+'s');
     el.innerHTML = `<span class="sc" style="background:${r?scoreHex(r.ps.score):'#666'}">${r?r.ps.score:'–'}</span>${esc(p.name)}${sel==='best'&&r?`<span class="cdot ${NETS[r.net].cls}" style="width:7px;height:7px"></span>`:''}`;
     el.onclick = () => flyTo(p.lng, p.lat, 15.5);
     markers.push(new maplibregl.Marker({ element:el, anchor:'bottom', offset:[0,-4] }).setLngLat([p.lng,p.lat]).addTo(map));
