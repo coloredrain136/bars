@@ -447,6 +447,7 @@ body.boot header .brand,body.boot header .tabs-top,body.boot header .hdr-right >
 body.boot header .tabs-top{animation-delay:.08s}
 body.boot header .hdr-right > *:nth-child(1){animation-delay:.16s}
 body.boot header .hdr-right > *:nth-child(2){animation-delay:.24s}
+body.boot header .hdr-right > *:nth-child(3){animation-delay:.32s}
 @keyframes bgIn{from{transform:scale(1.14);filter:blur(10px) brightness(.35)}to{transform:none;filter:none}}
 body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) both;transform-origin:85% 10%}
 @keyframes playIn{from{opacity:0;transform:translateY(22px) scale(.97);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
@@ -722,7 +723,8 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
   <nav class="tabs-top glass" id="tabsTop"></nav>
   <div class="hdr-right">
     <button class="pill carrier-chip" id="hdrCarrier" style="height:40px;padding:0 14px;font-size:13px"></button>
-    <button class="iconbtn" id="infoBtn" aria-label="About the Data"><svg class="i"><use href="#i-info"/></svg></button>
+    <button class="iconbtn" id="shareBtn" aria-label="Share Bars"><svg class="i"><use href="#i-share"/></svg></button>
+    <button class="iconbtn" id="infoBtn" aria-label="Help"><svg class="i"><use href="#i-info"/></svg></button>
   </div>
 </header>
 <button class="pill good update" id="updateBtn">Update Ready · Tap to Reload</button>
@@ -821,7 +823,7 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-6';
+const APP_VERSION = 'bars-7';
 const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
@@ -1826,6 +1828,20 @@ function openHelp(){
     });
 }
 $('#infoBtn').onclick = openHelp;
+/* ---- Share (bars-7): iOS share sheet via navigator.share, else copy the link ---- */
+const SHARE_URL = 'https://bars-alpha.vercel.app';
+async function shareBars(){
+  const top = DATA.ranked && DATA.ranked[0];
+  const text = top
+    ? `Bars ranked ${NETS[top.net].name} the most consistent carrier across the places I spend my week (${top.c.score}/100). Check yours:`
+    : 'Bars shows which cell carrier holds up across the places you actually spend your week. Check yours:';
+  try {
+    if (navigator.share) { await navigator.share({ title:'Bars', text, url: SHARE_URL }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(`${text} ${SHARE_URL}`); toast('Link Copied'); }
+  catch { toast(SHARE_URL); }
+}
+$('#shareBtn').onclick = shareBars;
 const _closeSheet = closeSheet;
 closeSheet = function(){ stopInstallGuide(); _closeSheet(); };
 
