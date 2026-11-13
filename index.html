@@ -517,7 +517,78 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
   .test-run{min-height:440px}
   .tiles .tile{padding:10px 14px}.tile .v{font-size:22px}
 }
+/* ---- bars-5 ---- */
+/* per-place rows: name + score on top, pills underneath */
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 10px}
+.prow .nm{min-width:0}
+.prow .pp{grid-column:1 / -1;grid-row:2;display:flex;flex-wrap:wrap;gap:6px}
+.prow .ps{grid-column:2;grid-row:1}
+@media (min-width:900px){
+  .prow{grid-template-columns:minmax(0,1fr) auto auto}
+  .prow .pp{grid-column:2;grid-row:1;justify-content:flex-end}
+  .prow .ps{grid-column:3}
+}
+/* tutorial: pop in after a beat, animate out */
+.tour{transition:opacity .35s ease, backdrop-filter .35s ease, -webkit-backdrop-filter .35s ease;opacity:0}
+.tour.on{animation:none;opacity:1}
+.tour.out{opacity:0}
+.tour .tour-card{transform:translateY(40px) scale(.9);opacity:0;filter:blur(8px)}
+.tour.on .tour-card{animation:tourIn .7s cubic-bezier(.2,1.25,.35,1) .05s both}
+.tour.out .tour-card{animation:tourOut .38s cubic-bezier(.5,0,.75,0) both}
+@keyframes tourIn{0%{transform:translateY(40px) scale(.9);opacity:0;filter:blur(8px)}60%{opacity:1;filter:blur(0)}100%{transform:none;opacity:1;filter:none}}
+@keyframes tourOut{from{transform:none;opacity:1;filter:none}to{transform:translateY(30px) scale(.92);opacity:0;filter:blur(6px)}}
+.tour-card{overflow:auto}
+.tour-stage .tslide,.tour-body{animation:slideNext .45s cubic-bezier(.2,.8,.2,1) both}
+.tour.back .tour-stage .tslide,.tour.back .tour-body{animation-name:slidePrev}
+@keyframes slideNext{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes slidePrev{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+/* install guide (Add to Home Screen) */
+.ig{display:flex;flex-direction:column;gap:12px}
+.ig-phone{width:170px;height:280px;border-radius:32px;border:2px solid rgba(255,255,255,.2);background:#0b1012;position:relative;overflow:hidden;margin:0 auto;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.ig-phone .notch{position:absolute;top:8px;left:50%;width:54px;height:15px;margin-left:-27px;border-radius:8px;background:#000;z-index:3}
+.ig-page{position:absolute;inset:30px 10px 54px;border-radius:12px;background:linear-gradient(180deg,#0f1a17,#070b0c);border:1px solid rgba(255,255,255,.06);padding:8px}
+.ig-page .bl{height:10px;border-radius:5px;background:rgba(255,255,255,.08);margin-bottom:6px}
+.ig-bar{position:absolute;left:8px;right:8px;bottom:10px;height:34px;border-radius:17px;background:rgba(48,54,60,.96);display:flex;align-items:center;gap:6px;padding:0 6px 0 10px;font-size:9.5px;color:rgba(255,255,255,.75)}
+.ig-bar .url{flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-dots{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:900;letter-spacing:1px;font-size:11px}
+.ig-hl{background:rgba(90,150,255,.45);box-shadow:0 0 0 0 rgba(90,150,255,.6);animation:igPulse 1.4s ease-in-out infinite}
+@keyframes igPulse{0%,100%{box-shadow:0 0 0 0 rgba(90,150,255,.55)}50%{box-shadow:0 0 0 6px rgba(90,150,255,0)}}
+.ig-sheet{position:absolute;left:8px;right:8px;bottom:50px;border-radius:14px;background:rgba(44,50,56,.98);font-size:10px;padding:4px 0;animation:igUp .35s cubic-bezier(.2,.8,.2,1) both}
+.ig-sheet.full{top:40px;bottom:8px;padding-top:8px}
+.ig-sheet div{padding:7px 12px;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,.8)}
+.ig-sheet div + div{border-top:1px solid rgba(255,255,255,.06)}
+.ig-sheet .ig-hl{color:#fff;border-radius:8px;margin:0 4px}
+.ig-sheet svg.i{width:13px;height:13px}
+@keyframes igUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.ig-add{position:absolute;inset:40px 8px 8px;border-radius:14px;background:rgba(44,50,56,.98);padding:10px;font-size:10px;animation:igUp .35s cubic-bezier(.2,.8,.2,1) both}
+.ig-add .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:rgba(255,255,255,.7)}
+.ig-add .top b{color:#fff}
+.ig-add .addbtn{padding:4px 9px;border-radius:9px;color:#fff;font-weight:800}
+.ig-add .app{display:flex;gap:8px;align-items:center;padding:8px;border-radius:10px;background:rgba(255,255,255,.05)}
+.ig-add .ic{width:30px;height:30px;border-radius:8px;background:#05080a;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12)}
+.ig-add .ic svg{width:18px;height:18px}
+.ig-add .tog{margin-top:10px;display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:rgba(255,255,255,.05)}
+.ig-add .sw{width:26px;height:15px;border-radius:8px;background:#34c759;position:relative}
+.ig-add .sw::after{content:"";position:absolute;right:2px;top:2px;width:11px;height:11px;border-radius:50%;background:#fff}
+.ig-steps{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.ig-steps li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.03);font-size:14px;color:var(--text-2);cursor:pointer;transition:background .25s,border-color .25s,color .25s}
+.ig-steps li .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:rgba(255,255,255,.08);flex:none;transition:background .25s,color .25s}
+.ig-steps li.on{background:rgba(90,150,255,.12);border-color:rgba(90,150,255,.45);color:var(--text)}
+.ig-steps li.on .n{background:var(--press);color:#fff}
+.ig-steps li.done .n{background:var(--sig);color:#04120a}
+.ig-wide{display:grid;gap:16px}
+.tour-stage.tall{height:auto;min-height:300px}
+.tour-stage.tall .tslide{position:relative;inset:auto;display:block}
+.tour-stage.tall .ig-phone{width:150px;height:240px}
+@media (min-width:600px){ .ig-wide{grid-template-columns:200px 1fr;align-items:center} }
+/* help sheet rows */
+.help-row{width:100%;display:flex;align-items:center;gap:14px;padding:14px;border-radius:var(--r2);background:var(--glass-2);border:1px solid var(--edge);text-align:left;margin-bottom:8px}
+.help-row .hi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(90,150,255,.14);color:var(--press);flex:none}
+.help-row b{display:block;font-size:15.5px}
+.help-row span.muted{font-size:13px}
 @media (prefers-reduced-motion:reduce){
+  .tour .tour-card{opacity:1!important;transform:none!important;filter:none!important}
+  .tour{opacity:1}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
@@ -659,7 +730,7 @@ body.boot #bgc,body.boot .bg-glow{animation:bgIn 2.4s cubic-bezier(.2,.7,.1,1) b
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-4';
+const APP_VERSION = 'bars-5';
 const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
@@ -808,7 +879,7 @@ function openSheet(html, onMount){
   onMount && onMount(sh);
 }
 function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); }
-$('#scrim').onclick = closeSheet;
+$('#scrim').onclick = () => closeSheet();
 addEventListener('keydown', e => { if (e.key==='Escape') closeSheet(); });
 function techPill(c){
   if (!c) return '<span class="pill bad">No Coverage</span>';
@@ -1127,7 +1198,7 @@ async function renderResults(skipLoad){
       <details class="places" ${i===0?'open':''}><summary>${ico('chev')}Per-Place Breakdown</summary>
         ${r.rows.map(({place,ps}) => `<div class="prow">
           <div class="nm ellip">${esc(place.name)}<small>${place.hours} hr/wk</small></div>
-          ${ps ? techPill(ps.cov) + (ps.community ? `<span class="pill good">Community Tested (${ps.st.n} Tests)</span>` : `<span class="pill">FCC Estimate${ps.st&&ps.st.n?` · ${ps.st.n} Test${ps.st.n>1?'s':''}`:''}</span>`) : '<span class="pill warn">Coverage Unavailable</span>'}
+          <div class="pp">${ps ? techPill(ps.cov) + (ps.community ? `<span class="pill good">Community Tested (${ps.st.n} Tests)</span>` : `<span class="pill">FCC Estimate${ps.st&&ps.st.n?` · ${ps.st.n} Test${ps.st.n>1?'s':''}`:''}</span>`) : '<span class="pill warn">Coverage Unavailable</span>'}</div>
           <div class="ps" style="color:${ps?scoreColor(ps.score):'var(--text-3)'}">${ps?ps.score:'–'}</div></div>`).join('')}
       </details>
       ${rides.length?`<div class="rides"><div class="k">Rides This Network</div><div class="chips">${rides.map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div></div>`:''}
@@ -1428,7 +1499,7 @@ function openLimits(){
     <p>Flat hexes are coverage estimates at your places. 3D columns are community-tested areas, taller and greener for faster medians. Your own location only ever shows as its hex, and it never leaves your device from the map.</p>
     <h4>Privacy</h4>
     <p>Places and your carrier are stored only on this device. Speed tests send the area hex (about a city block), network and speeds. No account, no IP, no exact location.</p>
-  </div><div class="btnrow"><button class="btn" id="replayTour">${ico('play')}Replay Tutorial</button><button class="btn primary" id="gotIt">Got It</button></div>`, sh => { sh.querySelector('#gotIt').onclick = closeSheet; sh.querySelector('#replayTour').onclick = () => { closeSheet(); setTimeout(openTour, 250); }; });
+  </div><div class="btnrow"><button class="btn" id="replayTour">${ico('play')}Replay Tutorial</button><button class="btn primary" id="gotIt">Got It</button></div>`, sh => { sh.querySelector('#gotIt').onclick = closeSheet; sh.querySelector('#replayTour').onclick = () => { closeSheet(); setTimeout(() => openTour(0), 250); }; });
 }
 $('#infoBtn').onclick = openLimits;
 
@@ -1471,21 +1542,15 @@ const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platfor
 const isStandalone = () => navigator.standalone || matchMedia('(display-mode: standalone)').matches;
 const miniPin = (score, name, color) => `<span class="t-pinm"><span class="sc" style="background:${color}">${score}</span>${name}</span>`;
 function tourSlides(){
-  const deviceSlide = isIOS && !isStandalone() ? {
-    title:'Put Bars on Your Home Screen',
-    text:'In Safari, tap Share, then Add to Home Screen. Bars opens full screen like an app, right where you need it.',
-    stage:`<div class="tslide"><div class="t-phone t-in"><div class="notch"></div>
-      <div style="position:absolute;top:34px;left:12px;right:12px"><div class="mini" style="padding:6px 8px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:6px"><span style="color:var(--sig)">${ico('bars')}</span>Bars</div></div>
-      <div class="t-menu"><div>Copy</div><div>Add to Reading List</div><div class="hl">Add to Home Screen <span>${ico('plus')}</span></div></div>
-      <div class="bar-b"><span>${ico('chev')}</span><span class="t-share">${ico('share')}</span><span>${ico('globe')}</span></div></div></div>`
-  } : isIOS ? {
-    title:'You’re All Set on iPhone',
-    text:'Bars is on your Home Screen. Run Test Here wherever you spend time, with Wi-Fi off, to measure your real cellular speed.',
-    stage:`<div class="tslide"><div class="t-phone t-in"><div class="notch"></div><div style="position:absolute;inset:40px 14px;display:grid;place-items:center;color:var(--sig)"><div class="t-logo" style="transform:scale(.7)"><span class="t-ring"></span><span class="t-ring"></span><svg viewBox="0 0 28 28"><rect class="bar" x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect class="bar" x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect class="bar" x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect class="bar" x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg></div></div></div></div>`
+  const deviceSlide = isIOS && isStandalone() ? {
+    title:'You\u2019re All Set',
+    text:'Bars is on your Home Screen. Run Test Here wherever you spend time, with Wi-Fi off, to measure your real cellular speed. Replay this anytime from the Help button.',
+    stage:`<div class="tslide"><div class="t-phone t-in"><div class="notch"></div><div style="position:absolute;inset:40px 14px;display:grid;place-items:center;color:var(--sig)"><div class="t-logo" style="transform:scale(.7)"><span class="t-ring"></span><span class="t-ring"></span>${IG_LOGO.replace(/<rect /g,'<rect class="bar" ')}</div></div></div></div>`
   } : {
-    title:'The Mac Dashboard',
-    text:'On a big screen you get rankings and the live 3D map side by side. Run Test Here from your phone, since a speed test on a Mac measures your Wi-Fi.',
-    stage:`<div class="tslide"><div class="t-mac t-in"><div class="tb"><i></i><i></i><i></i></div><div class="grid"><div style="display:flex;flex-direction:column;gap:6px"><div class="blk" style="height:34px"></div><div class="blk" style="height:34px"></div><div class="blk" style="height:34px"></div></div><div class="blk map"></div></div></div></div>`
+    install:true,
+    title: isIOS ? 'Make Bars a Web App' : 'Get Bars on Your iPhone',
+    text: isIOS ? '' : 'Open <b>bars-alpha.vercel.app</b> in Safari on your iPhone, then:',
+    stage:`<div class="tslide" style="padding:12px">${installGuideHTML('igTour')}</div>`
   };
   return [
     { title:'Welcome to Bars',
@@ -1522,19 +1587,33 @@ function tourSlides(){
   ];
 }
 let tourI = 0, tourList = [];
-function openTour(){
-  tourList = tourSlides(); tourI = 0; drawTour();
-  $('#tour').classList.add('on'); document.body.style.overflow='hidden';
+let tourOpening = null;
+function openTour(delayMs = 1000){
+  clearTimeout(tourOpening);
+  tourOpening = setTimeout(() => {
+    tourList = tourSlides(); tourI = 0;
+    const t = $('#tour'); t.classList.remove('out','back'); drawTour();
+    t.style.display = 'flex'; void t.offsetWidth; t.classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }, reduceMotion ? 0 : delayMs);
 }
 function closeTour(){
-  $('#tour').classList.remove('on'); document.body.style.overflow='';
+  const t = $('#tour'); stopInstallGuide();
   try { localStorage.setItem(TOUR_KEY, String(TOUR_VERSION)); } catch {}
+  document.body.style.overflow = '';
+  if (reduceMotion){ t.classList.remove('on'); t.style.display = ''; return; }
+  t.classList.add('out');
+  setTimeout(() => { t.classList.remove('on','out'); t.style.display = ''; }, 400);
 }
 function drawTour(){
   const sl = tourList[tourI]; const last = tourI === tourList.length-1;
   $('#tourStep').textContent = `${tourI+1} of ${tourList.length}`;
-  $('#tourStage').innerHTML = sl.stage;
-  $('#tourBody').innerHTML = `<h3>${sl.title}</h3><p>${sl.text}</p>`;
+  stopInstallGuide();
+  const stage = $('#tourStage'), body = $('#tourBody');
+  stage.innerHTML = sl.stage; body.innerHTML = `<h3>${sl.title}</h3>${sl.text ? `<p>${sl.text}</p>` : ''}`;
+  body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
+  stage.classList.toggle('tall', !!sl.install); body.style.minHeight = sl.install ? 'auto' : '';
+  if (sl.install) startInstallGuide(stage.querySelector('#igTour'));
   $('#tourDots').innerHTML = tourList.map((_,i)=>`<i class="${i===tourI?'on':''}"></i>`).join('');
   $('#tourBack').style.visibility = tourI ? 'visible' : 'hidden';
   $('#tourNext').textContent = last ? 'Get Started' : 'Next';
@@ -1544,6 +1623,7 @@ function tourGo(d){
   const n = tourI + d;
   if (n >= tourList.length){ closeTour(); if (!S.carrier) openCarrierPicker(() => { if (!S.places.length) { show('places'); setTimeout(()=>openPlaceEditor(null), 350); } }); else if (!S.places.length){ show('places'); openPlaceEditor(null); } return; }
   if (n < 0) return;
+  $('#tour').classList.toggle('back', d < 0);
   tourI = n; drawTour();
 }
 $('#tourNext').onclick = () => tourGo(1);
@@ -1556,6 +1636,69 @@ addEventListener('keydown', e => { if (!$('#tour').classList.contains('on')) ret
 })();
 function tourSeen(){ try { return +localStorage.getItem(TOUR_KEY) >= TOUR_VERSION; } catch { return true; } }
 
+/* ---- Add to Home Screen guide (iOS 26/27 Safari): ••• → Share → Add to Home Screen → Open as Web App + Add ---- */
+const IG_STEPS = [
+  ['Tap <b>•••</b> next to the address bar', 'In Safari, at the bottom of the screen.'],
+  ['Tap <b>Share</b>', 'It’s in the menu that pops up.'],
+  ['Scroll down, tap <b>Add to Home Screen</b>', 'Past the row of apps and contacts.'],
+  ['Keep <b>Open as Web App</b> on, tap <b>Add</b>', 'Then open Bars from its new icon.']
+];
+const IG_LOGO = `<svg viewBox="0 0 28 28"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg>`;
+function igFrame(i){
+  const page = `<div class="ig-page"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">${IG_LOGO.replace('<svg','<svg width="14" height="14"')}<b style="font-size:10px">Bars</b></div><div class="bl" style="width:70%"></div><div class="bl"></div><div class="bl" style="width:85%"></div><div class="bl" style="width:55%"></div></div>`;
+  const bar = hl => `<div class="ig-bar"><span>${ico('chev').replace('class="i','style="transform:scaleX(-1);width:12px;height:12px" class="i')}</span><span class="url">bars-alpha.vercel.app</span><span class="ig-dots ${hl?'ig-hl':''}">•••</span></div>`;
+  if (i===0) return page + bar(true);
+  if (i===1) return page + `<div class="ig-sheet"><div>Copy Link</div><div>Add to Favorites</div><div class="ig-hl">Share <span>${ico('share')}</span></div><div>Find on Page</div></div>` + bar(false);
+  if (i===2) return page + `<div class="ig-sheet full"><div>Copy</div><div>Add to Reading List</div><div>Add Bookmark</div><div class="ig-hl">Add to Home Screen <span>${ico('plus')}</span></div><div>Markup</div></div>`;
+  return `<div class="ig-add"><div class="top"><span>Cancel</span><b>Add to Home Screen</b><span class="addbtn ig-hl">Add</span></div>
+    <div class="app"><span class="ic">${IG_LOGO}</span><div><b>Bars</b><div style="color:rgba(255,255,255,.5)">bars-alpha.vercel.app</div></div></div>
+    <div class="tog"><span>Open as Web App</span><span class="sw"></span></div></div>`;
+}
+function installGuideHTML(id){
+  return `<div class="ig ig-wide" id="${id}">
+    <div class="ig-phone"><div class="notch"></div><div class="ig-screen">${igFrame(0)}</div></div>
+    <ol class="ig-steps">${IG_STEPS.map(([t,sub],i)=>`<li data-ig="${i}" class="${i===0?'on':''}"><span class="n">${i+1}</span><span>${t}<br><span class="note">${sub}</span></span></li>`).join('')}</ol>
+  </div>`;
+}
+let igTimer = null;
+function startInstallGuide(root){
+  stopInstallGuide(); if (!root) return;
+  let i = 0;
+  const go = n => {
+    i = n % IG_STEPS.length;
+    root.querySelector('.ig-screen').innerHTML = igFrame(i);
+    root.querySelectorAll('[data-ig]').forEach((li,k)=>{ li.classList.toggle('on', k===i); li.classList.toggle('done', k<i); });
+  };
+  root.querySelectorAll('[data-ig]').forEach(li => li.onclick = () => { go(+li.dataset.ig); restart(); });
+  const restart = () => { clearInterval(igTimer); if (!reduceMotion) igTimer = setInterval(() => go(i+1), 2400); };
+  go(0); restart();
+}
+function stopInstallGuide(){ clearInterval(igTimer); igTimer = null; }
+function openInstallGuide(){
+  const standalone = isStandalone();
+  openSheet(`<h3>Add Bars to Your Home Screen</h3>
+    <p class="sub" style="margin-top:-8px">${standalone ? 'You’re already using Bars as a web app. Here’s how to add it on another iPhone.' : isIOS ? 'Bars opens full screen like an app, with no Safari bars.' : 'Do this on your iPhone in Safari at <b>bars-alpha.vercel.app</b>.'}</p>
+    ${installGuideHTML('igSheet')}
+    <button class="btn primary block" id="igDone" style="margin-top:var(--s4)">Got It</button>`, sh => {
+      startInstallGuide(sh.querySelector('#igSheet'));
+      sh.querySelector('#igDone').onclick = () => { stopInstallGuide(); closeSheet(); };
+    });
+}
+function openHelp(){
+  openSheet(`<h3>Help</h3>
+    <button class="help-row" id="hTour"><span class="hi">${ico('play')}</span><span><b>Replay Tutorial</b><span class="muted">The quick visual tour of Bars.</span></span></button>
+    <button class="help-row" id="hInstall"><span class="hi">${ico('share')}</span><span><b>Add to Home Screen</b><span class="muted">Step-by-step guide to use Bars as a web app on iPhone.</span></span></button>
+    <button class="help-row" id="hData"><span class="hi">${ico('info')}</span><span><b>About the Data</b><span class="muted">Where scores come from, limits, and privacy.</span></span></button>
+    <p class="ver" style="margin-top:var(--s3)">${APP_VERSION}</p>`, sh => {
+      sh.querySelector('#hTour').onclick = () => { closeSheet(); setTimeout(() => openTour(0), 300); };
+      sh.querySelector('#hInstall').onclick = () => { closeSheet(); setTimeout(openInstallGuide, 320); };
+      sh.querySelector('#hData').onclick = () => { closeSheet(); setTimeout(openLimits, 320); };
+    });
+}
+$('#infoBtn').onclick = openHelp;
+const _closeSheet = closeSheet;
+closeSheet = function(){ stopInstallGuide(); _closeSheet(); };
+
 /* ======================= VERSION / iOS ======================= */
 $('#ver').textContent = APP_VERSION;
 async function checkVersion(){
@@ -1563,13 +1706,9 @@ async function checkVersion(){
 }
 $('#updateBtn').onclick = () => location.reload();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
-function fixGap(){
-  if (!(navigator.standalone || matchMedia('(display-mode: standalone)').matches)) return;
-  const probe = document.createElement('div'); probe.style.cssText='position:fixed;inset:0;pointer-events:none;visibility:hidden';
-  document.body.appendChild(probe); const hh = probe.getBoundingClientRect().height; probe.remove();
-  const gap = Math.max(0, Math.min(80, screen.height - hh));
-  document.documentElement.style.setProperty('--gap-fix', gap > 4 && gap < 80 ? gap+'px' : '0px');
-}
+// bars-5: the home-screen "dead strip" fix pushed the tab bar off-screen on iPhone 15 Pro Max (iOS 27).
+// Bars' background is solid, so no fix is needed; --gap-fix stays 0.
+function fixGap(){ document.documentElement.style.setProperty('--gap-fix','0px'); }
 addEventListener('resize', fixGap);
 
 /* ======================= INIT ======================= */
@@ -1578,7 +1717,7 @@ show(S.places.length ? 'results' : 'places');
 if (S.places.length) loadData().then(()=>{ renderStrip(); renderChips('#chipsPlaces'); renderChips('#chipsTest'); renderChips('#chipsMap'); });
 if (S.lastTest && S.lastTest.hex && Date.now() - S.lastTest.at < 864e5) hereHex = S.lastTest.hex;
 fetchTested().then(() => updateMapData());
-if (!tourSeen()) setTimeout(openTour, 450);
+if (!tourSeen()) openTour(1000);
 </script>
 </body>
 </html>

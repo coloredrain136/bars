@@ -1,7 +1,7 @@
 // Shared helpers for Bars API functions.
 const h3 = require('h3-js');
 
-const APP_VERSION = 'bars-4';
+const APP_VERSION = 'bars-5';
 const NETWORKS = ['att', 'verizon', 't-mobile'];
 const H3_RES = 9;
 
