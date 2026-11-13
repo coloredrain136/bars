@@ -296,14 +296,150 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
   .res-grid{display:grid;grid-template-columns:minmax(380px,500px) 1fr;gap:var(--s4);align-items:start}
   .map-slot-res{display:block;position:sticky;top:calc(var(--hdr) + var(--top) + 8px);height:calc(100vh - var(--hdr) - var(--top) - 28px);min-height:520px}
   .map-view-slot{height:calc(100vh - var(--hdr) - var(--top) - 90px)}
-  .test-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:start}
-  .test-grid .gauge-wrap{margin-top:0}
-  #v-places .inner{max-width:640px}
   .sheet{bottom:auto;top:50%;left:50%;right:auto;width:560px;border-radius:var(--r4);transform:translate(-50%,-46%) scale(.98);opacity:0;
     transition:transform .25s,opacity .25s,visibility 0s .25s;max-height:84vh}
   .sheet.on{transform:translate(-50%,-50%);opacity:1;transition:transform .25s,opacity .25s}
   .grab{display:none}
 }
+
+/* ---- My Places + Test Here layout (bars-3) ---- */
+.pl-grid{display:flex;flex-direction:column}
+.pl-side{order:-1}
+.pl-head h2{margin-top:var(--s3)}
+.pl-add-top{display:none}
+.pl-add-bottom{margin-top:var(--s2)}
+#placeList .card{margin-bottom:var(--s2)}
+.pl-privacy{display:none}
+#weekCard{display:none}
+.wk-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,.06);margin:10px 0 12px}
+.wk-bar i{display:block;height:100%}
+.wk-row{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:3px 0}
+.wk-row .sw{width:9px;height:9px;border-radius:3px;flex:none}
+.wk-row .pc{margin-left:auto;color:var(--text-2);font-variant-numeric:tabular-nums}
+.panel-k{font-size:12.5px;color:var(--text-3);font-weight:600;margin:0 0 var(--s2)}
+.test-setup{display:flex;flex-direction:column;gap:var(--s2)}
+.test-setup .note{margin-top:var(--s2)}
+.test-setup .card{margin-bottom:0}
+.test-head h2{margin-top:var(--s3)}
+@media (min-width:900px){
+  .pl-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:var(--s5);align-items:start}
+  .pl-side{order:0;position:sticky;top:calc(var(--hdr) + var(--top) + 8px);display:flex;flex-direction:column;gap:var(--s3)}
+  .pl-side .card{margin:0}
+  .pl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s3)}
+  .pl-head .sub{margin-bottom:0}
+  .pl-add-top{display:inline-flex}
+  .pl-add-bottom{display:none}
+  #placeList{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--s3)}
+  #placeList .card{margin:0;min-height:88px}
+  #placeList .empty{grid-column:1/-1}
+  .pl-privacy,#weekCard{display:block}
+  .test-head{margin-bottom:var(--s3)}
+  .test-head .sub{margin-bottom:0}
+  .test-grid{display:grid;grid-template-columns:400px minmax(0,1fr);gap:var(--s5);align-items:stretch}
+  .panel{background:var(--glass);border:1px solid var(--edge);border-radius:var(--r3);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);padding:var(--s5)}
+  .test-run{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:520px}
+  .test-run .gauge-wrap{margin:var(--s2) 0 var(--s3)}
+  .test-run #testOut{width:100%;max-width:620px}
+  .test-setup .glass{background:rgba(255,255,255,.04);box-shadow:none}
+}
+/* ---- first-run tutorial (bars-3) ---- */
+.tour{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:calc(var(--top) + 10px) 14px calc(var(--bot) + 14px);
+  background:rgba(3,6,7,.72);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%)}
+.tour.on{display:flex;animation:tfade .3s ease}
+@keyframes tfade{from{opacity:0}to{opacity:1}}
+.tour-card{width:min(440px,100%);max-height:100%;display:flex;flex-direction:column;border-radius:var(--r4);overflow:hidden}
+.tour-top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
+.tour-step{font-size:12.5px;color:var(--text-3);font-weight:650}
+.tour-skip{font-size:13.5px;font-weight:650;color:var(--text-2);padding:6px 4px}
+.tour-stage{position:relative;height:300px;margin:10px 14px 0;border-radius:var(--r3);overflow:hidden;
+  background:radial-gradient(70% 80% at 70% 0%,rgba(61,245,138,.16),transparent 70%),radial-gradient(60% 70% at 0% 100%,rgba(90,150,255,.12),transparent 70%),#060b0c;border:1px solid var(--edge)}
+.tour-body{padding:16px 20px 6px;min-height:150px}
+.tour-body h3{font-size:24px;font-weight:850;margin:0 0 6px}
+.tour-body p{margin:0;color:var(--text-2);font-size:15px}
+.tour-foot{display:flex;align-items:center;gap:10px;padding:14px 16px 16px}
+.tour-dots{display:flex;gap:6px;flex:1}
+.tour-dots i{width:7px;height:7px;border-radius:4px;background:rgba(255,255,255,.2);transition:width .25s,background .25s}
+.tour-dots i.on{width:22px;background:var(--sel)}
+.tour-foot .btn{height:44px}
+.tslide{position:absolute;inset:0;display:grid;place-items:center}
+/* mini UI used in the illustrations */
+.mini{background:rgba(16,26,24,.7);border:1px solid var(--edge-hi);border-radius:14px;padding:10px 12px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.t-in{animation:tin .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes tin{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.t-d1{animation-delay:.12s}.t-d2{animation-delay:.24s}.t-d3{animation-delay:.36s}.t-d4{animation-delay:.48s}
+/* slide 1: logo + rings */
+.t-logo{position:relative;width:120px;height:120px;display:grid;place-items:center}
+.t-logo svg{width:84px;height:84px}
+.t-logo .bar{transform-origin:bottom;animation:tbar 1.6s ease-in-out infinite alternate}
+.t-logo .bar:nth-child(2){animation-delay:.15s}.t-logo .bar:nth-child(3){animation-delay:.3s}.t-logo .bar:nth-child(4){animation-delay:.45s}
+@keyframes tbar{from{transform:scaleY(.55)}to{transform:scaleY(1)}}
+.t-ring{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:1.5px solid rgba(61,245,138,.5);animation:tring 3s ease-out infinite}
+.t-ring:nth-child(2){animation-delay:1s}.t-ring:nth-child(3){animation-delay:2s}
+@keyframes tring{from{transform:scale(.6);opacity:.9}to{transform:scale(2.6);opacity:0}}
+.t-carriers{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:8px}
+/* slide 2: places */
+.t-stack{width:82%;display:flex;flex-direction:column;gap:8px}
+.t-place{display:flex;align-items:center;gap:10px}
+.t-place .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.06);color:var(--sig)}
+.t-place .ic svg.i{width:17px;height:17px}
+.t-place b{font-size:14.5px}.t-place small{display:block;color:var(--text-3);font-size:11.5px}
+.t-place .hr{margin-left:auto;font-weight:800;font-family:var(--fh);font-stretch:112%;font-size:14px}
+.t-hbar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;margin-top:6px}
+.t-hbar i{display:block;height:100%;border-radius:3px;background:var(--sig);animation:tgrow 1.2s cubic-bezier(.2,.8,.2,1) both .4s}
+@keyframes tgrow{from{width:0!important}}
+/* slide 3: carriers */
+.t-map{width:86%;display:flex;flex-direction:column;gap:8px}
+.t-mv{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:650}
+.t-mv .arrow{flex:1;height:1.5px;background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.4));position:relative}
+.t-mv .arrow::after{content:"";position:absolute;right:-1px;top:-3px;border:4px solid transparent;border-left-color:rgba(255,255,255,.5)}
+.t-pick{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+/* slide 4: score */
+.t-score{width:84%}
+.t-score .n{font-family:var(--fh);font-stretch:118%;font-size:44px;font-weight:900;line-height:1;color:var(--sig)}
+.t-meter{height:8px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin:10px 0 8px}
+.t-meter i{display:block;height:100%;background:var(--sig);border-radius:4px;animation:tgrow 1.4s cubic-bezier(.2,.8,.2,1) both .3s}
+.t-pen{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-2)}
+.t-dead{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--bad);font-weight:650}
+/* slide 5: globe */
+.t-globe{position:relative;width:210px;height:210px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#2b5a46 0%,#163528 35%,#0a1a14 70%,#050c0a 100%);
+  box-shadow:0 0 0 1px rgba(61,245,138,.25),0 0 60px rgba(61,245,138,.18),inset -30px -30px 60px rgba(0,0,0,.6)}
+.t-globe::before{content:"";position:absolute;inset:-14px;border-radius:50%;background:radial-gradient(circle,transparent 62%,rgba(90,150,255,.18) 70%,transparent 76%)}
+.t-globe .lat{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.07);transform:scaleY(.35)}
+.t-globe .lng{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.07);transform:scaleX(.4)}
+.t-hexes{position:absolute;left:44%;top:40%;width:80px;height:70px;animation:tspin 8s linear infinite alternate}
+@keyframes tspin{from{transform:translateX(-6px)}to{transform:translateX(10px)}}
+.t-pinm{position:absolute;display:flex;align-items:center;gap:4px;padding:3px 7px 3px 4px;border-radius:99px;font-size:10.5px;font-weight:700;background:rgba(8,14,12,.85);border:1px solid var(--edge-hi);white-space:nowrap}
+.t-pinm .sc{min-width:18px;height:16px;border-radius:8px;display:grid;place-items:center;color:#04120a;font-size:10px;font-weight:900;padding:0 4px}
+.t-layers{position:absolute;top:14px;left:14px;display:flex;gap:5px}
+.t-layers .chip{font-size:11px;padding:4px 8px;display:inline-flex;align-items:center;gap:4px}
+.t-layers .chip svg.i{width:12px;height:12px}
+/* slide 6: test */
+.t-gauge{position:relative;width:150px;height:150px;display:grid;place-items:center}
+.t-gauge svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.t-gauge .rg{stroke:var(--sig);stroke-dasharray:440;stroke-dashoffset:440;animation:tgauge 2.6s cubic-bezier(.3,.7,.2,1) infinite}
+@keyframes tgauge{0%{stroke-dashoffset:440}70%,100%{stroke-dashoffset:110}}
+.t-gauge .mid{font-family:var(--fh);font-stretch:118%;font-weight:900;font-size:30px;text-align:center;line-height:1}
+.t-gauge .mid small{display:block;font-family:var(--f);font-size:11px;color:var(--text-2);font-weight:600}
+.t-steps{position:absolute;bottom:14px;left:14px;right:14px;display:flex;justify-content:space-between;gap:6px}
+.t-steps .mini{flex:1;text-align:center;font-size:11px;padding:7px 4px;font-weight:650;color:var(--text-2)}
+.t-steps .mini b{display:block;color:var(--text);font-size:12px}
+/* slide 7: device */
+.t-phone{width:150px;height:250px;border-radius:30px;border:2px solid rgba(255,255,255,.18);background:#070d0d;position:relative;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.t-phone .notch{position:absolute;top:8px;left:50%;width:50px;height:14px;margin-left:-25px;border-radius:8px;background:#000}
+.t-phone .bar-b{position:absolute;bottom:0;left:0;right:0;height:44px;background:rgba(30,36,40,.95);display:flex;align-items:center;justify-content:space-around;color:var(--press)}
+.t-phone .bar-b svg.i{width:18px;height:18px}
+.t-share{animation:tpulse 1.6s ease-in-out infinite;border-radius:8px;padding:4px}
+@keyframes tpulse{0%,100%{box-shadow:0 0 0 0 rgba(90,150,255,.0)}50%{box-shadow:0 0 0 6px rgba(90,150,255,.35)}}
+.t-menu{position:absolute;left:10px;right:10px;bottom:52px;border-radius:12px;background:rgba(40,46,52,.97);font-size:10.5px;padding:4px 0;animation:tin .5s both .6s}
+.t-menu div{padding:6px 10px;display:flex;justify-content:space-between;color:var(--text-2)}
+.t-menu div.hl{color:#fff;background:rgba(90,150,255,.35)}
+.t-mac{width:250px;height:160px;border-radius:12px;border:2px solid rgba(255,255,255,.16);background:#070d0d;position:relative;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.t-mac .tb{height:16px;display:flex;gap:4px;align-items:center;padding:0 7px;background:rgba(255,255,255,.04)}
+.t-mac .tb i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2)}
+.t-mac .grid{display:grid;grid-template-columns:1fr 1.4fr;gap:6px;padding:8px}
+.t-mac .blk{border-radius:6px;background:rgba(255,255,255,.06);border:1px solid var(--edge)}
+.t-mac .blk.map{background:radial-gradient(circle at 40% 40%,#1f4636,#0a1a14);height:112px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -332,6 +468,9 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
     <symbol id="i-crown" viewBox="0 0 24 24"><path d="M4 18h16M5 15l-1-8 5 4 3-6 3 6 5-4-1 8z"/></symbol>
     <symbol id="i-sim" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><rect x="9.5" y="11" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 4-2.4M19 12.9a10 10 0 0 0-3.6-2.3M2 9a15 15 0 0 1 4.2-2.6M22 9a15 15 0 0 0-9.4-3.4"/><circle cx="12" cy="20" r=".8"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></symbol>
     <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 2.9L13.4 21z"/></symbol>
   </defs>
 </svg>
@@ -371,14 +510,20 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
   <section class="view" id="v-places">
     <div class="strip-slot"></div>
     <div class="chiprow" id="chipsPlaces"></div>
-    <div class="inner">
-      <h2>My Places</h2>
-      <p class="sub">Add the spots where you actually spend time. Hours per week decide how much each place counts.</p>
-      <div class="glass card carrier-btn" id="carrierCard" role="button" tabindex="0"></div>
-      <div class="label">Places</div>
-      <div id="placeList"></div>
-      <button class="btn primary block" id="addPlaceBtn" style="margin-top:var(--s2)"><svg class="i"><use href="#i-plus"/></svg>Add Place</button>
-      <p class="note" style="margin-top:var(--s4)">Your places stay on this device only. Bars sends the address to look up coverage, but never saves it.</p>
+    <div class="pl-grid">
+      <div class="pl-main">
+        <div class="pl-head">
+          <div><h2>My Places</h2><p class="sub">Add the spots where you actually spend time. Hours per week decide how much each place counts.</p></div>
+          <button class="btn primary pl-add-top" id="addPlaceTop"><svg class="i"><use href="#i-plus"/></svg>Add Place</button>
+        </div>
+        <div id="placeList"></div>
+        <button class="btn primary block pl-add-bottom" id="addPlaceBtn"><svg class="i"><use href="#i-plus"/></svg>Add Place</button>
+      </div>
+      <aside class="pl-side">
+        <div class="glass card carrier-btn" id="carrierCard" role="button" tabindex="0"></div>
+        <div class="glass card" id="weekCard"></div>
+        <div class="glass card pl-privacy"><div class="row" style="align-items:flex-start"><span style="color:var(--sig)"><svg class="i"><use href="#i-pin"/></svg></span><p class="note" style="margin:0">Your places stay on this device only. Bars sends an address to look up coverage, but never saves it.</p></div></div>
+      </aside>
     </div>
   </section>
 
@@ -386,16 +531,16 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
   <section class="view" id="v-test">
     <div class="strip-slot"></div>
     <div class="chiprow" id="chipsTest"></div>
+    <div class="test-head"><h2>Test Here</h2><p class="sub">Measure real speed where you're standing and add it to the community pool for this area.</p></div>
     <div class="test-grid">
-      <div>
-        <h2>Test Here</h2>
-        <p class="sub">Measure real speed where you're standing and add it to the community pool for this area.</p>
+      <div class="panel test-setup">
+        <div class="panel-k">Before You Test</div>
         <div id="testCarrier"></div>
         <button class="glass check" id="wifiCheck"><span class="box"><svg class="i"><use href="#i-check"/></svg></span><span><b>Wi-Fi Is Off</b><br><span class="muted">Safari can't tell Wi-Fi from cellular, so turn Wi-Fi off first or the result measures your Wi-Fi.</span></span></button>
-        <button class="glass check on" id="poolCheck" style="margin-top:var(--s2)"><span class="box"><svg class="i"><use href="#i-check"/></svg></span><span><b>Add to Community Pool</b><br><span class="muted">Anonymous: only the area hex (about a city block), network and speeds. No IP or exact location.</span></span></button>
-        <p class="note" style="margin-top:var(--s4)">Speed only: Safari can't read signal bars (dBm) or detect your carrier. Your location is snapped to an area hex on your phone before anything is sent.</p>
+        <button class="glass check on" id="poolCheck"><span class="box"><svg class="i"><use href="#i-check"/></svg></span><span><b>Add to Community Pool</b><br><span class="muted">Anonymous: only the area hex (about a city block), network and speeds. No IP or exact location.</span></span></button>
+        <p class="note">Speed only: Safari can't read signal bars (dBm) or detect your carrier. Your location is snapped to an area hex on your phone before anything is sent.</p>
       </div>
-      <div>
+      <div class="panel test-run">
         <div class="gauge-wrap">
           <div class="gauge">
             <svg viewBox="0 0 240 240"><circle class="ring-bg" cx="120" cy="120" r="110" fill="none" stroke-width="8"/><circle class="ring" id="ring" cx="120" cy="120" r="110" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="691"/></svg>
@@ -415,6 +560,14 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
 <div class="toast" id="toast"></div>
+<div class="tour" id="tour" role="dialog" aria-modal="true" aria-label="Welcome to Bars">
+  <div class="tour-card glass">
+    <div class="tour-top"><span class="tour-step" id="tourStep"></span><button class="tour-skip" id="tourSkip">Skip</button></div>
+    <div class="tour-stage" id="tourStage"></div>
+    <div class="tour-body" id="tourBody"></div>
+    <div class="tour-foot"><div class="tour-dots" id="tourDots"></div><button class="btn small" id="tourBack">Back</button><button class="btn primary small" id="tourNext">Next</button></div>
+  </div>
+</div>
 
 <!-- the one map, moved between the Results slot (wide) and the Map tab -->
 <div id="mapWrap" style="display:none">
@@ -429,7 +582,7 @@ details.places[open] summary svg.i{transform:rotate(90deg)}
 <script src="/vendor/h3-js.umd.js"></script>
 <script>
 'use strict';
-const APP_VERSION = 'bars-2';
+const APP_VERSION = 'bars-3';
 const ico = (id, cls='') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
 
 /* ======================= DATA ======================= */
@@ -668,7 +821,7 @@ function renderCarrierCard(){
 }
 $('#carrierCard').onclick = () => openCarrierPicker();
 function renderPlaces(){
-  renderCarrierCard();
+  renderCarrierCard(); renderWeek();
   const el = $('#placeList');
   if (!S.places.length){
     el.innerHTML = `<div class="glass card empty"><div class="ico">${ico('pin')}</div><div class="title">No Places Yet</div><p class="muted">Add home, work, the gym, the courts. Wherever you spend real hours.</p></div>`;
@@ -682,7 +835,18 @@ function renderPlaces(){
   el.querySelectorAll('[data-id]').forEach(r => r.onclick = () => openPlaceEditor(S.places.find(p=>p.id===r.dataset.id)));
 }
 $('#addPlaceBtn').onclick = () => openPlaceEditor(null);
+$('#addPlaceTop').onclick = () => openPlaceEditor(null);
 
+const WK_COLORS = ['#3df58a','#5a96ff','#ffc65c','#ff5ac8','#9fd8ff','#ff8a5c','#c39bff','#7ef0d2'];
+function renderWeek(){
+  const el = $('#weekCard'); const hrs = S.places.reduce((a,p)=>a+p.hours,0);
+  if (!S.places.length){ el.innerHTML = `<div class="title">Your Week</div><p class="note" style="margin:6px 0 0">Once you add places, this shows how much each one counts toward your score.</p>`; return; }
+  const sh = p => hrs ? p.hours/hrs : 1/S.places.length;
+  el.innerHTML = `<div class="row"><div class="title grow">Your Week</div><span class="hours">${hrs} hrs</span></div>
+    <div class="wk-bar">${S.places.map((p,i)=>`<i style="width:${(sh(p)*100).toFixed(1)}%;background:${WK_COLORS[i%WK_COLORS.length]}"></i>`).join('')}</div>
+    ${S.places.map((p,i)=>`<div class="wk-row"><span class="sw" style="background:${WK_COLORS[i%WK_COLORS.length]}"></span><span class="ellip">${esc(p.name)}</span><span class="pc">${Math.round(sh(p)*100)}%</span></div>`).join('')}
+    <p class="note" style="margin:8px 0 0">Share of your week = how much each place counts.</p>`;
+}
 const PRESETS = ['Home','Work','Gym','Courts','School','Partner’s Place'];
 function openPlaceEditor(place){
   const p = place ? {...place} : { id:uid(), name:'', address:'', lat:null, lng:null, hex:null, hours:10 };
@@ -1015,7 +1179,7 @@ $('#fabLoc').onclick = async () => {
 /* ======================= TEST HERE ======================= */
 function renderTestCarrier(){
   const lbl = carrierLabel();
-  $('#testCarrier').innerHTML = `<div class="glass card carrier-btn" id="tcBtn" role="button" style="margin-bottom:var(--s2)">
+  $('#testCarrier').innerHTML = `<div class="glass card carrier-btn" id="tcBtn" role="button">
     <span class="cdot ${lbl?NETS[S.carrier.network].cls:''}" style="${lbl?'':'color:var(--text-3)'}"></span>
     <div class="grow"><div class="muted">Testing On</div><div class="title">${lbl?esc(lbl):'Pick Your Carrier'}</div></div>
     <span class="pill ${lbl?'':'press'}">${lbl?'Change':'Set'}</span></div>`;
@@ -1153,7 +1317,7 @@ function openLimits(){
     <p>Flat hexes are coverage estimates at your places. 3D columns are community-tested areas, taller and greener for faster medians. Your own location only ever shows as its hex, and it never leaves your device from the map.</p>
     <h4>Privacy</h4>
     <p>Places and your carrier are stored only on this device. Speed tests send the area hex (about a city block), network and speeds. No account, no IP, no exact location.</p>
-  </div><button class="btn block" id="gotIt" style="margin-top:var(--s3)">Got It</button>`, sh => { sh.querySelector('#gotIt').onclick = closeSheet; });
+  </div><div class="btnrow"><button class="btn" id="replayTour">${ico('play')}Replay Tutorial</button><button class="btn primary" id="gotIt">Got It</button></div>`, sh => { sh.querySelector('#gotIt').onclick = closeSheet; sh.querySelector('#replayTour').onclick = () => { closeSheet(); setTimeout(openTour, 250); }; });
 }
 $('#infoBtn').onclick = openLimits;
 
@@ -1189,6 +1353,98 @@ if (matchMedia('(hover:hover) and (pointer:fine)').matches && !reduceMotion){
   }, { passive:true });
 }
 
+/* ======================= FIRST-RUN TUTORIAL ======================= */
+const TOUR_KEY = 'bars.tour';
+const TOUR_VERSION = 1;
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isStandalone = () => navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+const miniPin = (score, name, color) => `<span class="t-pinm"><span class="sc" style="background:${color}">${score}</span>${name}</span>`;
+function tourSlides(){
+  const deviceSlide = isIOS && !isStandalone() ? {
+    title:'Put Bars on Your Home Screen',
+    text:'In Safari, tap Share, then Add to Home Screen. Bars opens full screen like an app, right where you need it.',
+    stage:`<div class="tslide"><div class="t-phone t-in"><div class="notch"></div>
+      <div style="position:absolute;top:34px;left:12px;right:12px"><div class="mini" style="padding:6px 8px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:6px"><span style="color:var(--sig)">${ico('bars')}</span>Bars</div></div>
+      <div class="t-menu"><div>Copy</div><div>Add to Reading List</div><div class="hl">Add to Home Screen <span>${ico('plus')}</span></div></div>
+      <div class="bar-b"><span>${ico('chev')}</span><span class="t-share">${ico('share')}</span><span>${ico('globe')}</span></div></div></div>`
+  } : isIOS ? {
+    title:'You’re All Set on iPhone',
+    text:'Bars is on your Home Screen. Run Test Here wherever you spend time, with Wi-Fi off, to measure your real cellular speed.',
+    stage:`<div class="tslide"><div class="t-phone t-in"><div class="notch"></div><div style="position:absolute;inset:40px 14px;display:grid;place-items:center;color:var(--sig)"><div class="t-logo" style="transform:scale(.7)"><span class="t-ring"></span><span class="t-ring"></span><svg viewBox="0 0 28 28"><rect class="bar" x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect class="bar" x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect class="bar" x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect class="bar" x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg></div></div></div></div>`
+  } : {
+    title:'The Mac Dashboard',
+    text:'On a big screen you get rankings and the live 3D map side by side. Run Test Here from your phone, since a speed test on a Mac measures your Wi-Fi.',
+    stage:`<div class="tslide"><div class="t-mac t-in"><div class="tb"><i></i><i></i><i></i></div><div class="grid"><div style="display:flex;flex-direction:column;gap:6px"><div class="blk" style="height:34px"></div><div class="blk" style="height:34px"></div><div class="blk" style="height:34px"></div></div><div class="blk map"></div></div></div></div>`
+  };
+  return [
+    { title:'Welcome to Bars',
+      text:'Find the cell carrier that holds up everywhere you actually spend your week, not just on a coverage map.',
+      stage:`<div class="tslide"><div class="t-logo t-in"><span class="t-ring"></span><span class="t-ring"></span><span class="t-ring"></span>
+        <svg viewBox="0 0 28 28"><rect class="bar" x="2" y="18" width="5" height="8" rx="1.5" fill="#3df58a" opacity=".5"/><rect class="bar" x="9" y="13" width="5" height="13" rx="1.5" fill="#3df58a" opacity=".68"/><rect class="bar" x="16" y="7" width="5" height="19" rx="1.5" fill="#3df58a" opacity=".84"/><rect class="bar" x="23" y="2" width="5" height="24" rx="1.5" fill="#3df58a"/></svg></div>
+        <div class="t-carriers">${NET_IDS.map((n,i)=>`<span class="pill t-in t-d${i+1}"><span class="cdot ${NETS[n].cls}" style="width:7px;height:7px"></span>${NETS[n].name}</span>`).join('')}</div></div>` },
+    { title:'Add Your Places',
+      text:'Home, work, the gym, the courts. Add hours per week for each one. The more time you spend somewhere, the more it counts.',
+      stage:`<div class="tslide"><div class="t-stack">${[['Home','84 hr/wk',65],['Work','40 hr/wk',31],['Courts','5 hr/wk',4]].map(([n,h,w],i)=>`
+        <div class="mini t-in t-d${i+1}"><div class="t-place"><span class="ic">${ico('pin')}</span><div><b>${n}</b><small>${w}% of your week</small></div><span class="hr">${h}</span></div><div class="t-hbar"><i style="width:${w}%"></i></div></div>`).join('')}</div></div>` },
+    { title:'Pick Your Carrier Once',
+      text:'Safari can’t see your carrier, so you pick it. Bars knows which big network each one rides, like Visible on Verizon or Mint on T-Mobile.',
+      stage:`<div class="tslide"><div class="t-map">${[['Visible','verizon'],['Mint Mobile','t-mobile'],['Cricket','att'],['US Mobile','verizon']].map(([b,n],i)=>`
+        <div class="t-mv t-in t-d${i+1}"><span class="mini" style="padding:7px 10px">${b}</span><span class="arrow"></span><span class="pill"><span class="cdot ${NETS[n].cls}" style="width:7px;height:7px"></span>${NETS[n].name}</span></div>`).join('')}</div></div>` },
+    { title:'Read Your Consistency Score',
+      text:'Each network gets 0–100 across your week. Dead spots cost the most, especially where you spend lots of hours.',
+      stage:`<div class="tslide"><div class="mini t-score t-in"><div class="row"><span class="pill" style="background:var(--sel);color:var(--sel-ink);border-color:var(--sel)">1</span><b><span class="cdot c-t-mobile" style="width:8px;height:8px;margin-right:6px"></span>T-Mobile</b><span class="n" style="margin-left:auto">92</span></div>
+        <div class="t-meter"><i style="width:92%"></i></div>
+        <div class="t-pen"><span>Weighted Avg <b>96</b></span><span>Dead-Spot Penalty <b>−4</b></span></div>
+        <div class="t-dead t-in t-d3">${ico('alert')}AT&amp;T has a dead spot at the Gym</div></div></div>` },
+    { title:'Explore the 3D Map',
+      text:'Spin the globe and fly down to your places. Coverage shows as tinted hexes, and community-tested areas rise as 3D columns.',
+      stage:`<div class="tslide"><div class="t-globe t-in"><span class="lat"></span><span class="lng"></span>
+        <svg class="t-hexes" viewBox="0 0 80 70"><g fill-opacity=".75" stroke="#fff" stroke-opacity=".3"><path d="M20 10l10 6v12l-10 6-10-6V16z" fill="#3df58a"/><path d="M40 22l10 6v12l-10 6-10-6V28z" fill="#ffc65c"/><path d="M60 10l10 6v12l-10 6-10-6V16z" fill="#3df58a"/><path d="M40 46l10 6v12l-10 6-10-6V52z" fill="#ff6b6b"/></g></svg>
+        <div style="position:absolute;left:18%;top:24%">${miniPin(96,'Home','#3df58a')}</div>
+        <div style="position:absolute;left:52%;top:64%">${miniPin(41,'Gym','#ffc65c')}</div></div>
+        <div class="t-layers t-in t-d2"><span class="chip on">${ico('pin')}Places</span><span class="chip on">${ico('hex')}Coverage</span><span class="chip on">${ico('users')}Community</span></div></div>` },
+    { title:'Test Where You Are',
+      text:'Turn Wi-Fi off, tap Run Test, and your speed joins the community pool. Only the area hex is shared, never your exact spot.',
+      stage:`<div class="tslide"><div class="t-gauge t-in"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="70" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="7"/><circle class="rg" cx="75" cy="75" r="70" fill="none" stroke-width="7" stroke-linecap="round"/></svg><div class="mid">148<small>Mbps Down</small></div></div>
+        <div class="t-steps"><div class="mini t-in t-d1"><b>${ico('wifioff')}</b>Wi-Fi Off</div><div class="mini t-in t-d2"><b>${ico('gauge')}</b>Run Test</div><div class="mini t-in t-d3"><b>${ico('hex')}</b>Hex Only</div></div></div>` },
+    deviceSlide
+  ];
+}
+let tourI = 0, tourList = [];
+function openTour(){
+  tourList = tourSlides(); tourI = 0; drawTour();
+  $('#tour').classList.add('on'); document.body.style.overflow='hidden';
+}
+function closeTour(){
+  $('#tour').classList.remove('on'); document.body.style.overflow='';
+  try { localStorage.setItem(TOUR_KEY, String(TOUR_VERSION)); } catch {}
+}
+function drawTour(){
+  const sl = tourList[tourI]; const last = tourI === tourList.length-1;
+  $('#tourStep').textContent = `${tourI+1} of ${tourList.length}`;
+  $('#tourStage').innerHTML = sl.stage;
+  $('#tourBody').innerHTML = `<h3>${sl.title}</h3><p>${sl.text}</p>`;
+  $('#tourDots').innerHTML = tourList.map((_,i)=>`<i class="${i===tourI?'on':''}"></i>`).join('');
+  $('#tourBack').style.visibility = tourI ? 'visible' : 'hidden';
+  $('#tourNext').textContent = last ? 'Get Started' : 'Next';
+  $('#tourSkip').style.visibility = last ? 'hidden' : 'visible';
+}
+function tourGo(d){
+  const n = tourI + d;
+  if (n >= tourList.length){ closeTour(); if (!S.carrier) openCarrierPicker(() => { if (!S.places.length) { show('places'); setTimeout(()=>openPlaceEditor(null), 350); } }); else if (!S.places.length){ show('places'); openPlaceEditor(null); } return; }
+  if (n < 0) return;
+  tourI = n; drawTour();
+}
+$('#tourNext').onclick = () => tourGo(1);
+$('#tourBack').onclick = () => tourGo(-1);
+$('#tourSkip').onclick = closeTour;
+addEventListener('keydown', e => { if (!$('#tour').classList.contains('on')) return; if (e.key==='ArrowRight') tourGo(1); if (e.key==='ArrowLeft') tourGo(-1); if (e.key==='Escape') closeTour(); });
+(() => { let x0=null; const st=$('#tour');
+  st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive:true });
+  st.addEventListener('touchend', e => { if (x0==null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) tourGo(dx < 0 ? 1 : -1); x0=null; }, { passive:true });
+})();
+function tourSeen(){ try { return +localStorage.getItem(TOUR_KEY) >= TOUR_VERSION; } catch { return true; } }
+
 /* ======================= VERSION / iOS ======================= */
 $('#ver').textContent = APP_VERSION;
 async function checkVersion(){
@@ -1211,6 +1467,7 @@ show(S.places.length ? 'results' : 'places');
 if (S.places.length) loadData().then(()=>{ renderStrip(); renderChips('#chipsPlaces'); renderChips('#chipsTest'); renderChips('#chipsMap'); });
 if (S.lastTest && S.lastTest.hex && Date.now() - S.lastTest.at < 864e5) hereHex = S.lastTest.hex;
 fetchTested().then(() => updateMapData());
+if (!tourSeen()) setTimeout(openTour, 450);
 </script>
 </body>
 </html>
